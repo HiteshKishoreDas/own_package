@@ -10,13 +10,26 @@ extra_athena = [
     'cmasher == 1.6.3',
 ]
 
-extra_pluto = [
+extra_data_analysis= [
     *extra_athena,
 ]
 
 extra_dev = [
     *extra_athena,
 ]
+
+extra_plot = [
+    *extra_athena,
+]
+
+extra_pluto= [
+    *extra_athena,
+]
+
+extra_test= [
+    *extra_athena,
+]
+
 
 setup(
     name='own_package',
@@ -30,8 +43,11 @@ setup(
 
     extras_require={
         'athena': extra_athena,
-        'pluto': extra_pluto,
+        'data_analysis': extra_data_analysis,
         'dev': extra_dev,
+        'plot': extra_plot,
+        'pluto': extra_pluto,
+        'test': extra_test,
 
     },
 )
