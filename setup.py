@@ -7,6 +7,7 @@ extra_athena = [
     'matplotlib == 3.3.4',
     'scipy == 1.7.1',
     'yt == 3.6.1',
+    'cmasher == 1.6.3',
 ]
 
 extra_pluto = [
