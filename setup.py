@@ -2,6 +2,21 @@ from setuptools import setup, find_packages
 
 from own_package import __version__
 
+extra_athena = [
+    'numpy == 1.21.2',
+    'matplotlib == 3.3.4',
+    'scipy == 1.7.1',
+    'yt == 3.6.1',
+]
+
+extra_pluto = [
+    *extra_athena,
+]
+
+extra_dev = [
+    *extra_athena,
+]
+
 setup(
     name='own_package',
     version=__version__,
@@ -12,10 +27,10 @@ setup(
 
     py_modules=find_packages(),
 
-    install_requires=[
-        'numpy == 1.21.2',
-        'matplotlib == 3.3.4',
-        'scipy == 1.7.1',
-        'yt == 3.6.1',
-    ],
+    extras_require={
+        'athena': extra_athena,
+        'pluto': extra_pluto,
+        'dev': extra_dev,
+
+    },
 )

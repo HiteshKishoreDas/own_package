@@ -1,6 +1,6 @@
 __version__ = 'dev'
 
 
-def print_hello ():
+def print_version ():
 
-    print('Hi, trial run for own package!')
+    print(f'own_package version: {__version__}')
