@@ -10,7 +10,7 @@ package_abs_path = cwd[:-len(cwd.split('/')[-1])]
 sys.path.insert(0, f'{package_abs_path}plot/')
 import plot_3d as pt
 
-
+#! Structure tensor
 
 if __name__ == "__main__":
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     grad_mag += grad_rho[2]*grad_rho[2]
     grad_mag  = np.sqrt(grad_mag)
 
-    fig, ax  = pt.scatter_3d(grad_mag, grad_cut, grad_mag, cmap=cr.neon, above_cut=True)
-    fig, ax  = pt.scatter_3d(grad_mag, -grad_cut, grad_mag, cmap=cr.neon, above_cut=False,\
-        new_fig=False, fig=fig, ax=ax)
+    fig, ax  = pt.scatter_3d(grad_mag, grad_cut, grad_mag, cmap=cr.neon, above_cut=False)
+    # fig, ax  = pt.scatter_3d(grad_mag, -grad_cut, grad_mag, cmap=cr.neon, above_cut=False,\
+        # new_fig=False, fig=fig, ax=ax)
     plt.show()

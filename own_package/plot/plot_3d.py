@@ -10,6 +10,11 @@ def new_plot():
 
     return fig,ax
 
+
+# TODO: Add feature to give transfer function
+# TODO: That is, a function to calculate the alpha of each point
+# TODO: This will full on rendering, so maybe make a different function for that.
+
 def scatter_3d ( inp_arr, cut, col_data, cmap, above_cut=True, new_fig=True, fig=None, ax=None):
 
     if new_fig:
@@ -25,12 +30,13 @@ def scatter_3d ( inp_arr, cut, col_data, cmap, above_cut=True, new_fig=True, fig
 
     plot_list = []
 
+    alpha0 = 0.25
+
     for i in range(L[0]):
         for j in range(L[1]):
             for k in range(L[2]):
 
                 if cond_arr[i,j,k]:
-                    
                     plot_list.append([i,j,k,col_data[i,j,k]])
 
     plot_list = np.array(plot_list)
