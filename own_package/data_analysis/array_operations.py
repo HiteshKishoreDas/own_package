@@ -14,3 +14,6 @@ def dot_product (A, B):
     AB_cos = A_dot_B/(A_mag*B_mag)
 
     return A_dot_B, AB_cos 
+
+def gradient(A):
+    return np.gradient(A)

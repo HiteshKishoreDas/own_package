@@ -14,9 +14,6 @@ extra_data_analysis= [
     *extra_athena,
 ]
 
-extra_dev = [
-    *extra_athena,
-]
 
 extra_plot = [
     *extra_athena,
@@ -28,8 +25,13 @@ extra_pluto= [
 
 extra_test= [
     *extra_athena,
+    'pytest>=4',
+    'pytest-cov>=2',
 ]
 
+extra_dev = [
+    *extra_test,
+]
 
 setup(
     name='own_package',
