@@ -1,5 +1,6 @@
 import numpy as np
 import cmasher as cr
+import matplotlib
 import matplotlib.pyplot as plt
 
 import array_operations as ao
@@ -10,7 +11,7 @@ package_abs_path = cwd[:-len(cwd.split('/')[-1])]
 sys.path.insert(0, f'{package_abs_path}plot/')
 import plot_3d as pt
 
-#! Structure tensor
+# TODO: Structure tensor
 
 if __name__ == "__main__":
 
@@ -18,9 +19,17 @@ if __name__ == "__main__":
 
     grad_rho = ao.gradient(rho)
 
-    grad_cut = 30
 
-    fig, ax  = pt.scatter_3d(rho, 25, grad_rho[0], cmap=cr.neon, above_cut=True)
+    def grad_alpha(c_arr, alpha0):
+
+        return alpha0*c_arr/c_arr.max()
+
+
+    fig, ax  = pt.scatter_3d(inp_arr = rho, \
+                             cut = 25, \
+                             col_data = grad_rho[0], \
+                             cmap=cr.neon, \
+                             above_cut=True)
     plt.show()
 
     grad_mag  = grad_rho[0]*grad_rho[0]
@@ -28,7 +37,16 @@ if __name__ == "__main__":
     grad_mag += grad_rho[2]*grad_rho[2]
     grad_mag  = np.sqrt(grad_mag)
 
-    fig, ax  = pt.scatter_3d(grad_mag, grad_cut, grad_mag, cmap=cr.neon, above_cut=False)
-    # fig, ax  = pt.scatter_3d(grad_mag, -grad_cut, grad_mag, cmap=cr.neon, above_cut=False,\
-        # new_fig=False, fig=fig, ax=ax)
+    grad_cut = np.max(grad_mag) + 1 
+
+    if True:
+        %matplotlib qt 
+
+    fig, ax  = pt.scatter_3d(inp_arr = grad_mag, \
+                             cut = grad_cut, \
+                             col_data = grad_mag, \
+                             alpha_fn = grad_alpha,\
+                             cmap=cr.neon, \
+                             above_cut=False, \
+                             interactive=True)
     plt.show()

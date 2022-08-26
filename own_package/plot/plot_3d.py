@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib
+import matplotlib as mt
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 import cmasher as cr
@@ -11,11 +13,41 @@ def new_plot():
     return fig,ax
 
 
-# TODO: Add feature to give transfer function
-# TODO: That is, a function to calculate the alpha of each point
-# TODO: This will full on rendering, so maybe make a different function for that.
 
-def scatter_3d ( inp_arr, cut, col_data, cmap, above_cut=True, new_fig=True, fig=None, ax=None):
+def const_alpha (x, alpha_0):
+
+    return np.ones_like(x)*alpha_0
+
+
+
+def make_color (c_arr, alpha_arr, cmap_name, log_flag = False):
+
+    cmap = mt.cm.get_cmap(cmap_name)
+    
+    if log_flag:
+        cb_qnt = np.copy(np.log10(c_arr))
+    else:
+        cb_qnt = np.copy(c_arr)
+
+    line_col = cmap(cb_qnt/cb_qnt.max())
+
+    line_col[:,3] = alpha_arr
+
+    return line_col
+
+
+# TODO: Add the interactive feature in this function instead
+
+def scatter_3d ( inp_arr, cut, col_data,             \
+                 cmap=cr.rainforest, above_cut=True, \
+                 alpha_fn = const_alpha,             \
+                 pnt_size = 100,                     \
+                 log_flag = False,                   \
+                 interactive = False,                \
+                 new_fig=True, fig=None, ax=None):
+
+    # if interactive:
+    #     %matplotlib qt
 
     if new_fig:
         fig, ax = new_plot()
@@ -26,7 +58,6 @@ def scatter_3d ( inp_arr, cut, col_data, cmap, above_cut=True, new_fig=True, fig
         cond_arr = inp_arr<cut
 
     L = np.shape(inp_arr)
-    # print(L)
 
     plot_list = []
 
@@ -37,12 +68,26 @@ def scatter_3d ( inp_arr, cut, col_data, cmap, above_cut=True, new_fig=True, fig
             for k in range(L[2]):
 
                 if cond_arr[i,j,k]:
-                    plot_list.append([i,j,k,col_data[i,j,k]])
+
+                    plot_list.append([\
+                                      i, j, k,         \
+                                      col_data[i,j,k]
+                                     ])
 
     plot_list = np.array(plot_list)
 
-    ax.scatter3D(plot_list[:,0],plot_list[:,1],plot_list[:,2],\
-                 c=plot_list[:,3], s=100, alpha=0.25, edgecolors='None',\
+    i_arr = plot_list[:,0]
+    j_arr = plot_list[:,1]
+    k_arr = plot_list[:,2]
+
+    c_arr     = plot_list[:,3]
+    alpha_arr = alpha_fn(c_arr, alpha0)
+
+    color = make_color(c_arr,alpha_arr, cmap, log_flag=log_flag)
+
+    ax.scatter3D(i_arr, j_arr, k_arr,\
+                 c=color,            \
+                 s=pnt_size, edgecolors='None',\
                  cmap=cmap)
 
     return fig,ax

@@ -48,7 +48,6 @@ def clump_finder_scipy(arr,arr_cut,above_cut):
 
 
 
-
 #* Plots the label arr of clumps for any given array
 
 def clump_find_plot(arr, arr_cut, above_cut, interactive=False):
@@ -57,17 +56,32 @@ def clump_find_plot(arr, arr_cut, above_cut, interactive=False):
     # above_cut: True if values above arr_cut are clumps, False otherwise
 
     if interactive:
-        %matplotlib qt
+        %matplotlib qt 
+
+    # matplotlib.interactive('True')
 
     n_blob_sp, label_arr_sp = clump_finder_scipy(arr, arr_cut, above_cut)
     print(f'No. of clumps: {n_blob_sp}')
 
-    fig, ax  = pt.scatter_3d(arr, arr_cut, arr, cmap=cr.neon, above_cut=above_cut)
+    fig, ax  = pt.scatter_3d(arr, arr_cut, arr, cmap=cr.neon, above_cut=above_cut)#, interactive=interactive)
     plt.show()
 
-    fig, ax  = pt.scatter_3d(label_arr_sp, 0, label_arr_sp, cmap=cr.neon, above_cut=True)
+    fig, ax  = pt.scatter_3d(label_arr_sp, 0, label_arr_sp, cmap=cr.neon, above_cut=True)#, interactive=interactive)
     # above_cut in this line will always be True
     plt.show()
+
+
+# TODO: Function to calculate shear
+
+#* Calculates shear on the clumps
+
+def shear_calc (arr, arr_cut, above_cut):
+
+    shear_list = []
+
+
+    # List of shear around each clump 
+    return shear_list
 
 
 
