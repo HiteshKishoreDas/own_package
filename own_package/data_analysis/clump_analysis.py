@@ -75,13 +75,33 @@ def clump_find_plot(arr, arr_cut, above_cut, interactive=False):
 
 #* Calculates shear on the clumps
 
-def shear_calc (arr, arr_cut, above_cut):
+def shear_calc (label_arr, v_arr):
 
-    shear_list = []
+
+    mask_arr = np.copy(label_arr).astype(bool)
+    mask_arr = np.logical_not(mask_arr)
+
+    temp_arr = np.zeros_like(label_arr)
+
+    temp_arr += np.roll(label_arr,-1,axis=0)*mask_arr
+    temp_arr += np.roll(label_arr, 1,axis=0)*mask_arr
+
+    temp_arr += np.roll(label_arr,-1,axis=1)*mask_arr
+    temp_arr += np.roll(label_arr, 1,axis=1)*mask_arr
+
+    temp_arr += np.roll(label_arr,-1,axis=2)*mask_arr
+    temp_arr += np.roll(label_arr, 1,axis=2)*mask_arr
+
+
+
+    return temp_arr
+
+
+    # shear_list = []
 
 
     # List of shear around each clump 
-    return shear_list
+    # return shear_list
 
 
 
@@ -130,8 +150,6 @@ def clump_hist (label_arr, dx, rho, T, n_bins, dim=3):
 
 
 
-
-
 #*_________________________________________________
 
 if __name__ == "__main__":
@@ -168,4 +186,26 @@ if __name__ == "__main__":
 
     cut = 8e4
     # clump_find_plot(test_arr, cut, above_cut=True)
-    clump_find_plot(T, cut, above_cut=False, interactive=True)
+
+    n_blob_sp, label_arr_sp = clump_finder_scipy(T, cut, above_cut=False)
+
+    # clump_find_plot(T, cut, above_cut=False, interactive=True)
+
+    v1 = np.load('data/v1.npy')
+    v2 = np.load('data/v2.npy')
+    v3 = np.load('data/v3.npy')
+
+    v_arr = [v1,v2,v3]
+
+    nbr_arr = shear_calc(label_arr_sp, v_arr)
+
+    plt.imshow(nbr_arr[:,:,10])
+    plt.show()
+
+
+    # if True:
+    #     %matplotlib qt
+
+    plt.style.use('dark_background') 
+
+    fig, ax  = pt.scatter_3d(nbr_arr, 0, nbr_arr, cmap=cr.neon, above_cut=True)
