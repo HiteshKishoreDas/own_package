@@ -10,6 +10,7 @@ Author: Hitesh
 #*_________________________________________________
 
 import matplotlib
+import matplotlib as mt
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage.measurements as sm
@@ -73,35 +74,81 @@ def clump_find_plot(arr, arr_cut, above_cut, interactive=False):
 
 # TODO: Function to calculate shear
 
-#* Calculates shear on the clumps
+#* Labels the boundaries around the clumps
+def boundary_detect (label_arr):
 
-def shear_calc (label_arr, v_arr):
-
-
+    # To mask out the clouds
     mask_arr = np.copy(label_arr).astype(bool)
     mask_arr = np.logical_not(mask_arr)
 
     temp_arr = np.zeros_like(label_arr)
 
-    temp_arr += np.roll(label_arr,-1,axis=0)*mask_arr
-    temp_arr += np.roll(label_arr, 1,axis=0)*mask_arr
+    temp_arr += np.roll(label_arr,-1,axis=0) * mask_arr
+    temp_arr += np.roll(label_arr, 1,axis=0) * mask_arr
 
-    temp_arr += np.roll(label_arr,-1,axis=1)*mask_arr
-    temp_arr += np.roll(label_arr, 1,axis=1)*mask_arr
+    # To mask out the previously labeled cells
+    temp_mask = np.copy(temp_arr).astype(bool)
+    temp_mask = np.logical_not(temp_mask)
 
-    temp_arr += np.roll(label_arr,-1,axis=2)*mask_arr
-    temp_arr += np.roll(label_arr, 1,axis=2)*mask_arr
+    temp_arr += np.roll(label_arr,-1,axis=1) * mask_arr * temp_mask
+    temp_arr += np.roll(label_arr, 1,axis=1) * mask_arr * temp_mask
 
+    temp_mask = np.copy(temp_arr).astype(bool)
+    temp_mask = np.logical_not(temp_mask)
 
+    temp_arr += np.roll(label_arr,-1,axis=2) * mask_arr * temp_mask
+    temp_arr += np.roll(label_arr, 1,axis=2) * mask_arr * temp_mask
 
     return temp_arr
 
 
-    # shear_list = []
+#* Calculates shear on the clumps
 
+def shear_calc (label_arr, v_arr):
+
+    nbr_arr = boundary_detect(label_arr)
+
+    L = np.shape(label_arr)
+    n_blob = np.max(label_arr)
+
+    v1 = v_arr[0]
+    v2 = v_arr[1]
+    v3 = v_arr[2]
+
+    shear_map = np.copy(label_arr).astype(float)
+
+    shear_dict= {}
+    shear_dict['clump_vel']  = []
+    shear_dict['nbr_vel']    = []
+    shear_dict['shear_vel']  = []
+    shear_dict['shear_vmag'] = []
+
+    for i in range(1,n_blob+1):
+
+        v1_clump = np.average(v1[label_arr==i])
+        v2_clump = np.average(v2[label_arr==i])
+        v3_clump = np.average(v3[label_arr==i])
+
+        clump_vel  = np.array([v1_clump, v2_clump, v3_clump])
+
+        v1_nbr   = np.average(v1[nbr_arr==i])
+        v2_nbr   = np.average(v2[nbr_arr==i])
+        v3_nbr   = np.average(v3[nbr_arr==i])
+
+        nbr_vel  = np.array([v1_nbr, v2_nbr, v3_nbr])
+
+        shear_v   = nbr_vel - clump_vel 
+        shear_mag = np.linalg.norm(shear_v)
+
+        shear_map[shear_map==i] = shear_mag
+
+        shear_dict['clump_vel'] .append(clump_vel)
+        shear_dict['nbr_vel']   .append(nbr_vel)
+        shear_dict['shear_vel'] .append(shear_v)
+        shear_dict['shear_vmag'].append(shear_mag)
 
     # List of shear around each clump 
-    # return shear_list
+    return shear_dict, shear_map
 
 
 
@@ -184,12 +231,13 @@ if __name__ == "__main__":
     prs = np.load('data/prs.npy')
     T = (prs/rho) * KELVIN * mu
 
-    cut = 8e4
+    cut = 5e4
     # clump_find_plot(test_arr, cut, above_cut=True)
 
     n_blob_sp, label_arr_sp = clump_finder_scipy(T, cut, above_cut=False)
 
-    # clump_find_plot(T, cut, above_cut=False, interactive=True)
+    # clump_find_plot(T, cut, above_cut=False)#, interactive=True)
+    plt.style.use('dark_background') 
 
     v1 = np.load('data/v1.npy')
     v2 = np.load('data/v2.npy')
@@ -197,15 +245,25 @@ if __name__ == "__main__":
 
     v_arr = [v1,v2,v3]
 
-    nbr_arr = shear_calc(label_arr_sp, v_arr)
+    nbr_arr = boundary_detect(label_arr_sp)
 
-    plt.imshow(nbr_arr[:,:,10])
+    shear_dict, shear_map = shear_calc(label_arr_sp, v_arr)
+
+    def grad_alpha(c_arr):
+
+        alpha0 = 1.0
+        alp = alpha0 * (c_arr-c_arr.min())/(c_arr.max()-c_arr.min())
+        alp[c_arr==0] = 0.0
+        return alp
+
+    plt.hist(np.array(shear_dict['shear_vmag']))
     plt.show()
 
+    %matplotlib qt 
 
-    # if True:
-    #     %matplotlib qt
-
-    plt.style.use('dark_background') 
-
-    fig, ax  = pt.scatter_3d(nbr_arr, 0, nbr_arr, cmap=cr.neon, above_cut=True)
+    fig, ax, sc  = pt.render_scatter_3d(inp_arr = shear_map, \
+                             alpha_fn = grad_alpha,\
+                             cmap=cr.neon)
+    norm = mt.colors.Normalize(vmin=shear_map.min(), vmax=shear_map.max())
+    fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap=cr.neon), ax=ax)
+    plt.show()

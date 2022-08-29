@@ -46,8 +46,7 @@ if __name__ == "__main__":
     if True:
         %matplotlib qt
 
-    fig, ax  = pt.render_scatter_3d(inp_arr = grad_mag, \
-                             col_data = grad_mag, \
+    fig, ax, sc  = pt.render_scatter_3d(inp_arr = grad_mag, \
                              alpha_fn = grad_alpha,\
                              cmap=cr.neon)
 

@@ -93,12 +93,12 @@ def scatter_3d ( inp_arr, cut, col_data,             \
 
     return fig,ax
 
-def render_scatter_3d ( inp_arr, col_data,           \
-                 cmap=cr.rainforest,                 \
-                 alpha_fn = const_alpha,             \
-                 pnt_size = 50,                      \
-                 log_flag = False,                   \
-                 view = [30, -60],                   \
+def render_scatter_3d ( inp_arr,          \
+                 cmap=cr.rainforest,      \
+                 alpha_fn = const_alpha,  \
+                 pnt_size = 50,           \
+                 log_flag = False,        \
+                 view = [30, -60],        \
                  coord = [None, None, None], new_fig=True, fig=None, ax=None):       
                  
     if new_fig:
@@ -125,13 +125,13 @@ def render_scatter_3d ( inp_arr, col_data,           \
         j_arr = np.ravel(j_arr, order='C')
         k_arr = np.ravel(k_arr, order='C')
 
-    c_arr = np.ravel(col_data, order='C') 
+    c_arr = np.ravel(inp_arr, order='C') 
 
     alpha_arr = alpha_fn(c_arr)
 
     color = make_color(c_arr, alpha_arr, cmap, log_flag=log_flag)
 
-    ax.scatter3D(i_arr, j_arr, k_arr,          \
+    sc = ax.scatter3D(i_arr, j_arr, k_arr,          \
                  c=color,                      \
                  s=pnt_size, edgecolors='None',\
                  cmap=cmap,                    \
@@ -143,4 +143,4 @@ def render_scatter_3d ( inp_arr, col_data,           \
     ax.w_yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax.w_zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
 
-    return fig,ax
+    return fig, ax, sc
