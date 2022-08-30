@@ -1,7 +1,10 @@
 '''
-Created Date: Thursday, August 25th 2022, 4:52:37 pm
-Author: Hitesh
+/*
+ * @Author: Hitesh Kishore Das 
+ * @Date: 2022-08-20 11:38:49 
+ */
 '''
+
 
 #*_________________________________________________
 
@@ -56,8 +59,8 @@ def clump_find_plot(arr, arr_cut, above_cut, interactive=False):
     # arr_cut  : Cutoff for defining clumps
     # above_cut: True if values above arr_cut are clumps, False otherwise
 
-    if interactive:
-        %matplotlib qt 
+    # if interactive:
+        # %matplotlib qt 
 
     # matplotlib.interactive('True')
 
@@ -259,7 +262,7 @@ if __name__ == "__main__":
     plt.hist(np.array(shear_dict['shear_vmag']))
     plt.show()
 
-    %matplotlib qt 
+    # %matplotlib qt 
 
     fig, ax, sc  = pt.render_scatter_3d(inp_arr = shear_map, \
                              alpha_fn = grad_alpha,\

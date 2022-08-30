@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib
 import matplotlib as mt
+
+
+
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 import cmasher as cr
@@ -12,10 +15,48 @@ def new_plot():
 
     return fig,ax
 
-def const_alpha (x):
+def const_alpha (x, cut=0.0, cut_above=False, log_flag=False):
 
     alpha_0 = 0.5
     return np.ones_like(x)*alpha_0
+
+def poly_alpha(c_arr, order=2, log_flag=False, cut=0.0, cut_above=False):
+
+    alpha0 = 1.0
+
+    if log_flag:
+        log_c_arr = np.log10(c_arr)
+        alp = alpha0 * (log_c_arr-log_c_arr.min())/(log_c_arr.max()-log_c_arr.min())
+    else:
+        alp = alpha0 * (c_arr-c_arr.min())**order/(c_arr.max()-c_arr.min())**order
+
+    if cut_above:
+        alp[c_arr>(c_arr.min()+cut)] = 0.0
+    else:
+        alp[c_arr<(c_arr.min()+cut)] = 0.0
+
+    alp[c_arr==0] = 0.0
+
+    return alp
+
+def lin_alpha(c_arr, log_flag=False, cut=0.0, cut_above=False):
+
+    alpha0 = 1.0
+
+    if log_flag:
+        log_c_arr = np.log10(c_arr)
+        alp = alpha0 * (log_c_arr-log_c_arr.min())/(log_c_arr.max()-log_c_arr.min())
+    else:
+        alp = alpha0 * (c_arr-c_arr.min())/(c_arr.max()-c_arr.min())
+
+    if cut_above:
+        alp[c_arr>(c_arr.min()+cut)] = 0.0
+    else:
+        alp[c_arr<(c_arr.min()+cut)] = 0.0
+
+    alp[c_arr==0] = 0.0
+
+    return alp
 
 def make_color (c_arr, alpha_arr, cmap_name, log_flag = False):
 
@@ -83,7 +124,7 @@ def scatter_3d ( inp_arr, cut, col_data,             \
 
     color = make_color(c_arr,alpha_arr, cmap, log_flag=log_flag)
 
-    ax.scatter3D(i_arr, j_arr, k_arr,\
+    sc = ax.scatter3D(i_arr, j_arr, k_arr,\
                  c=color,            \
                  s=pnt_size, edgecolors='None',\
                  cmap=cmap,          \
@@ -91,7 +132,7 @@ def scatter_3d ( inp_arr, cut, col_data,             \
 
     ax.view_init(elev=view[0], azim=view[1])
 
-    return fig,ax
+    return fig, ax, sc
 
 def render_scatter_3d ( inp_arr,          \
                  cmap=cr.rainforest,      \
@@ -127,7 +168,8 @@ def render_scatter_3d ( inp_arr,          \
 
     c_arr = np.ravel(inp_arr, order='C') 
 
-    alpha_arr = alpha_fn(c_arr)
+    # TODO: Add log scaling in alpha_fn
+    alpha_arr = alpha_fn(c_arr, log_flag=log_flag)
 
     color = make_color(c_arr, alpha_arr, cmap, log_flag=log_flag)
 

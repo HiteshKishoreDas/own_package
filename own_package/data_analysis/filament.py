@@ -2,6 +2,8 @@ import numpy as np
 import cmasher as cr
 import matplotlib
 import matplotlib.pyplot as plt
+import os
+import sys
 
 import array_operations as ao
 
@@ -22,13 +24,13 @@ if __name__ == "__main__":
     grad_rho = ao.gradient(rho)
 
 
-    def grad_alpha(c_arr):
+    def grad_alpha(c_arr, log_flag=False):
 
         alpha0 = 1.0
         return alpha0*c_arr/c_arr.max()
 
 
-    fig, ax  = pt.scatter_3d(inp_arr = rho, \
+    fig, ax, sc  = pt.scatter_3d(inp_arr = rho, \
                              cut = 25, \
                              col_data = grad_rho[0], \
                              cmap=cr.neon, \
@@ -43,8 +45,8 @@ if __name__ == "__main__":
 
     grad_cut = np.max(grad_mag) + 1 
 
-    if True:
-        %matplotlib qt
+#    if True:
+#        %matplotlib qt
 
     fig, ax, sc  = pt.render_scatter_3d(inp_arr = grad_mag, \
                              alpha_fn = grad_alpha,\
@@ -52,4 +54,5 @@ if __name__ == "__main__":
 
     # ax.get_yaxis().set_visible(False)
 
+    fig.savefig('filament_grad.png')
     plt.show()

@@ -1,6 +1,10 @@
 import numpy as np
 import yt
 
+# TODO: Make the get array more field specific
+#* No need to save all the different fields if they are not required
+#* May use up too much space for larger files
+
 def get_array(fn, MHD_flag = False):
 
     ds = yt.load(fn)
@@ -21,10 +25,10 @@ def get_array(fn, MHD_flag = False):
 
     rho_arr  = np.array(all_data_level_0_hyd["density"])
     P_arr    = np.array(all_data_level_0_hyd["press"])
-    T_arr    = np.array(all_data_level_0_hyd["temp"])
+    # T_arr    = np.array(all_data_level_0_hyd["temp"])
     
     out_dict['rho'] = rho_arr
-    out_dict['T']   = T_arr
+    # out_dict['T']   = T_arr
     out_dict['P']   = P_arr
 
     vel1_arr = np.array(all_data_level_0_hyd["vel1"])
