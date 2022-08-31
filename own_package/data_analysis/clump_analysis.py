@@ -125,8 +125,11 @@ def shear_calc (label_arr, v_arr):
     shear_dict['nbr_vel']    = []
     shear_dict['shear_vel']  = []
     shear_dict['shear_vmag'] = []
+    shear_dict['clump_vol']  = []
 
     for i in range(1,n_blob+1):
+
+        clump_vol = np.sum(label_arr[label_arr==i])/float(i)
 
         v1_clump = np.average(v1[label_arr==i])
         v2_clump = np.average(v2[label_arr==i])
@@ -143,12 +146,19 @@ def shear_calc (label_arr, v_arr):
         shear_v   = nbr_vel - clump_vel 
         shear_mag = np.linalg.norm(shear_v)
 
-        shear_map[shear_map==i] = shear_mag
 
-        shear_dict['clump_vel'] .append(clump_vel)
-        shear_dict['nbr_vel']   .append(nbr_vel)
-        shear_dict['shear_vel'] .append(shear_v)
-        shear_dict['shear_vmag'].append(shear_mag)
+        if np.isnan(shear_mag):
+            print(f"!! NaN encountered for clump number {i} ...")
+            print(f"!! Surrounding velocity: {nbr_vel}")
+            print(f"!! Clump       velocity: {clump_vel}")
+        else:
+            shear_map[shear_map==i] = shear_mag
+
+            shear_dict['clump_vel'] .append(clump_vel)
+            shear_dict['nbr_vel']   .append(nbr_vel)
+            shear_dict['shear_vel'] .append(shear_v)
+            shear_dict['shear_vmag'].append(shear_mag)
+            shear_dict['clump_vol'] .append(clump_vol)
 
     # List of shear around each clump 
     return shear_dict, shear_map

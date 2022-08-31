@@ -52,7 +52,7 @@ def render_rotate_video (field, file_list, img_list, MHD_flag,\
                          log_flag=False):
 
     import matplotlib
-    matplotlib.use('qtagg')
+    matplotlib.use('Agg')
 
     N_angle = len(file_list)
     angle_arr = np.linspace(angle_start, angle_end, num=N_angle)
