@@ -19,7 +19,12 @@ class hst_data:
                     hdr = [i.split("=")[1].strip() for i in l[1:].split("[") if ']' in i]
                     break
 
-        r = np.loadtxt(fn, dtype={'names' : hdr, 'formats' : len(hdr) * (float,)})
+        try:
+            r = np.loadtxt(fn, dtype={'names' : hdr, 'formats' : len(hdr) * (float,)})
+            print(f"history.py: hst_data :: History file loaded for {fn} ...")
+        except:
+            print(f"history.py: hst_data :: File couldn't be loaded for {fn} ...")
+            return -1
 
         if None in ncells:
             raise ValueError('hst_data() :: Invalid argument for ncells ...')
