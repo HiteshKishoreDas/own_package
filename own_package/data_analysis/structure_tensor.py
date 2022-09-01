@@ -147,15 +147,13 @@ def S_eig (S_arr):
 
     return S_eval_new, S_evec_new
 
+def coherence(inp_arr):
 
-if __name__ == "__main__":
+    L = np.shape(inp_arr)
+    dim = len(L)
 
-    rho = np.load('data/rho.npy')
-
-    S_arr = structure_tensor(rho)
+    S_arr = structure_tensor(inp_arr)
     S_eval, S_evec = S_eig(S_arr)
-
-    dim = 3
 
     coh = [0]*dim
     for i in range(dim):
@@ -164,7 +162,14 @@ if __name__ == "__main__":
         coh[i]  = (S_eval[i]-S_eval[j])**2
         coh[i] /= (S_eval[i]+S_eval[j])**2
 
-    coh_sum = np.sum(np.array(coh), axis=0)
+    return np.array(coh)
+
+if __name__ == "__main__":
+
+    rho = np.load('data/rho.npy')
+
+    coh = coherence(rho)
+    coh_sum = np.sum(coh, axis=0)
 
     def alpha_plot(c_arr, log_flag=False):
 

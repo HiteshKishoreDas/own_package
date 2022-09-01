@@ -1,3 +1,5 @@
+
+
 CONST_pc  = 3.086e18
 CONST_yr  = 3.154e7
 CONST_amu = 1.66053886e-24
@@ -22,3 +24,8 @@ mue = 2.0/(1.0+X);
 muH = 1.0/X;
 
 mH = 1.0
+
+g = 5/3
+
+
+# TODO: Move all these into a class, whose constructor takes Xsol, Ysol values
