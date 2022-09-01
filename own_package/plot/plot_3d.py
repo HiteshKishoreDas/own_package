@@ -120,7 +120,7 @@ def scatter_3d ( inp_arr, cut, col_data,             \
     k_arr = plot_list[:,2]
 
     c_arr     = plot_list[:,3]
-    alpha_arr = alpha_fn(c_arr)
+    alpha_arr = alpha_fn(c_arr, log_flag=log_flag)
 
     color = make_color(c_arr,alpha_arr, cmap, log_flag=log_flag)
 

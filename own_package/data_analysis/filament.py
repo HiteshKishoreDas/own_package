@@ -16,6 +16,9 @@ import plot_3d as pt
 sys.path.insert(0, f'{package_abs_path}data_analysis/')
 import array_operations as ao
 
+sys.path.insert(0, f'{package_abs_path}utils/')
+from timer import timer
+
 # plt.style.use('../plot/plot_style.mplstyle')
 plt.style.use('dark_background')
 
@@ -34,7 +37,7 @@ def radius_grid (L):
 
     X = np.meshgrid(*x)
 
-    R = np.sum(np.array(  [ x**2 for x in X ] ))
+    R = np.sum(np.array(  [ x**2 for x in X ] ), axis=0)
     R = np.sqrt(R)
 
     return R, X
@@ -55,8 +58,8 @@ def S0 (inp_arr):
 
     return S0_arr
 
+@timer
 def structure_tensor(inp_arr, w_fn=gauss, window=5):
-
 
     if window%2 != 1:
         raise ValueError("!! window has to an odd number ...")
@@ -79,42 +82,101 @@ def structure_tensor(inp_arr, w_fn=gauss, window=5):
     S0_arr = S0(inp_arr)
 
     # Array of Sw values, size = (N x N x N)  for 3D
-    # Sw_arr = np.zeros_like(inp_arr)
-    # Sw_arr = np.zeros((*nbr_shape, *L,dim, dim), dtype=float)
-    Snbr_arr = np.zeros((*nbr_shape, *L,dim, dim), dtype=float)
-    print('Snbr_arr: ',np.shape(Snbr_arr))
+    S_arr = np.zeros((dim, dim,*L), dtype=float)
 
-    Snbr_arr[ :,:,:, X_inp[0], X_inp[1], X_inp[2],0,0] = S0_arr[0,0,X_inp[0], X_inp[1], X_inp[2]]
+    # tup = tuple(np.newaxis for i in range(dim))
 
+    tup  = [ slice(None) for i in range(dim) ]
+    tup += [ np.newaxis  for i in range(dim) ]
+    tup  = tuple(tup)
 
+    nbr_ind = [  np.mod( X_inp[i][tup] + X_nbr[i], L[i]  )  \
+                    for i in range(dim) ]
 
+    sum_tup = tuple(-i for i in range(1,dim+1))
 
-    # S1 = Sw_arr[:,:,:,  X_inp[0], X_inp[1], X_inp[2],0,0]
-    S2 = S0_arr[0,0,np.mod(X_inp[0][:, :, :, np.newaxis, np.newaxis, np.newaxis]+X_nbr[0], L[0] ), \
-                    np.mod(X_inp[1][:, :, :, np.newaxis, np.newaxis, np.newaxis]+X_nbr[1], L[1] ), \
-                    np.mod(X_inp[2][:, :, :, np.newaxis, np.newaxis, np.newaxis]+X_nbr[2], L[2] )]
+    for i in range(dim):
+        for j in range(dim):
 
-    
+            nbr_tup = tuple([i,j,*nbr_ind])
 
-    # X_trial = X_inp[0][:, :, :, np.newaxis, np.newaxis, np.newaxis]+X_nbr[0]
+            S_temp = S0_arr[nbr_tup]
+            S_arr[i,j] = np.sum(S_temp*w_arr, axis=sum_tup)
 
-    # print(np.shape(S1))
-    print(np.shape(S2))
-    # print(np.shape(X_trial))
-    # print(X_trial[3,3,3,:,:,0])
-    # print(Sw_arr[3,4,5,:,:,:])
+    print('S_arr: ',np.shape(S_arr))
 
-    return Snbr_arr 
+    return S_arr
+
+@timer
+def S_eig (S_arr):
+
+    L = np.shape(S_arr)[2:]
+    dim = len(L)
+
+    S_new    = np.zeros((*L,dim,dim), dtype=float )
+
+    for i in range(dim):
+        for j in range(dim):
+
+            new_tup  = [slice(None) for i in range(dim)]
+            new_tup += [i,j]
+            new_tup  = tuple(new_tup)
+
+            S_new[new_tup] = S_arr[i,j]
+
+    S_eval, S_evec = np.linalg.eig(S_new)
+
+    S_eval_new = np.zeros((dim,*L)    , dtype=float )
+    S_evec_new = np.zeros((dim,dim,*L), dtype=float )
+
+    new_tup = [slice(None) for i in range(dim)]
+
+    for i in range(dim):
+        
+        new_tup_val = new_tup + [i]
+        new_tup_val = tuple(new_tup_val)
+
+        S_eval_new[i] = S_eval[new_tup_val]
+        
+        for j in range(dim):
+
+            new_tup_vec = new_tup + [i,j]
+            new_tup_vec = tuple(new_tup_vec)
+
+            S_evec_new[i,j] = S_evec[new_tup_vec]
+
+    return S_eval_new, S_evec_new
 
 
 if __name__ == "__main__":
 
     rho = np.load('data/rho.npy')
 
-    Sw_arr = structure_tensor(rho)
+    S_arr = structure_tensor(rho)
+    S_eval, S_evec = S_eig(S_arr)
 
+    dim = 3
 
+    coh = [0]*dim
+    for i in range(dim):
+        j = np.mod(i+1, dim)
 
+        coh[i]  = (S_eval[i]-S_eval[j])**2
+        coh[i] /= (S_eval[i]+S_eval[j])**2
+
+    coh_sum = np.sum(np.array(coh), axis=0)
+
+    def alpha_plot(c_arr, log_flag=False):
+
+        return pt.poly_alpha(c_arr,log_flag=log_flag, order=1,cut=100)
+
+    fig, ax, sc  = pt.render_scatter_3d(inp_arr = coh_sum*rho, \
+                             alpha_fn = alpha_plot,\
+                             cmap=cr.neon)
+
+    fig, ax, sc  = pt.render_scatter_3d(inp_arr = rho, \
+                             alpha_fn = pt.lin_alpha,\
+                             cmap=cr.neon)
 
 #     grad_rho = ao.gradient(rho)
 
