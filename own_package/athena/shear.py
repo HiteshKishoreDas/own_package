@@ -33,6 +33,7 @@ from units import KELVIN, mu
 from v_turb import cs_calc
 
 
+# TODO: Functionalise this script
 
 file_loc  = '/afs/mpa/home/hitesh/remote/cobra/athena_fork_turb_box/turb_v2/'
 file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_beta_100/'

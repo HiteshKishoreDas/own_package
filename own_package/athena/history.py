@@ -22,7 +22,7 @@ class hst_data:
         r = np.loadtxt(fn, dtype={'names' : hdr, 'formats' : len(hdr) * (float,)})
 
         if None in ncells:
-            raise ValueError('Invalid argument for ncells ...')
+            raise ValueError('hst_data() :: Invalid argument for ncells ...')
         else:
             cells =  np.product(np.array(ncells))
 
