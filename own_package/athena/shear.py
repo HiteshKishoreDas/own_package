@@ -35,12 +35,12 @@ from v_turb import cs_calc
 
 
 file_loc  = '/afs/mpa/home/hitesh/remote/cobra/athena_fork_turb_box/turb_v2/'
-# file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_beta_100/'
-file_loc += 'Turbulence/para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_beta_100/'
+file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_beta_100/'
+# file_loc += 'Turbulence/para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_beta_100/'
 # file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_hydro/'
 # file_loc += 'para_scan_Rlsh4_2500_res0_128_rseed_1_M_0.5_chi_100_hydro/'
 # file_loc += 'Turb.out2.00600.athdf'
-file_loc += 'Turb.out2.00500.athdf'
+file_loc += 'Turb.out2.00501.athdf'
 #%%
 # MHD_flag = True
 MHD_flag = False 
@@ -106,6 +106,8 @@ plt.axvline(0.5, linestyle='dashed')
 # plt.xlabel('|v| (kpc/Myr)')
 plt.xlabel(r'$\mathcal{M}$')
 plt.ylabel('Frequency')
+
+plt.title("MHD")
 
 # plt.yscale('log')
 # plt.xscale('log')
