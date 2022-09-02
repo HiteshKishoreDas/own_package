@@ -1,0 +1,62 @@
+## ***************************************************************************
+## * LINES                                                                   *
+## ***************************************************************************
+## See https://matplotlib.org/api/artist_api.html#module-matplotlib.lines
+## for more information on line properties.
+lines.color: white
+# lines.markeredgecolor: white        # the default marker edge color
+# lines.markeredgewidth: 1.0         # the line width around the marker symbol
+
+## ***************************************************************************
+## * PATCHES                                                                 *
+## ***************************************************************************
+patch.edgecolor: white
+
+
+## ***************************************************************************
+## * BOXPLOT                                                                 *
+## ***************************************************************************
+boxplot.flierprops.color: white
+boxplot.flierprops.markeredgecolor: white
+boxplot.boxprops.color: white
+boxplot.whiskerprops.color: white
+boxplot.capprops.color: white
+
+## ***************************************************************************
+## * TEXT                                                                    *
+## ***************************************************************************
+text.color: white
+
+## ***************************************************************************
+## * AXES                                                                    *
+## ***************************************************************************
+axes.facecolor: black
+axes.edgecolor: white
+axes.labelcolor: white
+# axes.prop_cycle: cycler('color', ['8dd3c7', 'feffb3', 'bfbbd9', 'fa8174', '81b1d2', 'fdb462', 'b3de69', 'bc82bd', 'ccebc4', 'ffed6f'])
+axes.prop_cycle: cycler('color', ['0072B4', '00A87B', 'D15B00', 'C772A1', 'E6DA3E', '4AA3D6'])
+
+## ***************************************************************************
+## * TICKS                                                                   *
+## ***************************************************************************
+xtick.color: white
+ytick.color: white
+
+
+## ***************************************************************************
+## * GRIDS                                                                   *
+## ***************************************************************************
+grid.color: white
+
+
+## ***************************************************************************
+## * FIGURE                                                                  *
+## ***************************************************************************
+figure.facecolor: black
+figure.edgecolor: black
+
+
+## ***************************************************************************
+## * SAVING FIGURES                                                          *
+## ***************************************************************************
+savefig.transparent: True       # setting that controls whether figures are saved with a
