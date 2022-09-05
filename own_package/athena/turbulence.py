@@ -3,6 +3,7 @@
 @Date: 2022-09-01 12:19:22 
 '''
 
+from matplotlib.pyplot import text
 import numpy as np
 import sys
 import os
@@ -120,12 +121,13 @@ if __name__ == "__main__":
     # pallette   = style_lib + 'dark_pallette.mplstyle'
     pallette   = style_lib + 'bright_pallette.mplstyle'
     plot_style = style_lib + 'plot_style.mplstyle'
+    text_style = style_lib + 'text.mplstyle'
 
-    plt.style.use([pallette, plot_style])
+    plt.style.use([pallette, plot_style, text_style])
 
     fig,ax = plot_time_evolution(y_func = mach_t, **arg_dict )
     ax.axhline(1.0, linestyle='dashed')
-    ax.set_xlabel(r't/$t_{\rm eddy}$')
+    ax.set_xlabel(r'$ t/t_{\rm eddy}$')
     ax.set_ylabel(r'$\mathcal{M}(t)$')
     plt.legend()
     plt.show()
@@ -133,7 +135,7 @@ if __name__ == "__main__":
     arg_dict['ax_log'] = {'x_log': False, 'y_log':True, 'col_log':False}
 
     fig,ax = plot_time_evolution(y_func = Ma, **arg_dict , linestyle='dashed')
-    ax.set_xlabel(r't/$t_{\rm eddy}$')
+    ax.set_xlabel(r'$t/t_{\rm eddy}$')
     # ax.scatter(50,0.5)
     # ax.set_ylabel(r'$P_{\rm B}$')
     # ax.set_ylabel(r'$\beta$')

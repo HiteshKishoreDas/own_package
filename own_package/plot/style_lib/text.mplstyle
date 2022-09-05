@@ -1,0 +1,146 @@
+## ***************************************************************************
+## * FONT                                                                    *
+## ***************************************************************************
+## The font properties used by `text.Text`.
+## See https://matplotlib.org/api/font_manager_api.html for more information
+## on font properties.  The 6 font properties used for font matching are
+## given below with their default values.
+##
+## The font.family property can take either a concrete font name (not supported
+## when rendering text with usetex), or one of the following five generic
+## values:
+##     - 'serif' (e.g., Times),
+##     - 'sans-serif' (e.g., Helvetica),
+##     - 'cursive' (e.g., Zapf-Chancery),
+##     - 'fantasy' (e.g., Western), and
+##     - 'monospace' (e.g., Courier).
+## Each of these values has a corresponding default list of font names
+## (font.serif, etc.); the first available font in the list is used.  Note that
+## for font.serif, font.sans-serif, and font.monospace, the first element of
+## the list (a DejaVu font) will always be used because DejaVu is shipped with
+## Matplotlib and is thus guaranteed to be available; the other entries are
+## left as examples of other possible values.
+##
+## The font.style property has three values: normal (or roman), italic
+## or oblique.  The oblique style will be used for italic, if it is not
+## present.
+##
+## The font.variant property has two values: normal or small-caps.  For
+## TrueType fonts, which are scalable fonts, small-caps is equivalent
+## to using a font size of 'smaller', or about 83%% of the current font
+## size.
+##
+## The font.weight property has effectively 13 values: normal, bold,
+## bolder, lighter, 100, 200, 300, ..., 900.  Normal is the same as
+## 400, and bold is 700.  bolder and lighter are relative values with
+## respect to the current weight.
+##
+## The font.stretch property has 11 values: ultra-condensed,
+## extra-condensed, condensed, semi-condensed, normal, semi-expanded,
+## expanded, extra-expanded, ultra-expanded, wider, and narrower.  This
+## property is not currently implemented.
+##
+## The font.size property is the default font size for text, given in points.
+## 10 pt is the standard value.
+##
+## Note that font.size controls default text sizes.  To configure
+## special text sizes tick labels, axes, labels, title, etc., see the rc
+## settings for axes and ticks.  Special text sizes can be defined
+## relative to font.size, using the following values: xx-small, x-small,
+## small, medium, large, x-large, xx-large, larger, or smaller
+
+font.family:  sans-serif
+#font.style:   normal
+#font.variant: normal
+#font.weight:  normal
+#font.stretch: normal
+#font.size:    10.0
+
+# font.serif:      DejaVu Serif, Bitstream Vera Serif, Computer Modern Roman, New Century Schoolbook, Century Schoolbook L, Utopia, ITC Bookman, Bookman, Nimbus Roman No9 L, Times New Roman, Times, Palatino, Charter, serif
+font.sans-serif:  Verdana, Helvetica, DejaVu Sans, Bitstream Vera Sans, Computer Modern Sans Serif, Lucida Grande, Geneva, Lucid, Arial, Avant Garde, sans-serif
+#font.cursive:    Apple Chancery, Textile, Zapf Chancery, Sand, Script MT, Felipa, Comic Neue, Comic Sans MS, cursive
+#font.fantasy:    Chicago, Charcoal, Impact, Western, Humor Sans, xkcd, fantasy
+#font.monospace:  DejaVu Sans Mono, Bitstream Vera Sans Mono, Computer Modern Typewriter, Andale Mono, Nimbus Mono L, Courier New, Courier, Fixed, Terminal, monospace
+
+
+## ***************************************************************************
+## * TEXT                                                                    *
+## ***************************************************************************
+## The text properties used by `text.Text`.
+## See https://matplotlib.org/api/artist_api.html#module-matplotlib.text
+## for more information on text properties
+#text.color: black
+
+## FreeType hinting flag ("foo" corresponds to FT_LOAD_FOO); may be one of the
+## following (Proprietary Matplotlib-specific synonyms are given in parentheses,
+## but their use is discouraged):
+## - default: Use the font's native hinter if possible, else FreeType's auto-hinter.
+##            ("either" is a synonym).
+## - no_autohint: Use the font's native hinter if possible, else don't hint.
+##                ("native" is a synonym.)
+## - force_autohint: Use FreeType's auto-hinter.  ("auto" is a synonym.)
+## - no_hinting: Disable hinting.  ("none" is a synonym.)
+#text.hinting: force_autohint
+
+#text.hinting_factor: 8  # Specifies the amount of softness for hinting in the
+                         # horizontal direction.  A value of 1 will hint to full
+                         # pixels.  A value of 2 will hint to half pixels etc.
+#text.kerning_factor: 0  # Specifies the scaling factor for kerning values.  This
+                         # is provided solely to allow old test images to remain
+                         # unchanged.  Set to 6 to obtain previous behavior.
+                         # Values  other than 0 or 6 have no defined meaning.
+# text.antialiased: True  # If True (default), the text will be antialiased.
+                         # This only affects raster outputs.
+
+
+## ***************************************************************************
+## * LaTeX                                                                   *
+## ***************************************************************************
+## For more information on LaTeX properties, see
+## https://matplotlib.org/tutorials/text/usetex.html
+#text.usetex: False  # use latex for all text handling. The following fonts
+                     # are supported through the usual rc parameter settings:
+                     # new century schoolbook, bookman, times, palatino,
+                     # zapf chancery, charter, serif, sans-serif, helvetica,
+                     # avant garde, courier, monospace, computer modern roman,
+                     # computer modern sans serif, computer modern typewriter
+#text.latex.preamble:   # IMPROPER USE OF THIS FEATURE WILL LEAD TO LATEX FAILURES
+                        # AND IS THEREFORE UNSUPPORTED. PLEASE DO NOT ASK FOR HELP
+                        # IF THIS FEATURE DOES NOT DO WHAT YOU EXPECT IT TO.
+                        # text.latex.preamble is a single line of LaTeX code that
+                        # will be passed on to the LaTeX system. It may contain
+                        # any code that is valid for the LaTeX "preamble", i.e.
+                        # between the "\documentclass" and "\begin{document}"
+                        # statements.
+                        # Note that it has to be put on a single line, which may
+                        # become quite long.
+                        # The following packages are always loaded with usetex,
+                        # so beware of package collisions:
+                        #   geometry, inputenc, type1cm.
+                        # PostScript (PSNFSS) font packages may also be
+                        # loaded, depending on your font settings.
+
+
+# TODO: Find a way to have a sans-serif font here with uniform number heights... :(
+## The following settings allow you to select the fonts in math mode.
+mathtext.fontset: dejavuserif  # dejavusans  # Should be 'dejavusans' (default),
+                               # 'dejavuserif', 'cm' (Computer Modern), 'stix',
+                               # 'stixsans' or 'custom' (unsupported, may go
+                               # away in the future)
+## "mathtext.fontset: custom" is defined by the mathtext.bf, .cal, .it, ...
+## settings which map a TeX font name to a fontconfig font pattern.  (These
+## settings are not used for other font sets.)
+#mathtext.bf:  sans:bold
+#mathtext.cal: cursive
+#mathtext.it:  sans:italic
+#mathtext.rm:  sans
+#mathtext.sf:  sans
+#mathtext.tt:  monospace
+#mathtext.fallback: cm  # Select fallback font from ['cm' (Computer Modern), 'stix'
+                        # 'stixsans'] when a symbol can not be found in one of the
+                        # custom math fonts. Select 'None' to not perform fallback
+                        # and replace the missing character by a dummy symbol.
+#mathtext.default: it  # The default font to use for math.
+                       # Can be any of the LaTeX font names, including
+                       # the special name "regular" for the same font
+                       # used in regular text.

@@ -37,29 +37,38 @@ file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_beta_100/'
 # file_loc += 'para_scan_Rlsh4_2500_res0_128_rseed_1_M_0.5_chi_100_hydro/'
 file_loc += 'Turb.out2.00600.athdf'
 
+file_loc = '../../../Turb.out2.00600.athdf'
+
 # MHD_flag = True
 MHD_flag = False 
 
-out_dict = dr.get_array(file_loc,MHD_flag=MHD_flag)
+out_dict = dr.get_array(file_loc, fields=["rho"],MHD_flag=MHD_flag)
 
 rho = out_dict['rho']
-prs = out_dict['P']
+# prs = out_dict['P']
 
-T = (prs/rho) * KELVIN * mu
+# T = (prs/rho) * KELVIN * mu
 
-coh = np.sum(st.coherence(rho), axis=0)
+# coh = np.sum(st.coherence(rho), axis=0)
 
 
 def alpha_plot(c_arr, log_flag=False):
-    return pt.poly_alpha(c_arr,log_flag=log_flag, order=1,cut=100)
+    return pt.poly_alpha(c_arr,log_flag=log_flag, order=1,cut=10)
 
-fig, ax, sc  = pt.render_scatter_3d(inp_arr = coh*rho, \
-                                    alpha_fn = alpha_plot,\
-                                    cmap=cr.neon)
-fig.savefig("./coh_rho.png")
+# fig, ax, sc  = pt.render_scatter_3d(inp_arr = coh*rho, \
+#                                     alpha_fn = alpha_plot,\
+#                                     cmap=cr.neon)
+# fig.savefig("./coh_rho.png")
 
-fig, ax, sc  = pt.render_scatter_3d(inp_arr = rho, \
-                                    alpha_fn = pt.lin_alpha,\
-                                    cmap=cr.neon)
-fig.savefig("./rho.png")
+cmap_list = cr.get_cmap_list()
+
+cmap_list = [cr.ember]
+
+for i_cmap, cmp in enumerate(cmap_list):
+
+    fig, ax, sc  = pt.render_scatter_3d(inp_arr = rho, \
+                                        alpha_fn = alpha_plot,
+                                        pnt_size = 5, \
+                                        cmap=cmp)
+    fig.savefig(f"./cmap_comparison/rho_{i_cmap}.pdf", format='pdf', dpi=1200)
 
