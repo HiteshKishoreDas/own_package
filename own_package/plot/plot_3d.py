@@ -20,20 +20,39 @@ def const_alpha (x, cut=0.0, cut_above=False, log_flag=False):
     alpha_0 = 0.5
     return np.ones_like(x)*alpha_0
 
-def poly_alpha(c_arr, order=2, log_flag=False, cut=0.0, cut_above=False):
+def poly_alpha(c_arr, order=2, log_flag=False, cut=None, cut_above=False):
 
     alpha0 = 1.0
 
     if log_flag:
-        log_c_arr = np.log10(c_arr)
-        alp = alpha0 * (log_c_arr-log_c_arr.min())/(log_c_arr.max()-log_c_arr.min())
+        arr = np.log10(c_arr)
+        arr_min = arr.min()
+        arr_max = arr.max()
+
     else:
-        alp = alpha0 * (c_arr-c_arr.min())**order/(c_arr.max()-c_arr.min())**order
+        arr = np.copy(c_arr)
+        arr_min = arr.min()
+        arr_max = arr.max()
+
+    # Returns min() if cut is None
+    # Returns cut if not None
+    if cut_above:
+        c_min = arr_min
+        c_max = cut or arr_max
+        if c_max<arr_max:
+            c_max = arr_max
+    else:
+        c_min = cut or arr_min
+        c_max = arr_max
+        if c_min>arr_min:
+            c_min = arr_min
+
+    alp = alpha0 * (arr-c_min)**order/(c_max-c_min)**order
 
     if cut_above:
-        alp[c_arr>(c_arr.min()+cut)] = 0.0
+        alp[c_arr>(c_arr.min()+ (cut or 0)  )] = 0.0
     else:
-        alp[c_arr<(c_arr.min()+cut)] = 0.0
+        alp[c_arr<(c_arr.min()+ (cut or 0)  )] = 0.0
 
     alp[c_arr==0] = 0.0
 

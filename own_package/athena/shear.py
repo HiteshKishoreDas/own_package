@@ -30,6 +30,7 @@ import data_read as dr
 sys.path.insert(0, f'{package_abs_path}utils/')
 from timer import timer 
 from units import KELVIN, mu
+import units as un
 from v_turb import cs_calc
 
 
@@ -40,13 +41,13 @@ file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_beta_100/'
 # file_loc += 'Turbulence/para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_beta_100/'
 # file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_hydro/'
 # file_loc += 'para_scan_Rlsh4_2500_res0_128_rseed_1_M_0.5_chi_100_hydro/'
-# file_loc += 'Turb.out2.00600.athdf'
-file_loc += 'Turb.out2.00501.athdf'
+file_loc += 'Turb.out2.00600.athdf'
+# file_loc += 'Turb.out2.00501.athdf'
 #%%
 # MHD_flag = True
 MHD_flag = False 
 
-out_dict = dr.get_array(file_loc,MHD_flag=MHD_flag)
+out_dict = dr.get_array(file_loc, fields=['rho', 'prs', 'vel'],MHD_flag=MHD_flag)
 
 rho = out_dict['rho']
 prs = out_dict['P']
@@ -55,61 +56,73 @@ T = (prs/rho) * KELVIN * mu
 
 cut = 5e4
 #%%
-# n_blob_sp, label_arr_sp = ca.clump_finder_scipy(T, cut, above_cut=False)
+n_blob_sp, label_arr_sp = ca.clump_finder_scipy(T, cut, above_cut=False)
 
 vel = out_dict['vel']
 
-# shear_dict, shear_map = ca.shear_calc(label_arr_sp, vel)
+shear_dict, shear_map = ca.shear_calc(label_arr_sp, vel)
+surface_dict          = ca.surface_area(label_arr_sp)
   
 #%%
 plt.style.use('dark_background') 
 
 import matplotlib as mt
 
-# y_data = np.copy(np.array(shear_dict['clump_vol']))  # [1:]
-# x_data = np.copy(np.array(shear_dict['shear_vmag'])) # [1:]
+y_data = np.copy(np.array(shear_dict['clump_vol']))  # [1:]
+x_data = np.copy(np.array(shear_dict['shear_vmag'])) # [1:]
 
-# N_bin = 30
+N_bin = 30
 
-# # x_bin = np.linspace(x_data.min(), x_data.max(), num = N_bin)
-# x_bin = np.linspace(0, 0.3, num = N_bin)
-# y_bin = np.logspace(np.log10(y_data.min()), np.log10(y_data.max()), num = N_bin)
+# x_bin = np.linspace(x_data.min(), x_data.max(), num = N_bin)
+x_bin = np.linspace(0, 0.3, num = N_bin)
+y_bin = np.logspace(np.log10(y_data.min()), np.log10(y_data.max()), num = N_bin)
 
-# plt.hist2d( x_data, y_data,\
-#     bins=[x_bin,y_bin], norm=mt.colors.LogNorm() )
-# plt.yscale('log')
-# # plt.xscale('log')
+plt.hist2d( x_data, y_data,\
+    bins=[x_bin,y_bin], norm=mt.colors.LogNorm() )
+plt.yscale('log')
+# plt.xscale('log')
 
-# plt.xlabel(r'$v_{\rm shear}$ (kpc/Myr)')
-# plt.ylabel('Clump volume (cells)')
+plt.xlabel(r'$v_{\rm shear}$ (kpc/Myr)')
+plt.ylabel('Clump volume (cells)')
 
-# # plt.xlim(0,0.3)
+# plt.xlim(0,0.3)
 
-# plt.colorbar()
+plt.colorbar()
 
 # plt.savefig('size_shear_hist2d_mhd.png')
 # plt.savefig('size_shear_hist2d_hydro.png')
 
-# %%
+#%%
 
-v_mag = vel[0]*vel[0] + vel[1]*vel[1] + vel[2]*vel[2]
-v_mag = np.sqrt(v_mag)
+l_shatter = 8.6e-7
+cs = cs_calc(4e6, mu)
+print(cs)
 
-cs = cs_calc(T, mu)
+Rlsh  = 1000
+Lbox  = Rlsh*40*l_shatter   # in kpc
+M = 0.5
+dx = Lbox/256
 
-plt.figure()
+t_cool_cloud = 2.77e-5
 
-# plt.hist(np.ravel(v_mag))
-plt.hist(np.ravel((v_mag/cs)[rho<50]), bins=100)
+# v_turb = M*cs*un.unit_velocity
 
-plt.axvline(0.5, linestyle='dashed')
+v_shear = np.array(shear_dict['shear_vmag'])
+R_clump = np.array(shear_dict['shear_vol'])
+R_clump = R_clump*3/(4*np.pi)
+R_clump = R_clump**(1/3)
 
-# plt.xlabel('|v| (kpc/Myr)')
-plt.xlabel(r'$\mathcal{M}$')
-plt.ylabel('Frequency')
+L = 4*R_clump*dx    # in kpc
+M_shear = v_shear/cs
+cs_cold = cs_calc(4e4, mu) * un.unit_velocity  # in cm/s
 
-plt.title("MHD")
+u_prime = 50 * (M_shear**(4/5)) * ((cs_cold/1.5e6)**(4/5)) * ((t_cool_cloud/0.03)**-0.1)
+M_turb  = u_prime/cs_cold
 
-# plt.yscale('log')
-# plt.xscale('log')
-# %%
+v_in_slow_cool = 9.5  * (M_turb ** (3/4)) * ((L*1000/100)**(1/4)) * ((t_cool_cloud/0.03)**(-1/4))
+v_in_fast_cool = 11.3 * (M_turb ** (1/2)) * ((L*1000/100)**(1/2)) * ((t_cool_cloud/0.03)**(-1/2))
+
+print(f'slow: {v_in_slow_cool}')
+print(f'fast: {v_in_fast_cool}')
+
+

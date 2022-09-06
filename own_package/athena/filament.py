@@ -6,10 +6,19 @@
 import matplotlib.pyplot as plt
 
 import numpy as np
-import cmasher as cr 
+import cmasher as cmr 
+# from cmasher import * 
 import sys
 import os
 
+style_lib  = '../plot/style_lib/' 
+pallette   = style_lib + 'cup_pallette.mplstyle'
+# pallette   = style_lib + 'dark_pallette.mplstyle'
+# pallette   = style_lib + 'bright_pallette.mplstyle'
+plot_style = style_lib + 'plot_style.mplstyle'
+text_style = style_lib + 'text.mplstyle'
+
+plt.style.use([pallette, plot_style, text_style])
 
 cwd = os.path.dirname(__file__)
 package_abs_path = cwd[:-len(cwd.split('/')[-1])]
@@ -53,16 +62,19 @@ rho = out_dict['rho']
 
 
 def alpha_plot(c_arr, log_flag=False):
-    return pt.poly_alpha(c_arr,log_flag=log_flag, order=1,cut=10)
+    return pt.poly_alpha(c_arr,log_flag=log_flag, order=1,cut=5)
 
 # fig, ax, sc  = pt.render_scatter_3d(inp_arr = coh*rho, \
 #                                     alpha_fn = alpha_plot,\
 #                                     cmap=cr.neon)
 # fig.savefig("./coh_rho.png")
 
-cmap_list = cr.get_cmap_list()
+# cmap_list = cmr.get_cmap_list()
+# cmap_list = ['cmr.' + cmp for cmp in cmap_list]
 
-cmap_list = [cr.ember]
+cmap_list = plt.colormaps()
+
+# cmap_list = [cr.ember]
 
 for i_cmap, cmp in enumerate(cmap_list):
 
@@ -70,5 +82,16 @@ for i_cmap, cmp in enumerate(cmap_list):
                                         alpha_fn = alpha_plot,
                                         pnt_size = 5, \
                                         cmap=cmp)
-    fig.savefig(f"./cmap_comparison/rho_{i_cmap}.pdf", format='pdf', dpi=1200)
+
+    ax.grid(False)
+    ax.set_axis_off()
+    ax.set_title(cmp)
+
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_zticks([])
+
+
+    # fig.savefig(f"./cmap_comparison/rho_{i_cmap}.pdf", format='pdf', dpi=300)
+    fig.savefig(f"./cmap_comparison/rho_{i_cmap}.png", format='png', dpi=300)
 

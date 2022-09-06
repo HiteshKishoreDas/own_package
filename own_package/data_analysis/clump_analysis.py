@@ -164,6 +164,29 @@ def shear_calc (label_arr, v_arr):
     return shear_dict, shear_map
 
 
+#* Calculates surface area of the clumps
+
+def surface_area (label_arr):
+
+    nbr_arr = boundary_detect(label_arr)
+
+    L = np.shape(label_arr)
+    n_blob = np.max(label_arr)
+
+    surface_dict= {}
+    surface_dict['clump_vol']           = []
+    surface_dict['clump_surface_area']  = []
+
+    for i in range(1,n_blob+1):
+        
+        clump_vol = np.sum(label_arr[label_arr==i])/float(i)
+        clump_sa  = np.sum(nbr_arr[nbr_arr==i])/float(i)
+
+        surface_dict['clump_vol'] .append(clump_vol)
+        surface_dict['clump_surface_area'] .append(clump_sa)
+
+    # List of shear around each clump 
+    return surface_dict
 
 
 
