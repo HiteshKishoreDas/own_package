@@ -20,9 +20,9 @@ def const_alpha (x, cut=0.0, cut_above=False, log_flag=False):
     alpha_0 = 0.5
     return np.ones_like(x)*alpha_0
 
-def poly_alpha(c_arr, order=2, log_flag=False, cut=None, cut_above=False):
+def poly_alpha(c_arr, order=2, alpha0=1.0, log_flag=False, cut=None, cut_above=False):
 
-    alpha0 = 1.0
+    # alpha0 = 1.0
 
     if log_flag:
         arr = np.log10(c_arr)
@@ -89,6 +89,21 @@ def make_color (c_arr, alpha_arr, cmap_name, log_flag = False):
     line_col = cmap(cb_qnt/cb_qnt.max())
 
     line_col[:,3] = alpha_arr
+
+    return line_col
+
+def make_color_voxel (c_arr, alpha_arr, cmap_name, log_flag = False):
+
+    cmap = mt.cm.get_cmap(cmap_name)
+    
+    if log_flag:
+        cb_qnt = np.copy(np.log10(c_arr))
+    else:
+        cb_qnt = np.copy(c_arr)
+
+    line_col = cmap(cb_qnt/cb_qnt.max())
+
+    line_col[:,:,:,3] = alpha_arr
 
     return line_col
 
@@ -205,3 +220,102 @@ def render_scatter_3d ( inp_arr,          \
     ax.w_zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
 
     return fig, ax, sc
+    
+
+
+
+def render_voxel_3d ( inp_arr,          \
+                 cmap=cr.rainforest,      \
+                 alpha_fn = const_alpha,  \
+                 log_flag = False,        \
+                 view = [30, -60],        \
+                 vertices = [None, None, None], new_fig=True, fig=None, ax=None):       
+                 
+    if new_fig:
+        fig, ax = new_plot()
+
+    if None in vertices:
+        L = np.shape(inp_arr)
+        i = np.array(range(L[0]+1))
+        j = np.array(range(L[1]+1))
+        k = np.array(range(L[2]+1))
+
+        i_arr, j_arr, k_arr = np.meshgrid(i,j,k)
+
+        # i_arr = np.ravel(i_arr, order='C')
+        # j_arr = np.ravel(j_arr, order='C')
+        # k_arr = np.ravel(k_arr, order='C')
+    else:
+
+        i_arr = vertices[0]
+        j_arr = vertices[1]
+        k_arr = vertices[2]
+
+        # i_arr = np.ravel(i_arr, order='C')
+        # j_arr = np.ravel(j_arr, order='C')
+        # k_arr = np.ravel(k_arr, order='C')
+
+    # c_arr = np.ravel(inp_arr, order='C') 
+    c_arr = np.copy(inp_arr)
+
+    # TODO: Add log scaling in alpha_fn
+    alpha_arr = alpha_fn(c_arr, log_flag=log_flag)
+
+    color = make_color_voxel(c_arr, alpha_arr, cmap, log_flag=log_flag)
+
+    print(np.shape(color))
+
+    for i in range(L[0]):
+        print(f'i: {i}')
+        for j in range(L[1]):
+            for k in range(L[2]):
+
+                ax.voxels(i_arr[i:i+1,j:j+1,k:k+1],    \
+                          j_arr[i:i+1,j:j+1,k:k+1],    \
+                          k_arr[i:i+1,j:j+1,k:k+1],    \
+                          filled=np.ones((1,1,1), dtype=bool),           \
+                          facecolors=color[i,j,k],     \
+                          edgecolors=color[i,j,k],     \
+                          cmap=cmap     )
+
+#  filled=(np.ones_like(inp_arr)).astype(bool),           \
+
+    ax.view_init(elev=view[0], azim=view[1])
+
+    ax.w_xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    ax.w_yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+    ax.w_zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+
+    return fig, ax 
+
+
+
+
+
+
+#*_________________________________________________
+
+if __name__ == "__main__":
+
+    # import matplotlib
+    # %matplotlib qt
+
+    rho = np.load('../data_analysis/data/rho.npy')
+
+    cut = 5
+
+    style_lib  = '../plot/style_lib/' 
+    # pallette   = style_lib + 'cup_pallette.mplstyle'
+    # pallette   = style_lib + 'dark_pallette.mplstyle'
+    pallette   = style_lib + 'bright_pallette.mplstyle'
+    plot_style = style_lib + 'plot_style.mplstyle'
+    text_style = style_lib + 'text.mplstyle'
+
+    plt.style.use([pallette, plot_style, text_style])
+
+    def alpha_plot(c_arr, log_flag=False):
+        return poly_alpha(c_arr,log_flag=log_flag, order=1,cut=5)
+
+    fig, ax = render_voxel_3d(rho, alpha_fn=alpha_plot, log_flag=True)
+
+    plt.show()

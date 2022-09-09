@@ -75,7 +75,7 @@ def get_array(fn, fields, MHD_flag = False):
 
     if "prs" in fields:
         P_arr    = np.array(all_data_level_0_hyd["press"])
-        out_dict['P']   = P_arr
+        out_dict['prs']   = P_arr
     
     # T_arr    = np.array(all_data_level_0_hyd["temp"])
     # out_dict['T']   = T_arr

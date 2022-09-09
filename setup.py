@@ -12,6 +12,7 @@ extra_athena = [
 
 extra_data_analysis= [
     *extra_athena,
+    'structure-tensor'
 ]
 
 

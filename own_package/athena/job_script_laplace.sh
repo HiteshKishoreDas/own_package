@@ -16,4 +16,4 @@ cd /afs/mpa/temp/hitesh/Git/own_package/own_package/athena/
 
 pwd
 
-/afs/mpa/data/hitesh/envs/athenaenv/bin/python filament.py
+/afs/mpa/data/hitesh/envs/athenaenv/bin/python cup_render.py

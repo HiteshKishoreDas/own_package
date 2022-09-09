@@ -94,21 +94,30 @@ plt.colorbar()
 
 #%%
 
-l_shatter = 8.6e-7
+t_cool_cloud = 2.77e-5
 cs = cs_calc(4e6, mu)
+# l_shatter = 8.6e-7
+l_shatter = cs*t_cool_cloud
+
 print(cs)
+print(cs*t_cool_cloud)
+
+amb_rho = 1.0  # in code units, amu/cc
 
 Rlsh  = 1000
 Lbox  = Rlsh*40*l_shatter   # in kpc
 M = 0.5
 dx = Lbox/256
+M0 = 4*np.pi/3 * (Rlsh*l_shatter)**3
 
-t_cool_cloud = 2.77e-5
+t_eddy = Lbox/(cs*M)
+
 
 # v_turb = M*cs*un.unit_velocity
 
 v_shear = np.array(shear_dict['shear_vmag'])
-R_clump = np.array(shear_dict['shear_vol'])
+R_clump = np.array(shear_dict['clump_vol'])
+S_clump = np.array(surface_dict['clump_surface_area'])*dx*dx
 R_clump = R_clump*3/(4*np.pi)
 R_clump = R_clump**(1/3)
 
@@ -122,7 +131,23 @@ M_turb  = u_prime/cs_cold
 v_in_slow_cool = 9.5  * (M_turb ** (3/4)) * ((L*1000/100)**(1/4)) * ((t_cool_cloud/0.03)**(-1/4))
 v_in_fast_cool = 11.3 * (M_turb ** (1/2)) * ((L*1000/100)**(1/2)) * ((t_cool_cloud/0.03)**(-1/2))
 
-print(f'slow: {v_in_slow_cool}')
-print(f'fast: {v_in_fast_cool}')
+t_turb = L/u_prime
+Da_arr = t_turb/t_cool_cloud
+
+v_in_slow_cool *= (Da_arr<=1) * 1e5 / un.unit_velocity
+v_in_fast_cool *= (Da_arr>1)  * 1e5 / un.unit_velocity 
+
+m_dot_slow = np.sum(v_in_slow_cool * S_clump * amb_rho)
+m_dot_fast = np.sum(v_in_fast_cool * S_clump * amb_rho)
+m_dot_total= m_dot_slow+m_dot_fast
+
+m_m0_dot_tot = m_dot_total*t_eddy/M0
+
+print(f'slow : {m_dot_slow}')
+print(f'fast : {m_dot_fast}')
+print(f'total: {m_dot_total}')
+print(f'total in M0, t_eddy: {m_m0_dot_tot}')
 
 
+
+# %%

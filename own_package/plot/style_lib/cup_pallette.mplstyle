@@ -25,7 +25,7 @@ boxplot.capprops.color: white
 ## ***************************************************************************
 ## * TEXT                                                                    *
 ## ***************************************************************************
-# text.color: white
+text.color: white
 
 ## ***************************************************************************
 ## * AXES                                                                    *
@@ -60,4 +60,4 @@ figure.edgecolor: black
 ## ***************************************************************************
 ## * SAVING FIGURES                                                          *
 ## ***************************************************************************
-# savefig.transparent: True       # setting that controls whether figures are saved with a
+savefig.transparent: True       # setting that controls whether figures are saved with a

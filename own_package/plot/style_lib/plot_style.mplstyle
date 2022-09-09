@@ -30,7 +30,7 @@ legend.fontsize:      15
 ## * FIGURE                                                                  *
 ## ***************************************************************************
 ## See https://matplotlib.org/api/figure_api.html#matplotlib.figure.Figure
-figure.figsize:     8, 8  # figure size in inches
+figure.figsize:     10, 8  # figure size in inches
 
 ## ***************************************************************************
 ## * PATHS                                                                   *
