@@ -11,6 +11,7 @@ unit_density = CONST_amu    # 1 mp/cm-3
 unit_velocity = unit_length/unit_time
 
 KELVIN = unit_velocity*unit_velocity*CONST_amu/CONST_kB
+unit_q = (unit_density * (unit_velocity**3))/unit_length
 
 Xsol = 1.0
 Zsol = 1.0

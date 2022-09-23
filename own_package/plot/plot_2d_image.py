@@ -24,9 +24,11 @@ def plot_slice  (img_data, slice_dir=2, x_data=None, y_data=None, \
                  z_data=None, z_slice=None, \
                  ax_log= {'x_log': False, 'y_log':False, 'col_log':False}, \
                  normalise_list = {'x_norm':[None], 'y_norm':[None]}, \
+                 color_range = [None, None],\
                  cmap=cr.rainforest):
 
     fig, ax = plt.subplots(nrows=1, ncols=1)
+    plt.tight_layout()
 
     L = np.shape(img_data)
     dim = len(L) 
@@ -58,12 +60,22 @@ def plot_slice  (img_data, slice_dir=2, x_data=None, y_data=None, \
 
     slice_plot = img_data[slice_syntax]
 
-    slc = ax.pcolormesh(x_data, y_data, slice_plot, cmap=cmap)
+    # slc = ax.pcolormesh(x_data, y_data, slice_plot, cmap=cmap)
+    slc = ax.pcolormesh(y_data, x_data, slice_plot, \
+                        vmin=color_range[0], vmax=color_range[1],  \
+                        cmap=cmap  )
+        
     cbar = fig.colorbar(slc, ax=ax)
 
     ax.set_aspect('equal')
 
-    return fig, ax, slc, cbar
+    plt_dict = {}
+    plt_dict['fig']  = fig
+    plt_dict['ax']   = ax
+    plt_dict['slc']  = slc
+    plt_dict['cbar'] = cbar
+
+    return plt_dict
 
 
 
@@ -80,10 +92,10 @@ if __name__ == "__main__":
 
     plt.style.use([pallette, plot_style, text_style])
 
-    fig, ax, slc, cb = plot_slice(rho, slice_dir=2)
-    cb.set_label('Colorbar label') 
-    ax.set_title('plot_slice test') 
-    ax.set_xlabel('x label') 
-    ax.set_ylabel('y label') 
+    plot_dict = plot_slice(rho, slice_dir=2)
+    plot_dict['cb'].set_label('Colorbar label') 
+    plot_dict['ax'].set_title('plot_slice test') 
+    plot_dict['ax'].set_xlabel('x label') 
+    plot_dict['ax'].set_ylabel('y label') 
 
     plt.show()

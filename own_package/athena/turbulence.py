@@ -48,7 +48,7 @@ def beta_0(hst):
 def PB(hst):
     return hst.PB_avg
 
-# TODO: Change to using plot_2d.py for multicolor line plots
+
 def plot_time_evolution (y_func, file_list, MHD_list, ncells_list, cool_flag_list, \
                          normalise_list = {'x_norm':[None], 'y_norm':[None]}, \
                          ax_log= {'x_log': False, 'y_log':False, 'col_log':False}, \

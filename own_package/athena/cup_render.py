@@ -73,7 +73,7 @@ cmp = 'gist_rainbow'
 
 for i_fl, file_loc in enumerate([file_loc1, file_loc2]):
 
-    out_dict = dr.get_array(file_loc, fields=['rho','prs'],MHD_flag=MHD_flag)
+    out_dict = dr.get_array_yt(file_loc, fields=['rho','prs'],MHD_flag=MHD_flag)
 
     rho = out_dict['rho']
     prs = out_dict['prs']
@@ -119,7 +119,7 @@ for i_fl, file_loc in enumerate([file_loc1, file_loc2]):
 
         ax.set_title(MHD_label[i_fl])
 
-        fig.savefig(f"./rho_smooth_{MHD_label[i_fl]}_{cmp}.png", format='png', dpi=2000)
+        fig.savefig(f"./rho_smooth_{MHD_label[i_fl]}_{cmp}_black_bcg.png", format='png', dpi=300)
 
         plt.close()
         plt.clf()

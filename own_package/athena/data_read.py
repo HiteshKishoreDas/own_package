@@ -1,56 +1,15 @@
 import numpy as np
 import yt
+import sys
+import os
 
-# TODO: Make the get array more field specific
-#* No need to save all the different fields if they are not required
-#* May use up too much space for larger files
+cwd = os.path.dirname(__file__)
+package_abs_path = cwd[:-len(cwd.split('/')[-1])]
 
-def get_all_array(fn, MHD_flag = False):
+sys.path.insert(0, f'{package_abs_path}athena/athena_vis_code/')
+import athena_read as ar
 
-    ds = yt.load(fn)
-
-    all_data_level_0_hyd = ds.covering_grid(
-        level=0, left_edge=[0, 0.0, 0.0], dims=ds.domain_dimensions
-    )
-
-    out_dict = {}
-
-    x_arr = np.array(all_data_level_0_hyd[('gas','x')])
-    y_arr = np.array(all_data_level_0_hyd[('gas','y')])
-    z_arr = np.array(all_data_level_0_hyd[('gas','z')])
-
-    r_arr = [x_arr,y_arr,z_arr]
-
-    out_dict['coord'] = r_arr
-
-    rho_arr  = np.array(all_data_level_0_hyd["density"])
-    P_arr    = np.array(all_data_level_0_hyd["press"])
-    # T_arr    = np.array(all_data_level_0_hyd["temp"])
-    
-    out_dict['rho'] = rho_arr
-    # out_dict['T']   = T_arr
-    out_dict['P']   = P_arr
-
-    vel1_arr = np.array(all_data_level_0_hyd["vel1"])
-    vel2_arr = np.array(all_data_level_0_hyd["vel2"])
-    vel3_arr = np.array(all_data_level_0_hyd["vel3"])
-
-    vel = [vel1_arr, vel2_arr, vel3_arr]
-
-    out_dict['vel'] = vel
-
-    if MHD_flag:
-        Bcc1 = np.array(all_data_level_0_hyd["Bcc1"])
-        Bcc2 = np.array(all_data_level_0_hyd["Bcc2"])
-        Bcc3 = np.array(all_data_level_0_hyd["Bcc3"])
-
-        Bcc = [Bcc1,Bcc2,Bcc3]
-
-        out_dict['B'] = Bcc
-
-    return out_dict
-
-def get_array(fn, fields, MHD_flag = False):
+def get_array_yt(fn, fields, MHD_flag = False):
 
     ds = yt.load(fn)
 
@@ -60,7 +19,7 @@ def get_array(fn, fields, MHD_flag = False):
 
     out_dict = {}
 
-    if "coord" in fields:
+    if "coord" or "all" in fields:
         x_arr = np.array(all_data_level_0_hyd[('gas','x')])
         y_arr = np.array(all_data_level_0_hyd[('gas','y')])
         z_arr = np.array(all_data_level_0_hyd[('gas','z')])
@@ -69,18 +28,18 @@ def get_array(fn, fields, MHD_flag = False):
 
         out_dict['coord'] = r_arr
 
-    if "rho" in fields:
+    if "rho" or "all" in fields:
         rho_arr  = np.array(all_data_level_0_hyd["density"])
         out_dict['rho'] = rho_arr
 
-    if "prs" in fields:
+    if "prs" or "all" in fields:
         P_arr    = np.array(all_data_level_0_hyd["press"])
         out_dict['prs']   = P_arr
     
     # T_arr    = np.array(all_data_level_0_hyd["temp"])
     # out_dict['T']   = T_arr
 
-    if "vel" in fields:
+    if "vel" or "all" in fields:
         vel1_arr = np.array(all_data_level_0_hyd["vel1"])
         vel2_arr = np.array(all_data_level_0_hyd["vel2"])
         vel3_arr = np.array(all_data_level_0_hyd["vel3"])
@@ -89,7 +48,7 @@ def get_array(fn, fields, MHD_flag = False):
 
         out_dict['vel'] = vel
 
-    if MHD_flag and "B" in fields:
+    if MHD_flag and ("B" or "all" in fields):
         Bcc1 = np.array(all_data_level_0_hyd["Bcc1"])
         Bcc2 = np.array(all_data_level_0_hyd["Bcc2"])
         Bcc3 = np.array(all_data_level_0_hyd["Bcc3"])
@@ -100,7 +59,7 @@ def get_array(fn, fields, MHD_flag = False):
 
     return out_dict
 
-def get_array_user_var(fn, MHD_flag = False):
+def get_array_uservar_yt(fn, MHD_flag = False):
 
     ds = yt.load(fn)
 
@@ -112,4 +71,62 @@ def get_array_user_var(fn, MHD_flag = False):
 
     out_dict['user_out_var'] = np.array(all_data_level_0_hyd["user_out_var"])
 
-    return 
+    return out_dict
+
+
+def get_array_athena(fn, fields, MHD_flag = False):
+
+    ds = ar.athdf(fn)
+    out_dict = {}
+
+    out_dict['time'] = ds['Time']
+
+    if "coord" or "all" in fields:
+        x_arr = ds['x1v']
+        y_arr = ds['x2v']
+        z_arr = ds['x3v']
+
+        r_arr = [x_arr,y_arr,z_arr]
+
+        out_dict['coord'] = r_arr
+
+    if "rho" or "all" in fields:
+        rho_arr  = ds['rho']
+        out_dict['rho'] = rho_arr
+
+    if "prs" or "all" in fields:
+        P_arr    = ds['press']
+        out_dict['prs']   = P_arr
+    
+    # T_arr    = np.array(all_data_level_0_hyd["temp"])
+    # out_dict['T']   = T_arr
+
+    if "vel" or "all" in fields:
+        vel1_arr = ds["vel1"]
+        vel2_arr = ds["vel2"]
+        vel3_arr = ds["vel3"]
+
+        vel = [vel1_arr, vel2_arr, vel3_arr]
+
+        out_dict['vel'] = vel
+
+    if MHD_flag and ("B" or "all" in fields):
+        Bcc1 = ds["Bcc1"]
+        Bcc2 = ds["Bcc2"]
+        Bcc3 = ds["Bcc3"]
+
+        Bcc = [Bcc1,Bcc2,Bcc3]
+
+        out_dict['B'] = Bcc
+
+    return out_dict
+
+def get_array_uservar_athena(fn, MHD_flag = False):
+
+    ds = ar.athdf(fn)
+
+    out_dict = {}
+
+    out_dict['user_out_var'] = ds["user_out_var0"]
+
+    return out_dict

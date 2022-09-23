@@ -50,13 +50,14 @@ class hst_data:
 
         if cool_flag:
             self.cold_gas          = self.dict['cold_gas']
-            self.tcool_avg         = self.dict['tcool_sum']/cells
+            # self.tcool_avg         = self.dict['tcool_sum']/cells
             self.cold_gas_fraction = self.cold_gas/self.mass_tot
+            self.total_cooling = self.dict['total_cooling']
 
         self.rho_avg    = self.dict['rho_sum']   /cells
         self.rho_sq_avg = self.dict['rho_sq_sum']/cells
 
-        self.cs_avg     = self.dict['c_s_sum']/cells
+        self.cs_avg        = self.dict['c_s_sum']/cells
 
         if MHD_flag:
 
@@ -76,6 +77,7 @@ class hst_data:
         self.turb_vel = np.sqrt(self.KE_tot*2/self.mass_tot)
 
         self.clumping_factor = self.rho_sq_avg/self.rho_avg**2
+
 
         
 

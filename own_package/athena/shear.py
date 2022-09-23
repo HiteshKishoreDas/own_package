@@ -20,6 +20,9 @@ package_abs_path = cwd[:-len(cwd.split('/')[-1])]
 sys.path.insert(0, f'{package_abs_path}data_analysis/')
 import clump_analysis as ca
 
+sys.path.insert(0, f'{package_abs_path}cooling/')
+import cooling_fn as cf
+
 sys.path.insert(0, f'{package_abs_path}plot/')
 import plot_3d as p3d
 import video as vid 
@@ -43,6 +46,9 @@ file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_beta_100/'
 # file_loc += 'para_scan_Rlsh4_2500_res0_128_rseed_1_M_0.5_chi_100_hydro/'
 file_loc += 'Turb.out2.00600.athdf'
 # file_loc += 'Turb.out2.00501.athdf'
+
+# file_loc = '../../../Turb.mhd.out2.00600.athdf'
+file_loc = '../../../Turb.hydro.out2.00600.athdf'
 #%%
 # MHD_flag = True
 MHD_flag = False 
@@ -50,7 +56,7 @@ MHD_flag = False
 out_dict = dr.get_array(file_loc, fields=['rho', 'prs', 'vel'],MHD_flag=MHD_flag)
 
 rho = out_dict['rho']
-prs = out_dict['P']
+prs = out_dict['prs']
 
 T = (prs/rho) * KELVIN * mu
 
@@ -64,51 +70,56 @@ shear_dict, shear_map = ca.shear_calc(label_arr_sp, vel)
 surface_dict          = ca.surface_area(label_arr_sp)
   
 #%%
-plt.style.use('dark_background') 
+# plt.style.use('dark_background') 
 
-import matplotlib as mt
+# import matplotlib as mt
 
-y_data = np.copy(np.array(shear_dict['clump_vol']))  # [1:]
-x_data = np.copy(np.array(shear_dict['shear_vmag'])) # [1:]
+# y_data = np.copy(np.array(shear_dict['clump_vol']))  # [1:]
+# x_data = np.copy(np.array(shear_dict['shear_vmag'])) # [1:]
 
-N_bin = 30
+# N_bin = 30
 
-# x_bin = np.linspace(x_data.min(), x_data.max(), num = N_bin)
-x_bin = np.linspace(0, 0.3, num = N_bin)
-y_bin = np.logspace(np.log10(y_data.min()), np.log10(y_data.max()), num = N_bin)
+# # x_bin = np.linspace(x_data.min(), x_data.max(), num = N_bin)
+# x_bin = np.linspace(0, 0.3, num = N_bin)
+# y_bin = np.logspace(np.log10(y_data.min()), np.log10(y_data.max()), num = N_bin)
 
-plt.hist2d( x_data, y_data,\
-    bins=[x_bin,y_bin], norm=mt.colors.LogNorm() )
-plt.yscale('log')
-# plt.xscale('log')
+# plt.hist2d( x_data, y_data,\
+#     bins=[x_bin,y_bin], norm=mt.colors.LogNorm() )
+# plt.yscale('log')
+# # plt.xscale('log')
 
-plt.xlabel(r'$v_{\rm shear}$ (kpc/Myr)')
-plt.ylabel('Clump volume (cells)')
+# plt.xlabel(r'$v_{\rm shear}$ (kpc/Myr)')
+# plt.ylabel('Clump volume (cells)')
 
-# plt.xlim(0,0.3)
+# # plt.xlim(0,0.3)
 
-plt.colorbar()
+# plt.colorbar()
 
-# plt.savefig('size_shear_hist2d_mhd.png')
-# plt.savefig('size_shear_hist2d_hydro.png')
+# # plt.savefig('size_shear_hist2d_mhd.png')
+# # plt.savefig('size_shear_hist2d_hydro.png')
 
 #%%
+amb_rho = 1.0  # in code units, amu/cc
+T_floor = 4e4
+Z_sol   = 1
 
-t_cool_cloud = 2.77e-5
+# t_cool_cloud = 2.77e-5
+cloud_chi = 100
+t_cool_cloud = cf.tcool_calc(amb_rho*cloud_chi, T_floor, Z_sol)
+
 cs = cs_calc(4e6, mu)
 # l_shatter = 8.6e-7
 l_shatter = cs*t_cool_cloud
 
-print(cs)
-print(cs*t_cool_cloud)
+print(f'{cs = }')
+print(f'{cs*t_cool_cloud = }')
 
-amb_rho = 1.0  # in code units, amu/cc
 
 Rlsh  = 1000
 Lbox  = Rlsh*40*l_shatter   # in kpc
 M = 0.5
 dx = Lbox/256
-M0 = 4*np.pi/3 * (Rlsh*l_shatter)**3
+M0 = 4*np.pi/3 * (Rlsh*l_shatter)**3 * amb_rho * cloud_chi
 
 t_eddy = Lbox/(cs*M)
 
@@ -143,10 +154,14 @@ m_dot_total= m_dot_slow+m_dot_fast
 
 m_m0_dot_tot = m_dot_total*t_eddy/M0
 
+#%%
+
 print(f'slow : {m_dot_slow}')
 print(f'fast : {m_dot_fast}')
 print(f'total: {m_dot_total}')
-print(f'total in M0, t_eddy: {m_m0_dot_tot}')
+print(f'total in M/M0, t/t_eddy: {m_m0_dot_tot}')
+print(f'total in log(M/M0), t/t_eddy: {m_m0_dot_tot/5}')
+print(f'Mdot from figure: {8/1.75}')
 
 
 

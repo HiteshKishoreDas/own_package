@@ -7,14 +7,20 @@ Last Modified time: 2021-10-18 14:23:49
 
 
 import numpy as np
-import units as un
 
 import os
+import sys
+
+cwd = os.path.dirname(__file__)
+package_abs_path = cwd[:-len(cwd.split('/')[-1])]
+
+sys.path.insert(0, f'{package_abs_path}cooling/')
+import units as un
 
 cwd = os.getcwd()
 repo_abs_path = cwd[:-len(cwd.split('/')[-1])]
 
-cooling_dir = repo_abs_path+'cooling_power_law/'
+cooling_dir = f'{package_abs_path}cooling/'
 
 def Lam_fn (T,Z=1.0, Lambda_fac = 1.0):
 
@@ -101,7 +107,7 @@ def Lam_range():
     return T_min, T_max
 
 
-def tcool_calc(rho,T,Z=0.0, Lambda_fac = 1.0,actual_flag=False):
+def tcool_calc(rho,T,Z=1.0, Lambda_fac = 1.0,actual_flag=False):
 
     n_H = rho*un.unit_density/(un.muH*un.CONST_amu)
 

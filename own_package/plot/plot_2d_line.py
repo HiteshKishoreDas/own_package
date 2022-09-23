@@ -27,12 +27,14 @@ def plot_multiline(x_data_list, y_data_list, \
                    ax_log= {'x_log': False, 'y_log':False, 'col_log':False}, \
                    normalise_list = {'x_norm':[None], 'y_norm':[None]}, \
                    label_list = None, linestyle='solid', \
-                   cmap=cr.rainforest):
+                   mark_flag = False, markevery = 10, \
+                   cmap=cr.rainforest, new_fig=True, fig=None, ax=None):
 
     line_border_color = mt.rcParams['lines.color']
     line_border_width = mt.rcParams['lines.linewidth'] + 1
 
-    fig, ax = plt.subplots(nrows=1, ncols=1)
+    if new_fig:
+        fig, ax = plt.subplots(nrows=1, ncols=1)
 
     L = len(y_data_list)
 
@@ -75,13 +77,20 @@ def plot_multiline(x_data_list, y_data_list, \
         #         linestyle = linestyle, \
         #         color=line_border_color, linewidth = line_border_width)
 
-        ax.plot(x_data_list[i]/normalise_list['x_norm'][i], \
-                y_data_list[i]/normalise_list['y_norm'][i], \
-                color=line_col[i],  linestyle=linestyle, \
-                label = label_list[i], 
-                path_effects=[pe.Stroke(linewidth=line_border_width, \
-                                        foreground=line_border_color), pe.Normal()])
-
+        if mark_flag: 
+            ax.plot(np.array(x_data_list[i])/np.array(normalise_list['x_norm'][i]), \
+                    np.array(y_data_list[i])/np.array(normalise_list['y_norm'][i]), '-o',\
+                    color=line_col[i],  linestyle=linestyle, \
+                    label = label_list[i], markevery=markevery,  \
+                    path_effects=[pe.Stroke(linewidth=line_border_width, \
+                                            foreground=line_border_color), pe.Normal()])
+        else:
+            ax.plot(np.array(x_data_list[i])/np.array(normalise_list['x_norm'][i]), \
+                    np.array(y_data_list[i])/np.array(normalise_list['y_norm'][i]), \
+                    color=line_col[i],  linestyle=linestyle, \
+                    label = label_list[i], 
+                    path_effects=[pe.Stroke(linewidth=line_border_width, \
+                                            foreground=line_border_color), pe.Normal()])
     if ax_log['x_log']:
         ax.set_xscale('log')
     if ax_log['y_log']:
