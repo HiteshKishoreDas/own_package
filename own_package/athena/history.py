@@ -2,7 +2,8 @@ import numpy as np
 
 class hst_data:
 
-    def __init__(self, fn, ncells=[None, None, None], MHD_flag=False, cool_flag=False):
+    def __init__(self, fn, ncells=[None, None, None], \
+                 MHD_flag=False, cool_flag=False, verbose=False):
 
         """Read hst and return structured numpy dict.
         Keyword Arguments:
@@ -21,7 +22,8 @@ class hst_data:
 
         try:
             r = np.loadtxt(fn, dtype={'names' : hdr, 'formats' : len(hdr) * (float,)})
-            print(f"history.py: hst_data :: History file loaded for {fn} ...")
+            if verbose:
+                print(f"history.py: hst_data :: History file loaded for {fn} ...")
         except:
             print(f"history.py: hst_data :: File couldn't be loaded for {fn} ...")
             return -1

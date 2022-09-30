@@ -52,8 +52,9 @@ for i_wd, wd in enumerate(si.wdir_list):
 
     x_data = sim_data['time']/si.t0[i_wd]    
     # y_data = sim_data['cold_gas']/si.M0[i_wd] - 1.0
-    y_data = (sim_data['cold_gas'] - si.M0[i_wd])#/si.V[i_wd]#/si.Chi_f[i_wd]
-    y_data /= si.R_list[i_wd] ** (2.4)
+    y_data = (sim_data['cold_gas'] - si.M0[i_wd])/si.V[i_wd]
+    y_data /= si.Chi_f[i_wd]**(1/2)
+    # y_data /= si.R_list[i_wd] ** (1/12)
 
 
     x_data_list.append(x_data[1:])
@@ -82,11 +83,11 @@ fig, ax = p2l.plot_multiline(x_data_list, y_data_list, \
 #                             #  label_list=label_list, \
 #                              cmap='viridis', linestyle='dashed', \
 #                              new_fig=False, fig=fig, ax=ax)
-ax.set_xlim(0.25, 1.0 )
+ax.set_xlim(0.25, 3.0 )
 # ax.set_ylim(0,1.1)
-# ax.set_ylim(0,2.5)
+ax.set_ylim(0,0.05)
 
-ax.set_yscale('log')
+# ax.set_yscale('log')
 # ax.set_xscale('log')
 
 ax.axvline(si.t_collapse, linestyle='dotted', color='k')

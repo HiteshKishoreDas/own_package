@@ -3,7 +3,7 @@
 @Date: 2022-09-09 13:33:23 
 '''
 import matplotlib
-matplotlib.use('Agg')
+# matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 
@@ -44,45 +44,103 @@ import units as un
 # plt.style.use([pallette, plot_style, text_style])
 
 
-plot_field = 'rho'
-plot_range = [0.0, 0.02]
+dir_loc = '/afs/mpa/home/hitesh/remote/freya/athena_fork_turb_box/mixing_layer_shift/'
+# dir_loc += f'mix_L4_Ma0_Bnot_hydro_moving_wshift/'
+# dir_loc += f'mix_L4_Ma0_Bnot_hydro_moving/'
+dir_loc += f'mix_L0_Ma0_Bnot_hydro_moving/'
+# dir_loc += f'mix_L1_Ma0_B0_moving/'
 
-cs = vt.cs_calc(4e6, un.mu)
+print(f" Analysing files in {dir_loc} ... ")
 
-for L_i in range(7,9):
+N = 92
+# N = 0
 
-    dir_loc = '/afs/mpa/home/hitesh/remote/freya/athena_fork_turb_box/mixing_layer_brent/'
-    dir_loc += f'mix_L{L_i}_Ma0_Bnot_hydro_moving/'
+file_loc = dir_loc + f'Turb.out2.{str(N).zfill(5)}.athdf'
 
-    print(f" Analysing files in {dir_loc} ... ")
+# MHD_flag = True 
+MHD_flag = False
 
-    try:
-        os.system(f'mkdir ../plots/Slices/L{L_i}')
-        os.system(f'mkdir ../plots/Slices/L{L_i}/{plot_field}')
-    except:
-        print("Failed to create the directory...\n")
+# plot_range = [0.0, 10.0]
 
-    for N in range(101):
-        file_loc = dir_loc + f'Turb.out2.{str(N).zfill(5)}.athdf'
+out_dict = dr.get_array_athena(file_loc, fields=['rho', 'prs', 'vel'], MHD_flag=MHD_flag)
 
-        MHD_flag = False 
+T = (out_dict['prs']/out_dict['rho']) * un.KELVIN * un.mu
 
-        try:
-            out_dict = dr.get_array_athena(file_loc, fields=[plot_field])
-        except:
-            print(f'Reached the end at {N = } .... \n')
-            break
+plt_dict = p2i.plot_slice(np.log10(out_dict['rho']), slice_dir =1, color_range=[-5,-1], cmap='plasma')
+plt_dict['ax'].set_title('Log_10 Density')
+plt.show()
 
-        plt_dict = p2i.plot_slice(out_dict[plot_field], color_range=plot_range, cmap='plasma')
-        plt_dict['ax'].set_title(f"t/t_KH = {out_dict['time']/si.t_KH[L_i]: .2f}")
+plt_dict = p2i.plot_slice( out_dict['prs'] , slice_dir =1, cmap='plasma')
+plt_dict['ax'].set_title('Pressure')
+plt.show()
 
-        plt_dict['fig'].savefig(f'../plots/Slices/L{L_i}/{plot_field}/{plot_field}_{N}.png')
+plt_dict = p2i.plot_slice(np.log10(T), slice_dir =1, color_range=[np.log10(4e4), np.log10(4e6)], cmap='plasma')
+plt_dict['ax'].set_title('log_10 T')
+plt.show()
 
-        print('Plot saved ......... \n')
+plt_dict = p2i.plot_slice(T, slice_dir =1, color_range=[4e4, 4e6], cmap='plasma')
+plt_dict['ax'].set_title('T')
+plt.show()
 
-        del out_dict
-        del plt_dict
-        gc.collect()
+plt_dict = p2i.plot_slice(out_dict['vel'][2], slice_dir =1, cmap='plasma')
+plt_dict['ax'].set_title('v_z')
+plt.show()
+
+# plt_dict = p2i.plot_slice(out_dict['vel'][1], slice_dir =1, cmap='plasma')
+# plt_dict['ax'].set_title('v_y')
+# plt.show()
+
+plt_dict = p2i.plot_slice(ao.magnitude(out_dict['vel']), slice_dir =1, cmap='plasma')
+plt_dict['ax'].set_title('|v|')
+plt.show()
+
+print('Time             : ', out_dict['time'])
+print('Density contrast : ', out_dict['rho'].max()/out_dict['rho'].min())
+print('Pressure contrast: ', out_dict['prs'].max()/out_dict['prs'].min())
+print('Temp contrast    : ', T.max()/T.min())
+print('Average v_z      : ', np.average(out_dict['vel'][2]))
+
+# plt_dict = p2i.plot_slice(out_dict['vel'][2], slice_dir =1, cmap='plasma')
+# plt.show()
+
+# plt_dict['ax'].set_title(f"t/t_KH = {out_dict['time']/si.t_KH[L_i]: .2f}")
+
+
+
+# for L_i in range(1,2):
+#     for i_B, B_name in enumerate(Bn_list):
+#         dir_loc = '/afs/mpa/home/hitesh/remote/freya/athena_fork_turb_box/mixing_layer_brent/'
+#         dir_loc += f'mix_L{L_i}_Ma0_B{B_name}_moving/'
+
+#         print(f" Analysing files in {dir_loc} ... ")
+
+#         try:
+#             os.system(f'mkdir ../plots/Slices/L{L_i}_{B_list[i_B]}')
+#             os.system(f'mkdir ../plots/Slices/L{L_i}_{B_list[i_B]}/{plot_field}')
+#         except:
+#             print("Failed to create the directory...\n")
+
+#         for N in range(101):
+#             file_loc = dir_loc + f'Turb.out2.{str(N).zfill(5)}.athdf'
+
+#             MHD_flag = False 
+
+#             try:
+#                 out_dict = dr.get_array_athena(file_loc, fields=[plot_field])
+#             except:
+#                 print(f'Reached the end at {N = } .... \n')
+#                 break
+
+#             plt_dict = p2i.plot_slice(out_dict[plot_field], color_range=plot_range, cmap='plasma')
+#             plt_dict['ax'].set_title(f"t/t_KH = {out_dict['time']/si.t_KH[L_i]: .2f}")
+
+#             plt_dict['fig'].savefig(f'../plots/Slices/L{L_i}_{B_list[i_B]}/{plot_field}/{plot_field}_{N}.png')
+
+#             print('Plot saved ......... \n')
+
+#             del out_dict
+#             del plt_dict
+#             gc.collect()
 
 
     

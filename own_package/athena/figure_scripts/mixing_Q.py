@@ -3,7 +3,6 @@
 @Date: 2022-09-22 11:39:58 
 '''
 
-from cProfile import label
 import numpy as np
 import sys
 import os
@@ -23,6 +22,12 @@ import history as ht
 
 sys.path.insert(0, f'{package_abs_path}plot/')
 import plot_2d_line as p2l
+
+sys.path.insert(0, f'{package_abs_path}cooling/')
+import cooling_fn as cf
+
+sys.path.insert(0, f'{package_abs_path}utils/')
+import units as un
 
 sys.path.insert(0, f'{package_abs_path}athena/figure_scripts/')
 import sim_info as si
@@ -52,7 +57,7 @@ def lum_fn(hst,i):
     dt    = dt      [hst.cold_gas_fraction[:N_last]>0.1]
     time  = (hst.time[:N_last])[hst.cold_gas_fraction[:N_last]>0.1]
 
-    box_full = np.argwhere(hst.cold_gas_fraction[:N_last]>0.998)
+    box_full = np.argwhere(hst.cold_gas_fraction[:N_last]>0.994)
 
     if len(box_full)!=0:
         dcool = dcool   [:np.min(box_full)]
@@ -71,125 +76,119 @@ def lum_fn(hst,i):
     return time, luminosity
 
 
-# fig, ax = plt.subplots(nrows=1, ncols=1, figsize = (10,10))
-
-Da_list       = []
-L_avg_list    = []
-Q_theory_list = []
-
-
-# Lambda_fac = [ 1.0, 1.0, 1.0, 1.0, 1.0, 10.0, 100.0, 1000.0, 10000.0]
-Lambda_fac = [ 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 ncells     = [128, 128, 1280]
 
 
-x_data_list = []
-y_data_list = []
-col_list    = []
-label_list  = []
+plot_dict = {}
 
-L_avg_list  = []
-Da_list  = []
+plot_dict['x_data_list']     = []
+plot_dict['y_data_list']     = []
+plot_dict['col_list']        = []
+plot_dict['label_list']      = []
+plot_dict['linestyle_list']  = []
+
+plot_dict['B_list']          = []
+plot_dict['marker_list']     = []
+plot_dict['color_list']      = []
+
+plot_dict['L_avg_list']      = []
+plot_dict['L_avg_plot_list'] = []
+plot_dict['Da_list']         = []
+
+linesty = ['dashed', '-.', 'dotted']
+B_list = ['B_x', 'B_y', 'B_z']
+marker_list = ['D', 'X', '^']
+color_list = ['tab:green', 'tab:red', 'tab:orange']
+
+
+
 
 for i_plot,i in enumerate(range(len(si.box_width))):
     for j in range(len(si.Ma)):
-        for k in range(1):
-            # for B_fl in [True, False]:
-            for B_fl in [False]:
+        for B_fl in [True, False]:
+            for k in range(3):
+            # for B_fl in [True]:
+
+                if not B_fl and k>0:
+                    break
+
+                #* Damkohler number calculation
+                # v_turb in km/s
+                u  =  50 * (si.M**(4/5))
+                u *=  ( si.cs_cold*un.unit_velocity/(15*1e5) )**0.8
+                u *=  ( si.t_cool_cloud[0]/0.03 )**-0.1
+           
+                # tcool_tKH = np.round(si.t_cool_mix[i]/si.t_KH[0], 4)
+           
+                t_turb = si.box_width[i] / (u*1e5/un.unit_velocity)
+                t_cool = cf.tcool_calc(si.amb_rho*np.sqrt(si.chi_cold), 2e5 ,si.Z, Lambda_fac=si.Lambda_fac[0])
+                # t_cool = si.t_cool_Da[0]
+                Da = (t_turb/t_cool)[0]
+
+                # print(Da)
+
+                plot_dict['Da_list'].append(Da)
+
+                if not B_fl:
+                    plot_dict['linestyle_list'].append('solid')
+                    plot_dict['B_list'].append('hydro')
+                    plot_dict['marker_list'].append('o')
+                    plot_dict['color_list'].append('tab:blue')
+                    plot_dict['label_list'].append(f'{Da = : .1e}, HD')
+                else:
+                    plot_dict['linestyle_list'].append(linesty[k])
+                    plot_dict['B_list'].append(B_list[k])
+                    plot_dict['marker_list'].append(marker_list[k])
+                    plot_dict['color_list'].append(color_list[k])
+                    plot_dict['label_list'].append(f'{Da = : .1e}, {B_list[k]}')
 
 
                 #* Read history file 
                 file_add = si.filename_mix_add_ext(i,j,k,B_fl)# [:-7]
-                if not B_fl:
-                    setup_name = file_add
                 dir_name = f'/afs/mpa/home/hitesh/remote/freya/athena_fork_turb_box/mixing_layer_brent/'
                 dir_name += f'mix{file_add}'
-
-                # dir_name = file_list[i] 
-
-                # try:
-                #     hst = ht.hst_data(f'{dir_name}/Turb.hst', ncells, B_fl)     
-                # except:
-                #     continue
 
                 hst = ht.hst_data(f'{dir_name}/Turb.hst', ncells, B_fl, cool_flag=True)     
                 time, luminosity = lum_fn(hst, i)
 
-                if i_plot<9:
-                    x_data_list.append(time/si.t_KH[i_plot])
-                    y_data_list.append(luminosity)
+                plot_dict['x_data_list'].append(time/si.t_KH[i_plot])
+                plot_dict['y_data_list'].append(luminosity)
 
-                    col_list.append(np.log10(si.box_width[i_plot]))
-                    # label_list.append(f'Lbox = {si.box_width[i_plot]}, '+ r'$\Lambda_0$=' + f'{Lambda_fac[i_plot]}')
+                plot_dict['col_list'].append(np.log10(si.box_width[i_plot]))
 
 
-                # ax[i_plot].plot(time/ps.t_KH[i_plot], luminosity)#, color=col_list[plot_i], label=legend_list[plot_i])
-                # ax.plot(time/ps.t_KH[i_plot], luminosity, label=label_list[i_plot])#, color=col_list[plot_i], label=legend_list[plot_i])
-                # ax.plot(time/si.t_KH[i_plot], luminosity, label=f'Lbox = {si.box_width[i_plot]}, '+ r'$\Lambda_0$=' + f'{Lambda_fac[i_plot]}')#, color=col_list[plot_i], label=legend_list[plot_i])
-                # ax.plot(time, luminosity)#, color=col_list[plot_i], label=legend_list[plot_i])
+                L_avg = np.average(luminosity[-100:])
+                print(f'{L_avg = }, {k = }, {B_fl = }')
 
 
-                if not B_fl and i_plot<9:
-
-                    # L_avg = np.average(luminosity[-1250:-1000])
-                    L_avg = np.average(luminosity[-250:])
-                    print(f'L_avg: {L_avg}')
-
-                    # L_avg_list.append([L_avg for i in range(len(luminosity))])
-                    L_avg_list.append(L_avg)
-
-                    # ax[i_plot].axhline(L_avg, linestyle='dashed')#,\
-                    # ax.axhline(L_avg, linestyle='dashed', label=f'L_avg = {"%.4e" % L_avg}')
-                          # color=col_list[plot_i],\
-                        # label=r'L$_{\rm avg}$'+ f' = {np.round(L_avg,3)}')
+                # t_turb = si.box_width[i_plot]/si.v_shear
+                # t_cool = si.t_cool_Da
+                # Da = (t_turb/t_cool)[0]
 
 
 
-        # ax.set_yscale('log')
-
-        t_turb = si.box_width[i_plot]/si.v_shear
-        t_cool = si.t_cool_Da
-
-        Da = (t_turb/t_cool)[0]
-
-        if i_plot<9:
-            Da_list.append(Da)
-            label_list.append(f'{Da = : .1e}')
-
-        # if i_plot==0: 
-        #     Da = (t_turb/t_cool)[0]
-
-        # ax[i_plot].set_title(f'Box_width: {ps.box_width[i_plot]} kpc, Da = {Da}')
-        # ax[i_plot].set_xlabel('time (Myr)')
-        # ax[i_plot].set_ylabel('Luminosity')
+                plot_dict['L_avg_plot_list'].append([L_avg for i in range(len(luminosity))])
+                plot_dict['L_avg_list'].append(L_avg)
 
         print(f'Box_width: {si.box_width[i_plot]} kpc, Da = {Da}')
 
-        # ax.set_title(f'Box_width: {ps.box_width[0]} kpc, Da = {Da}')
-        # ax.set_title(f'Da = {np.round(Da,3)}')
 
-        # ax.set_xlabel('time (Myr)')
-        # ax.set_ylabel('Luminosity')
+fig, ax  = p2l.plot_multiline(plot_dict['x_data_list'], plot_dict['y_data_list'],\
+                              cmap='plasma',                         \
+                              linestyle=plot_dict['linestyle_list'], \
+                              color_list=plot_dict['col_list'],      \
+                              label_list=plot_dict['label_list']     )
 
-        # ax[i,j].set_ylim(0.99,1)
-
-        # ax[i].set_title(r"$\mathcal{M}_{\rm a}$"+f" = {ps.Ma[j]}; " + r"t$_{\rm cool}$/t$_{\rm KH}$" + f" = {tcool_tKH}" + f"; Da = {np.round(Da, 3)}")#+f"\n {setup_name}")
-        
-        # plt.legend(fontsize=12)
-
-
-fig, ax  = p2l.plot_multiline(x_data_list, y_data_list,\
-                              cmap='plasma',\
-                              color_list=col_list, label_list=label_list)
-
-# fig, ax  = p2l.plot_multiline(x_data_list, L_avg_list,\
-#                               cmap='plasma', linestyle='dashed',\
+# fig, ax  = p2l.plot_multiline(x_data_list, L_avg_plot_list,\
+#                               cmap='plasma', linestyle='dotted',\
 #                               color_list=col_list, \
 #                               new_fig=False, fig=fig, ax=ax)
 
 ax.legend(loc='lower right')
-ax.set_xlim(0,12)
-# ax.set_ylim(0,1e-5)k
+# ax.set_xlim(0,12)
+ax.set_xlim(0, None)
+# ax.set_ylim(8e-8,2e-6)
+ax.set_ylim(1e-10,1e-8)
 
 ax.set_yscale('log')
 
@@ -198,11 +197,27 @@ ax.set_ylabel(r'$Q$ (code units)')
 
 #%%
 
-Da_list = np.array(Da_list)
+# from matplotlib.patches import Patch
+from matplotlib.lines import Line2D
+
+Da_list = np.array(plot_dict['Da_list'])
 
 plt.figure()
 
-plt.scatter(Da_list, L_avg_list)
+for i_Da, Da in enumerate(Da_list):
+    plt.scatter(Da, plot_dict['L_avg_list'][i_Da], \
+                marker=plot_dict['marker_list'][i_Da], \
+                # label=plot_dict['B_list'][i_Da], \
+                color=plot_dict['color_list'][i_Da])
+
+
+legend_elements = [ Line2D([0], [0], color='tab:orange', lw=4, label=r'$\alpha=1/2$', linestyle='dashed'),
+                    Line2D([0], [0], color='tab:red'   , lw=4, label=r'$\alpha=1/4$', linestyle='dashed'),
+                    Line2D([0], [0], marker='o', color='w', markerfacecolor='tab:blue'  , label='HD'    , markersize=15), 
+                    Line2D([0], [0], marker='D', color='w', markerfacecolor='tab:green' , label=r'B$_x$', markersize=15), 
+                    Line2D([0], [0], marker='X', color='w', markerfacecolor='tab:red'   , label=r'B$_y$', markersize=15), 
+                    Line2D([0], [0], marker='^', color='w', markerfacecolor='tab:orange', label=r'B$_z$', markersize=15)  ] 
+
 plt.plot(Da_list, 1.65e-6*Da_list**0.5 , linestyle='dashed', color='tab:orange', label=r'$\alpha=1/2$')
 plt.plot(Da_list, 1.75e-6*Da_list**0.25, linestyle='dashed', color='tab:red'   , label=r'$\alpha=1/4$')
 
@@ -212,7 +227,9 @@ plt.yscale('log')
 plt.xlabel('Da')
 plt.ylabel('Q (code units)')
 
-plt.legend()
+plt.title("Scaling comparison with code units")
+
+plt.legend(handles=legend_elements)
 
 plt.show()
 # plt.savefig("test.png")

@@ -8,6 +8,8 @@ import sys
 import os
 import gc
 
+from multiprocessing import Pool
+
 import pickle as pk
 
 import matplotlib.pyplot as plt
@@ -28,7 +30,55 @@ text_style = style_lib + 'text.mplstyle'
 plt.style.use([pallette, plot_style, text_style])
 
 main_dir_loc  = '/afs/mpa/home/hitesh/remote/freya/athena_fork_turb_box/mixing_layer_brent/'
-dir_list = [ main_dir_loc + f'mix_L{i}_Ma0_Bnot_hydro_moving/' for i in range(9)]
+dir_list = [ main_dir_loc + f'mix_L{i}_Ma0_Bnot_hydro_moving/' for i in range(8,-1, -1)]
+
+# dir_dict = {}
+# dir_dict['path'] = []
+# dir_dict['idir'] = []
+
+def front_velocity (dir_str):
+
+    print(f'{dir_str=}')
+
+    front_dict = {}
+    front_dict['time'] = []
+    front_dict['loc']  = []
+
+    for i in range(201):
+
+        print(f'{i=}')
+
+        file_loc = dir_str + f'Turb.out2.{str(i).zfill(5)}.athdf'
+
+        try:
+            out_dict = dr.get_array_athena(file_loc, fields=['rho', 'coord'],MHD_flag=False)
+        except:
+            break
+
+        rho_z   = np.average(out_dict['rho'], axis=(1,2))
+        z_coord = out_dict['coord'][2]
+
+        rho_mix = np.sqrt(rho_z.max()*rho_z.min())
+
+        rho_mix_loc = np.min(z_coord[np.argwhere(rho_z<rho_mix)])
+
+        front_dict['loc'] .append(rho_mix_loc)
+        front_dict['time'].append(out_dict['time'])
+
+
+    with open(f'./save_arr/front_location_L{dir_str[-24]}.pkl', 'wb') as f:
+        pk.dump(front_dict, f)
+
+    print(f'Done... {dir_str}...')
+
+
+
+processes = 3
+
+if True:
+
+    with Pool(processes) as pool:
+        processed = pool.map(front_velocity, dir_list)
 
 
 if False:
@@ -70,7 +120,7 @@ Lambda_fac = np.array([1.0    , 1.0   , 1.0  , 1.0 , 1.0, 10.0, 100.0, 1000.0, 1
 
 # box_width *= Lambda_fac
 
-if True:
+if False:
 
     plt.figure()
     m_list = []

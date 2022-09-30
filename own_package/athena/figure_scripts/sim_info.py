@@ -74,7 +74,8 @@ cloud_radius = R_lsh*l_sh
 # box_length = np.array([1.0])  # 0.3 kpc = 300 pc # box_width*10
 
 # box_width  = 0.1 * np.array([100000.0, 50000.0, 10000.0, 5000.0, 1000.0, 500.0, 100.0, 50.0, 10.0, 5.0, 1.0, 0.5, 0.1])
-box_width  = 0.1 * np.array([10000.0, 1000.0, 100.0, 10.0, 1.0, 0.1, 0.01, 0.001, 0.0001])
+# box_width  = 0.1 * np.array([10000.0, 1000.0, 100.0, 10.0, 1.0, 0.1, 0.01, 0.001, 0.0001])
+box_width  = 0.1 * np.array([10000.0, 1.0, 0.0001])
 box_length = 10*box_width 
 
 # Cooling flag
@@ -86,9 +87,8 @@ cloud_flag   = 0  # 1 for a cloud and 0 for no cloud
                   # Cloud_init() is added(not added) to Source() depending on the flag 
 
 # Magnetic field flag
-B_flag       = 0  # 1 for adding magnetic fields
+B_flag       = 1  # 1 for adding magnetic fields
 
-M  = 0.5     # Required Mach number
 # Ma = np.array([0.1, 10])
 Ma = np.array([10])
 
@@ -119,6 +119,7 @@ nx3_mesh = np.array([64])
 
 front_thickness = box_width/20
 v_shear         = 0.1022   # M*vt.cs_calc(T_hot,mu)
+M               = v_shear/vt.cs_calc(T_hot, g.mu)    # Required Mach number
 
 v_m = 0.00238
 v_b = 0.00390

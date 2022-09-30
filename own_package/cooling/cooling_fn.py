@@ -14,7 +14,7 @@ import sys
 cwd = os.path.dirname(__file__)
 package_abs_path = cwd[:-len(cwd.split('/')[-1])]
 
-sys.path.insert(0, f'{package_abs_path}cooling/')
+sys.path.insert(0, f'{package_abs_path}utils/')
 import units as un
 
 cwd = os.getcwd()

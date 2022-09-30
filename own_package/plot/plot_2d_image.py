@@ -61,10 +61,14 @@ def plot_slice  (img_data, slice_dir=2, x_data=None, y_data=None, \
     slice_plot = img_data[slice_syntax]
 
     # slc = ax.pcolormesh(x_data, y_data, slice_plot, cmap=cmap)
-    slc = ax.pcolormesh(y_data, x_data, slice_plot, \
+    # slc = ax.pcolormesh(y_data, x_data, slice_plot, \
+    #                     vmin=color_range[0], vmax=color_range[1],  \
+    #                     cmap=cmap  )
+        
+    slc = ax.pcolormesh(x_data, y_data, slice_plot, \
                         vmin=color_range[0], vmax=color_range[1],  \
                         cmap=cmap  )
-        
+
     cbar = fig.colorbar(slc, ax=ax)
 
     ax.set_aspect('equal')

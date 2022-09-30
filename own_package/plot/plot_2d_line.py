@@ -68,6 +68,11 @@ def plot_multiline(x_data_list, y_data_list, \
     if label_list == None:
         label_list = [None for i in range(len(y_data_list))]
 
+    if isinstance(linestyle, str):
+        style_arr_flag = False
+        linestyle_i = linestyle
+    else:
+        style_arr_flag = True
 
 
     for i in range(L):
@@ -77,17 +82,20 @@ def plot_multiline(x_data_list, y_data_list, \
         #         linestyle = linestyle, \
         #         color=line_border_color, linewidth = line_border_width)
 
+        if style_arr_flag:
+            linestyle_i = linestyle[i]
+
         if mark_flag: 
             ax.plot(np.array(x_data_list[i])/np.array(normalise_list['x_norm'][i]), \
                     np.array(y_data_list[i])/np.array(normalise_list['y_norm'][i]), '-o',\
-                    color=line_col[i],  linestyle=linestyle, \
+                    color=line_col[i],  linestyle=linestyle_i, \
                     label = label_list[i], markevery=markevery,  \
                     path_effects=[pe.Stroke(linewidth=line_border_width, \
                                             foreground=line_border_color), pe.Normal()])
         else:
             ax.plot(np.array(x_data_list[i])/np.array(normalise_list['x_norm'][i]), \
                     np.array(y_data_list[i])/np.array(normalise_list['y_norm'][i]), \
-                    color=line_col[i],  linestyle=linestyle, \
+                    color=line_col[i],  linestyle=linestyle_i, \
                     label = label_list[i], 
                     path_effects=[pe.Stroke(linewidth=line_border_width, \
                                             foreground=line_border_color), pe.Normal()])

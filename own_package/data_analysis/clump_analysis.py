@@ -35,7 +35,7 @@ import plot_3d as pt
 
 #* Returns number of clumps and label array for any given array
 
-def clump_finder_scipy(arr,arr_cut,above_cut):
+def clump_finder_scipy(arr,arr_cut,above_cut=False):
     # arr      : Input array
     # arr_cut  : Cutoff for defining clumps
     # above_cut: True if values above arr_cut are clumps, False otherwise
