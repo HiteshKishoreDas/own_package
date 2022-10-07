@@ -31,15 +31,15 @@ wdir_R2_lowChif = f"{wdir_dir2}/2D_nl_parascan_MG21_R2_Chif_96/output/"
 
 #*_________________________________
 
-# wdir_list =          [wdir_R1  , wdir_R2  , wdir_R3  , wdir_R4 , wdir_R2_lowChif  ]
-# dt_list   = np.array([5.0*1e-4 , 1.0*1e-3 , 5.0*1e-2 , 5.0     , 1.0*1e-3         ])
-# file_list =          ['R1'     , 'R2'     , 'R3'     , 'R4'    , 'R2_low_Chi'     ]
-# box_list  = np.array([0.0004   , 0.004    , 0.04     , 4.0     , 0.004            ])
-# R_list    = np.array([0.00005  , 0.0005   , 0.005    , 0.5     , 0.0005           ])
-# res_list  =          [2048     , 2048     , 2048     , 2048    , 2048             ]
-# N_list    =          [1        , 2        , 3        , 4       , 5                ]
-# Chi_list  = np.array([100      , 100      , 100      , 100     , 16               ])
-# label_list =          ['R1'     , 'R2'     , 'R3'     , 'R4'    , 'R2_low_Chi'     ]
+wdir_list =          [wdir_R1  , wdir_R2  , wdir_R3  , wdir_R4 , wdir_R2_lowChif  ]
+dt_list   = np.array([5.0*1e-4 , 1.0*1e-3 , 5.0*1e-2 , 5.0     , 1.0*1e-3         ])
+file_list =          ['R1'     , 'R2'     , 'R3'     , 'R4'    , 'R2_low_Chi'     ]
+box_list  = np.array([0.0004   , 0.004    , 0.04     , 4.0     , 0.004            ])
+R_list    = np.array([0.00005  , 0.0005   , 0.005    , 0.5     , 0.0005           ])
+res_list  =          [2048     , 2048     , 2048     , 2048    , 2048             ]
+N_list    =          [1        , 2        , 3        , 4       , 5                ]
+Chi_list  = np.array([100      , 100      , 100      , 100     , 16               ])
+label_list =          ['R1'     , 'R2'     , 'R3'     , 'R4'    , 'R2_low_Chi'     ]
 
 # wdir_list =          [wdir_R1  , wdir_R2  , wdir_R3  , wdir_R4 ]  #, wdir_R2_lowChif  ] 
 # dt_list   = np.array([5.0*1e-4 , 1.0*1e-3 , 5.0*1e-2 , 5.0     ]) #, 1.0*1e-3         ])
@@ -51,17 +51,17 @@ wdir_R2_lowChif = f"{wdir_dir2}/2D_nl_parascan_MG21_R2_Chif_96/output/"
 # Chi_list  = np.array([100      , 100      , 100      , 100     ]) #, 16               ])
 # label_list =          ['R1'     , 'R2'     , 'R3'     , 'R4'    ]  #, 'R2_low_Chi'     ] 
 
-wdir_list =          [wdir_R2  , wdir_R2_lowChif  , wdir_R4 ] 
-dt_list   = np.array([1.0*1e-3 , 1.0*1e-3         , 5.0     ])
-file_list =          ['R2'     , 'R2_low_Chi'     , 'R4'    ] 
-box_list  = np.array([0.004    , 0.004            , 4.0     ])
-R_list    = np.array([0.0005   , 0.0005           , 0.5     ])
-res_list  =          [2048     , 2048             , 2048    ] 
-N_list    =          [2        , 3                , 4       ] 
-Chi_list  = np.array([100      , 16               , 100     ])
-label_list =         [r'R2, $\chi_{\rm f} = 600$' \
-                     ,r'R2, $\chi_{\rm f} = 96$'  \
-                     ,r'R4, $\chi_{\rm f} = 600$' ] 
+# wdir_list =          [wdir_R2  , wdir_R2_lowChif  , wdir_R4 ] 
+# dt_list   = np.array([1.0*1e-3 , 1.0*1e-3         , 5.0     ])
+# file_list =          ['R2'     , 'R2_low_Chi'     , 'R4'    ] 
+# box_list  = np.array([0.004    , 0.004            , 4.0     ])
+# R_list    = np.array([0.0005   , 0.0005           , 0.5     ])
+# res_list  =          [2048     , 2048             , 2048    ] 
+# N_list    =          [2        , 3                , 4       ] 
+# Chi_list  = np.array([100      , 16               , 100     ])
+# label_list =         [r'R2, $\chi_{\rm f} = 600$' \
+#                      ,r'R2, $\chi_{\rm f} = 96$'  \
+#                      ,r'R4, $\chi_{\rm f} = 600$' ] 
 
 #*_________________________________
 

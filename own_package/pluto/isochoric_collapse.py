@@ -20,8 +20,8 @@ t = np.linspace(eps,tend,10000); reltol = 1e-8
 global dim, fV, fA
 dim = 3; fV = 4*np.pi/3; fA = 4*np.pi
 
-Xi = 100
-Xf = 600
+# Xi = 100
+# Xf = 600
 
 method_ODE = "DOP853"; 
 sol = solve_ivp(yprime, [eps,tend], [1-np.sqrt(fA/(fV*dim))*eps,-fA*eps], t_eval=t, method=method_ODE, rtol=reltol)

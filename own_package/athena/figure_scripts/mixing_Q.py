@@ -30,7 +30,8 @@ sys.path.insert(0, f'{package_abs_path}utils/')
 import units as un
 
 sys.path.insert(0, f'{package_abs_path}athena/figure_scripts/')
-import sim_info as si
+# import sim_info as si
+import sim_info_shift as si
 
 style_lib  = f'{package_abs_path}plot/style_lib/' 
 # pallette   = style_lib + 'dark_pallette.mplstyle'
@@ -43,7 +44,7 @@ plt.style.use([pallette, plot_style, text_style])
 
 
 
-def lum_fn(hst,i):
+def overflow_cut(hst,i, hst_var):
 
     N_last = 2000
 
@@ -52,12 +53,13 @@ def lum_fn(hst,i):
 
     dcool = np.roll(tot_cool, -1) - tot_cool
     dt    = np.roll(hst.time[:N_last], -1) - hst.time[:N_last]
+    time  = (hst.time[:N_last])
 
     dcool = dcool   [hst.cold_gas_fraction[:N_last]>0.1]
     dt    = dt      [hst.cold_gas_fraction[:N_last]>0.1]
-    time  = (hst.time[:N_last])[hst.cold_gas_fraction[:N_last]>0.1]
+    time  = time    [hst.cold_gas_fraction[:N_last]>0.1]
 
-    box_full = np.argwhere(hst.cold_gas_fraction[:N_last]>0.994)
+    box_full = np.argwhere(hst.cold_gas_fraction[:N_last]>0.998)
 
     if len(box_full)!=0:
         dcool = dcool   [:np.min(box_full)]
@@ -94,23 +96,47 @@ plot_dict['color_list']      = []
 plot_dict['L_avg_list']      = []
 plot_dict['L_avg_plot_list'] = []
 plot_dict['Da_list']         = []
+# plot_dict['shift_list']      = []
 
-linesty = ['dashed', '-.', 'dotted']
+# linesty = ['dashed', '-.', 'dotted']
+linesty = ['solid', 'dashed']
 B_list = ['B_x', 'B_y', 'B_z']
-marker_list = ['D', 'X', '^']
-color_list = ['tab:green', 'tab:red', 'tab:orange']
+# marker_list = ['D', 'X', '^']
+marker_list = ['X', 'D']
+# color_list = ['tab:green', 'tab:red', 'tab:orange']
+color_list = ['tab:green', 'tab:blue']
 
 
 
 
-for i_plot,i in enumerate(range(len(si.box_width))):
+# for i in range(len(si.box_width)):
+for i in range(2,4):
     for j in range(len(si.Ma)):
-        for B_fl in [True, False]:
-            for k in range(3):
+        # for B_fl in [True, False]:
+        for B_fl in [True]:
+            for k in range(1,2):
             # for B_fl in [True]:
 
                 if not B_fl and k>0:
                     break
+
+                #* Read history file 
+                file_add = si.filename_mix_add_ext(i,j,k,B_fl)# [:-7]
+                # dir_name = f'/afs/mpa/home/hitesh/remote/freya/athena_fork_turb_box/mixing_layer_brent/'
+                dir_name = f'/afs/mpa/home/hitesh/remote/freya/athena_fork_turb_box/mixing_layer_shift/'
+                # dir_name = f'/home/hitesh/remote/mpa/remote/freya/athena_fork_turb_box/mixing_layer_shift/'
+                dir_name += f'mix{file_add}'
+                # print(dir_name)
+
+                hst = ht.hst_data(f'{dir_name}/Turb.hst', \
+                                  ncells=ncells, \
+                                  box_size= [si.box_width[i], si.box_width[i], si.box_length[i]], \
+                                  MHD_flag=B_fl, cool_flag=True, shift_flag=True)     
+
+                # try:
+                #     hst = ht.hst_data(f'{dir_name}/Turb.hst', ncells, B_fl, cool_flag=True)     
+                # except:
+                #     continue
 
                 #* Damkohler number calculation
                 # v_turb in km/s
@@ -128,37 +154,39 @@ for i_plot,i in enumerate(range(len(si.box_width))):
                 # print(Da)
 
                 plot_dict['Da_list'].append(Da)
+                # plot_dict['shift_list'].append(si.shift_flag[i])
+                plot_dict['linestyle_list'].append(linesty[si.shift_flag[i]])
+                plot_dict['marker_list'].append(marker_list[si.shift_flag[i]])
+                plot_dict['color_list'].append(color_list[si.shift_flag[i]])
 
                 if not B_fl:
-                    plot_dict['linestyle_list'].append('solid')
+                    # plot_dict['linestyle_list'].append('solid')
                     plot_dict['B_list'].append('hydro')
-                    plot_dict['marker_list'].append('o')
-                    plot_dict['color_list'].append('tab:blue')
-                    plot_dict['label_list'].append(f'{Da = : .1e}, HD')
+                    # plot_dict['marker_list'].append('o')
+                    # plot_dict['color_list'].append('tab:blue')
+                    plot_dict['label_list'].append(f'{Da = : .1e},shift_flag: {si.shift_flag[i]}')
                 else:
-                    plot_dict['linestyle_list'].append(linesty[k])
+                    # plot_dict['linestyle_list'].append(linesty[k])
                     plot_dict['B_list'].append(B_list[k])
-                    plot_dict['marker_list'].append(marker_list[k])
-                    plot_dict['color_list'].append(color_list[k])
+                    # plot_dict['marker_list'].append(marker_list[k])
+                    # plot_dict['color_list'].append(color_list[k])
                     plot_dict['label_list'].append(f'{Da = : .1e}, {B_list[k]}')
 
 
-                #* Read history file 
-                file_add = si.filename_mix_add_ext(i,j,k,B_fl)# [:-7]
-                dir_name = f'/afs/mpa/home/hitesh/remote/freya/athena_fork_turb_box/mixing_layer_brent/'
-                dir_name += f'mix{file_add}'
 
-                hst = ht.hst_data(f'{dir_name}/Turb.hst', ncells, B_fl, cool_flag=True)     
-                time, luminosity = lum_fn(hst, i)
+                #* From history file
+                time, luminosity = hst.overflow_cut(hst, hst.luminosity)
 
-                plot_dict['x_data_list'].append(time/si.t_KH[i_plot])
-                plot_dict['y_data_list'].append(luminosity)
+                # plot_dict['x_data_list'].append(time[-100:]/si.t_KH[i])
+                plot_dict['x_data_list'].append((hst.time/si.t_KH[i])[:-100])
+                # plot_dict['y_data_list'].append(luminosity[-100:])
+                plot_dict['y_data_list'].append(hst.shift_velocity[:-100])
 
-                plot_dict['col_list'].append(np.log10(si.box_width[i_plot]))
+                plot_dict['col_list'].append(np.log10(si.box_width[i]))
 
 
                 L_avg = np.average(luminosity[-100:])
-                print(f'{L_avg = }, {k = }, {B_fl = }')
+                print(f'{L_avg = }, {k = }, {B_fl = }, box_size = {si.box_width[i]}, {Da = }')
 
 
                 # t_turb = si.box_width[i_plot]/si.v_shear
@@ -170,7 +198,7 @@ for i_plot,i in enumerate(range(len(si.box_width))):
                 plot_dict['L_avg_plot_list'].append([L_avg for i in range(len(luminosity))])
                 plot_dict['L_avg_list'].append(L_avg)
 
-        print(f'Box_width: {si.box_width[i_plot]} kpc, Da = {Da}')
+        # print(f'Box_width: {si.box_width[i_plot]} kpc, Da = {Da}')
 
 
 fig, ax  = p2l.plot_multiline(plot_dict['x_data_list'], plot_dict['y_data_list'],\
@@ -184,18 +212,18 @@ fig, ax  = p2l.plot_multiline(plot_dict['x_data_list'], plot_dict['y_data_list']
 #                               color_list=col_list, \
 #                               new_fig=False, fig=fig, ax=ax)
 
-ax.legend(loc='lower right')
+# ax.legend(loc='lower left')
 # ax.set_xlim(0,12)
 ax.set_xlim(0, None)
-# ax.set_ylim(8e-8,2e-6)
-ax.set_ylim(1e-10,1e-8)
+# ax.set_ylim(1e-7,7e-6)
+# ax.set_ylim(1e-10,3e-8)
+# ax.set_ylim(1e-10,1e-8)
 
-ax.set_yscale('log')
+# ax.set_yscale('log')
 
 ax.set_xlabel(r'$t/t_{\rm KH}$')
 ax.set_ylabel(r'$Q$ (code units)')
 
-#%%
 
 # from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
@@ -208,18 +236,24 @@ for i_Da, Da in enumerate(Da_list):
     plt.scatter(Da, plot_dict['L_avg_list'][i_Da], \
                 marker=plot_dict['marker_list'][i_Da], \
                 # label=plot_dict['B_list'][i_Da], \
-                color=plot_dict['color_list'][i_Da])
+                color=plot_dict['color_list'][i_Da], \
+                edgecolor='k')
 
+
+# legend_elements = [ Line2D([0], [0], color='tab:orange', lw=4, label=r'$\alpha=1/2$', linestyle='dashed'),
+#                     Line2D([0], [0], color='tab:red'   , lw=4, label=r'$\alpha=1/4$', linestyle='dashed'),
+#                     Line2D([0], [0], marker='o', color='w', markerfacecolor='tab:blue'  , label='HD'    , markersize=15), 
+#                     Line2D([0], [0], marker='D', color='w', markerfacecolor='tab:green' , label=r'B$_x$', markersize=15), 
+#                     Line2D([0], [0], marker='X', color='w', markerfacecolor='tab:red'   , label=r'B$_y$', markersize=15), 
+#                     Line2D([0], [0], marker='^', color='w', markerfacecolor='tab:orange', label=r'B$_z$', markersize=15)  ] 
 
 legend_elements = [ Line2D([0], [0], color='tab:orange', lw=4, label=r'$\alpha=1/2$', linestyle='dashed'),
                     Line2D([0], [0], color='tab:red'   , lw=4, label=r'$\alpha=1/4$', linestyle='dashed'),
-                    Line2D([0], [0], marker='o', color='w', markerfacecolor='tab:blue'  , label='HD'    , markersize=15), 
-                    Line2D([0], [0], marker='D', color='w', markerfacecolor='tab:green' , label=r'B$_x$', markersize=15), 
-                    Line2D([0], [0], marker='X', color='w', markerfacecolor='tab:red'   , label=r'B$_y$', markersize=15), 
-                    Line2D([0], [0], marker='^', color='w', markerfacecolor='tab:orange', label=r'B$_z$', markersize=15)  ] 
+                    Line2D([0], [0], marker='X', color='w', markerfacecolor='tab:green' , label='Without shift', markersize=15), 
+                    Line2D([0], [0], marker='D', color='w', markerfacecolor='tab:blue', label='With shift', markersize=15)  ] 
 
-plt.plot(Da_list, 1.65e-6*Da_list**0.5 , linestyle='dashed', color='tab:orange', label=r'$\alpha=1/2$')
-plt.plot(Da_list, 1.75e-6*Da_list**0.25, linestyle='dashed', color='tab:red'   , label=r'$\alpha=1/4$')
+plt.plot(Da_list, 1.65e-6*Da_list**0.5 , linestyle='dashed', color='tab:orange', zorder=-10,  label=r'$\alpha=1/2$')
+plt.plot(Da_list, 1.75e-6*Da_list**0.25, linestyle='dashed', color='tab:red'   , zorder=-10,  label=r'$\alpha=1/4$')
 
 plt.xscale('log')
 plt.yscale('log')
@@ -234,4 +268,5 @@ plt.legend(handles=legend_elements)
 plt.show()
 # plt.savefig("test.png")
 
-#%%
+
+# %%
