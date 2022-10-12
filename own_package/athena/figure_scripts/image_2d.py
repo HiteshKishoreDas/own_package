@@ -49,21 +49,35 @@ dir_loc = '/afs/mpa/home/hitesh/remote/freya/athena_fork_turb_box/mixing_layer_s
 # dir_loc += f'mix_L4_Ma0_Bnot_hydro_moving_wshift/'
 # dir_loc += f'mix_L4_Ma0_Bnot_hydro_moving/'
 # dir_loc += f'mix_L2_Ma0_Bnot_hydro_moving/'
-dir_loc += f'mix_L0_Ma0_B0_moving/'
+
+# dir_loc += f'mix_L0_Ma0_B0_moving/'
+
+dir_loc1 = dir_loc + f'Trial_1_half_shift/mix_L0_Ma0_B0_moving/'
+# dir_loc1 = dir_loc + f'mix_L0_Ma0_B0_moving/'
+# dir_loc1 = dir_loc + f'Trial_1_half_shift/mix_L0_Ma0_Bnot_hydro_moving/'
+# dir_loc2 = dir_loc + f'mix_L0_Ma0_B0_moving_2/'
+# dir_loc3 = dir_loc + f'mix_L0_Ma0_B0_moving_3/'
+# dir_loc4 = dir_loc + f'mix_L0_Ma0_B0_moving_4_no_shift/'
+# dir_loc5 = dir_loc + f'mix_L0_Ma0_B0_moving/'
 
 print(f" Analysing files in {dir_loc} ... ")
 
-N = 9
+N = 170
 # N = 0
 
-file_loc = dir_loc + f'Turb.out2.{str(N).zfill(5)}.athdf'
+file_loc = dir_loc1 + f'Turb.out2.{str(N).zfill(5)}.athdf'
+# file_loc = dir_loc2 + f'Turb.out2.{str(N).zfill(5)}.athdf'
+# file_loc = dir_loc3 + f'Turb.out2.{str(N).zfill(5)}.athdf'
+# file_loc = dir_loc4 + f'Turb.out2.{str(N).zfill(5)}.athdf'
+# file_loc = dir_loc5 + f'Turb.out2.{str(N).zfill(5)}.athdf'
 
-# MHD_flag = True 
-MHD_flag = False
+# MHD_flag = False 
+MHD_flag = True
 
 # plot_range = [0.0, 10.0]
 
-out_dict = dr.get_array_athena(file_loc, fields=['rho', 'prs', 'vel'], MHD_flag=MHD_flag)
+out_dict = dr.get_array_athena(file_loc, fields=['rho', 'prs', 'vel', 'B'], MHD_flag=MHD_flag)
+# out_dict2 = dr.get_array_athena(file_loc2, fields=['rho', 'prs', 'vel'], MHD_flag=MHD_flag)
 
 T = (out_dict['prs']/out_dict['rho']) * un.KELVIN * un.mu
 
@@ -84,7 +98,8 @@ plt_dict = p2i.plot_slice(T, slice_dir =1, color_range=[4e4, 4e6], cmap='plasma'
 plt_dict['ax'].set_title('T')
 plt.show()
 
-plt_dict = p2i.plot_slice(out_dict['vel'][2], slice_dir =1, cmap='plasma')
+# plt_dict = p2i.plot_slice(out_dict['vel'][2], slice_dir =1, cmap='plasma')
+plt_dict = p2i.plot_slice(out_dict['vel'][2] - np.average(out_dict['vel'][2]), slice_dir =1, cmap='bwr')
 plt_dict['ax'].set_title('v_z')
 plt.show()
 
@@ -96,15 +111,33 @@ plt_dict = p2i.plot_slice(ao.magnitude(out_dict['vel']), slice_dir =1, cmap='pla
 plt_dict['ax'].set_title('|v|')
 plt.show()
 
+plt_dict = p2i.plot_slice(out_dict['B'][1], slice_dir =1, cmap='plasma')
+plt_dict['ax'].set_title('B')
+plt.show()
+
+# plt_dict = p2i.plot_slice(out_dict['rho'] -  out_dict2['rho'], slice_dir =1, cmap='bwr')
+# plt_dict = p2i.plot_slice(out_dict['vel'][2] -  out_dict2['vel'][2], slice_dir =1, \
+#            color_range=[-0.0001, 0.0001] ,cmap='bwr')
+# plt_dict['ax'].set_title('Diff')
+# plt.show()
+
+print('____________________________________________')
 print('Time             : ', out_dict['time'])
-print('Density contrast : ', out_dict['rho'].max()/out_dict['rho'].min())
-print('Pressure contrast: ', out_dict['prs'].max()/out_dict['prs'].min())
+print('____________________________________________')
+print('Density min : ', out_dict['rho'].min())
+print('Density max : ', out_dict['rho'].max())
+print('____________________________________________')
 print('Pressure min     : ', out_dict['prs'].min())
 print('Pressure max     : ', out_dict['prs'].max())
-print('Temp contrast    : ', T.max()/T.min())
+print('____________________________________________')
 print('Temp min         : ', T.min())
 print('Temp max         : ', T.max())
+print('____________________________________________')
+print('v_z min         : ', out_dict['vel'][2].min())
+print('v_z max         : ', out_dict['vel'][2].max())
+print('____________________________________________')
 print('Average v_z      : ', np.average(out_dict['vel'][2]))
+print('____________________________________________')
 
 # plt_dict = p2i.plot_slice(out_dict['vel'][2], slice_dir =1, cmap='plasma')
 # plt.show()

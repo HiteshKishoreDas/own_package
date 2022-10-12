@@ -40,6 +40,11 @@ res_list  =          [2048     , 2048     , 2048     , 2048    , 2048           
 N_list    =          [1        , 2        , 3        , 4       , 5                ]
 Chi_list  = np.array([100      , 100      , 100      , 100     , 16               ])
 label_list =          ['R1'     , 'R2'     , 'R3'     , 'R4'    , 'R2_low_Chi'     ]
+label_list =         [r'R1, $\chi_{\rm f} = 600$', 
+                      r'R2, $\chi_{\rm f} = 600$',  
+                      r'R3, $\chi_{\rm f} = 600$',  
+                      r'R4, $\chi_{\rm f} = 600$',  
+                      r'R2, $\chi_{\rm f} = 96$'  ]
 
 # wdir_list =          [wdir_R1  , wdir_R2  , wdir_R3  , wdir_R4 ]  #, wdir_R2_lowChif  ] 
 # dt_list   = np.array([5.0*1e-4 , 1.0*1e-3 , 5.0*1e-2 , 5.0     ]) #, 1.0*1e-3         ])

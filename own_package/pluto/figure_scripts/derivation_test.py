@@ -130,20 +130,23 @@ for i_t, t_arr in enumerate(fitx_data_list):
 
 
     if i_t not in [0,4]:
-        plt.scatter(si.R_list[i_t]*np.ones_like(fity_data_list[i_t]), fity_data_list[i_t]/fity_data_list[0],  \
+        plt.scatter(si.R_list[i_t]*g.ul*np.ones_like(fity_data_list[i_t]), fity_data_list[i_t]/fity_data_list[0],  \
                 # color=col_data_list[i_t], \
-                label=f'{i_t = }, {label_list[i_t]}')
+                label=f'{label_list[i_t]}')
 
 
 R_arr = np.logspace(-5,0, num=50)
 
-plt.plot(R_arr, 7 * (R_arr**(1/12)), color='tab:red', linestyle='dashed',\
+plt.plot(R_arr*g.ul, 4.5 * ((R_arr*g.ul)**(1/12)), color='tab:red', linestyle='dashed',\
          label=r'$R^{1/12}$')
 
 plt.yscale('log')
 plt.xscale('log')
 
-plt.xlabel('Radius')
+plt.xlabel(r'$R_{\rm cloud}$ (kpc)')
+plt.ylabel(r'$\frac{\Delta M/V}{(\Delta M/V)_{R1}}$', rotation=0)
+
+plt.ylim(2,10)
 
 plt.legend()
 
@@ -156,7 +159,7 @@ for i_t, t_arr in enumerate(fitx_data_list):
     if i_t in [1,4]:
         plt.scatter(si.Chi_list[i_t]*np.ones_like(fity_data_list[i_t]), fity_data_list[i_t]/fity_data_list[0],  \
                 # color=col_data_list[i_t], \
-                label=f'{i_t = }, {label_list[i_t]}')
+                label=f'{label_list[i_t]}')
 
 
 Chi_arr = np.logspace(1, 2.5, num=50)
@@ -166,11 +169,11 @@ plt.plot(Chi_arr, 0.3 * (Chi_arr**(1/2)), color='tab:red', linestyle='dashed', l
 plt.yscale('log')
 plt.xscale('log')
 
+plt.ylabel(r'$\frac{\Delta M/V}{(\Delta M/V)_{R1}}$', rotation=0)
 plt.xlabel(r'$\chi_{\rm f}$')
 
 plt.legend()
 
-#%%
 
 
 def yprime(x,y):
@@ -223,4 +226,3 @@ plt.ylim(1e-3, 1e3)
 
 plt.legend()
 
-# %%

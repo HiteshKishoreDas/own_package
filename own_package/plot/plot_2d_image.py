@@ -60,12 +60,12 @@ def plot_slice  (img_data, slice_dir=2, x_data=None, y_data=None, \
 
     slice_plot = img_data[slice_syntax]
 
-    # slc = ax.pcolormesh(x_data, y_data, slice_plot, cmap=cmap)
-    # slc = ax.pcolormesh(y_data, x_data, slice_plot, \
-    #                     vmin=color_range[0], vmax=color_range[1],  \
-    #                     cmap=cmap  )
-        
-    slc = ax.pcolormesh(x_data, y_data, slice_plot, \
+    if slice_dir==1:
+        slc = ax.pcolormesh(x_data, y_data, slice_plot, \
+                        vmin=color_range[0], vmax=color_range[1],  \
+                        cmap=cmap  )
+    else:
+        slc = ax.pcolormesh(y_data, x_data, slice_plot, \
                         vmin=color_range[0], vmax=color_range[1],  \
                         cmap=cmap  )
 
@@ -82,7 +82,6 @@ def plot_slice  (img_data, slice_dir=2, x_data=None, y_data=None, \
     return plt_dict
 
 
-
 if __name__ == "__main__":
 
     rho = np.load('../data_analysis/data/rho.npy')
@@ -96,8 +95,8 @@ if __name__ == "__main__":
 
     plt.style.use([pallette, plot_style, text_style])
 
-    plot_dict = plot_slice(rho, slice_dir=2)
-    plot_dict['cb'].set_label('Colorbar label') 
+    plot_dict = plot_slice(rho[:10,:20,:30], slice_dir=2)
+    plot_dict['cbar'].set_label('Colorbar label') 
     plot_dict['ax'].set_title('plot_slice test') 
     plot_dict['ax'].set_xlabel('x label') 
     plot_dict['ax'].set_ylabel('y label') 
