@@ -163,6 +163,7 @@ def parallel_plot_fn (n_snap: int,  \
                       plot_fn,  \
                       sim_loc: str, \
                       snap_name_fn, \
+                      data_read_fn, \
                       arg_dict={} , \
                       field_list: list = ['all'], \
                       save_dir: str = 'save_dir', \
@@ -192,7 +193,7 @@ def parallel_plot_fn (n_snap: int,  \
 
     file_loc = sim_loc + snap_name_fn(n_snap)
 
-    out_dict = dr.get_array_athena(file_loc, fields=field_list, MHD_flag=MHD_flag)
+    out_dict = data_read_fn(file_loc, fields=field_list, MHD_flag=MHD_flag)
     T = (out_dict['prs']/out_dict['rho']) * un.KELVIN * un.mu
 
 
@@ -227,7 +228,7 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['logT']['save_loc'] = f"{sim_loc}Plots/slices/logT/logT_{str(n_snap).zfill(5)}.png"
 
         quant_dict['logT']['arg_dict'] = {}
-        quant_dict['logT']['arg_dict']['img_data'] = np.log10(out_dict['T'])
+        quant_dict['logT']['arg_dict']['img_data'] = out_dict['logT']
         quant_dict['logT']['arg_dict']['cmap'] = cmap
         quant_dict['logT']['arg_dict']['view_dir'] = 1 
 

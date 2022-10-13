@@ -22,7 +22,7 @@ def get_array_yt(fn, fields, MHD_flag = False):
 
     out_dict = {}
 
-    if "coord" or "all" in fields:
+    if 'coord' or 'all' in fields:
         x_arr = np.array(all_data_level_0_hyd[('gas','x')])
         y_arr = np.array(all_data_level_0_hyd[('gas','y')])
         z_arr = np.array(all_data_level_0_hyd[('gas','z')])
@@ -31,25 +31,25 @@ def get_array_yt(fn, fields, MHD_flag = False):
 
         out_dict['coord'] = r_arr
 
-    if "rho" or "all" in fields:
+    if 'rho' or 'all' in fields:
         rho_arr  = np.array(all_data_level_0_hyd["density"])
         out_dict['rho'] = rho_arr
 
-    if "prs" or "all" in fields:
+    if 'prs' or 'all' in fields:
         P_arr    = np.array(all_data_level_0_hyd["press"])
         out_dict['prs']   = P_arr
 
-    if "T" or "logT" or "all" in fields:
+    if 'T' or 'logT' or 'all' in fields:
         rho_arr  = np.array(all_data_level_0_hyd["density"])
         P_arr    = np.array(all_data_level_0_hyd["press"])
         T_arr    = (P_arr/rho_arr) * un.KELVIN * un.mu
 
-        if "T" or "all" in fields:
+        if 'T' or 'all' in fields:
             out_dict['T'] = T_arr
-        if "logT" or "all" in fields:
+        if 'logT' or 'all' in fields:
             out_dict['logT'] = np.log10(T_arr)
 
-    if "vel" or "all" in fields:
+    if 'vel' or 'all' in fields:
         vel1_arr = np.array(all_data_level_0_hyd["vel1"])
         vel2_arr = np.array(all_data_level_0_hyd["vel2"])
         vel3_arr = np.array(all_data_level_0_hyd["vel3"])
@@ -58,7 +58,7 @@ def get_array_yt(fn, fields, MHD_flag = False):
 
         out_dict['vel'] = vel
 
-    if MHD_flag and ("B" or "all" in fields):
+    if MHD_flag and ('B' or 'all' in fields):
         Bcc1 = np.array(all_data_level_0_hyd["Bcc1"])
         Bcc2 = np.array(all_data_level_0_hyd["Bcc2"])
         Bcc3 = np.array(all_data_level_0_hyd["Bcc3"])
