@@ -9,6 +9,9 @@ package_abs_path = cwd[:-len(cwd.split('/')[-1])]
 sys.path.insert(0, f'{package_abs_path}athena/athena_vis_code/')
 import athena_read as ar
 
+sys.path.insert(0, f'{package_abs_path}utils/')
+import units as un
+
 def get_array_yt(fn, fields, MHD_flag = False):
 
     ds = yt.load(fn)
@@ -35,9 +38,16 @@ def get_array_yt(fn, fields, MHD_flag = False):
     if "prs" or "all" in fields:
         P_arr    = np.array(all_data_level_0_hyd["press"])
         out_dict['prs']   = P_arr
-    
-    # T_arr    = np.array(all_data_level_0_hyd["temp"])
-    # out_dict['T']   = T_arr
+
+    if "T" or "logT" or "all" in fields:
+        rho_arr  = np.array(all_data_level_0_hyd["density"])
+        P_arr    = np.array(all_data_level_0_hyd["press"])
+        T_arr    = (P_arr/rho_arr) * un.KELVIN * un.mu
+
+        if "T" or "all" in fields:
+            out_dict['T'] = T_arr
+        if "logT" or "all" in fields:
+            out_dict['logT'] = np.log10(T_arr)
 
     if "vel" or "all" in fields:
         vel1_arr = np.array(all_data_level_0_hyd["vel1"])

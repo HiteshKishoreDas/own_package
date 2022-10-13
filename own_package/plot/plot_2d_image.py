@@ -20,12 +20,26 @@ from timer import timer
 import units as un
 
 
-def plot_slice  (img_data, slice_dir=2, x_data=None, y_data=None, \
-                 z_data=None, z_slice=None, \
-                 ax_log= {'x_log': False, 'y_log':False, 'col_log':False}, \
-                 normalise_list = {'x_norm':[None], 'y_norm':[None]}, \
-                 color_range = [None, None],\
-                 cmap=cr.rainforest):
+def plot_slice  (img_data, \
+                 view_dir: int = 2, \
+                 x_data = None, y_data=None, z_data=None, \
+                 z_slice: int = None,\
+                 color_range: list = [None, None],\
+                 cmap = cr.rainforest):
+
+    """
+    Plot 2d slice plots for 3D data
+
+    Args:
+        img_data (numpy array): Numpy 3D array for the slice plot
+        view_dir (int, optional): Viewing direction, normal to the screen. Defaults to 2.
+        x_data (numpy array, optional): 1D numpy array to define vertices in x axis. Defaults to integer array.
+        y_data (numpy array, optional): 1D numpy array to define vertices in y axis. Defaults to integer array.
+        z_data (numpy array, optional): 1D numpy array to define vertices in z axis. Defaults to integer array.
+        z_slice (int, optional): Position in z-axis for slicing. Defaults to midpoint in z-axis.
+        color_range (list, optional): List for color range. Defaults to [None, None].
+        cmap (optional): Colormap name. Defaults to cr.rainforest.
+    """
 
     fig, ax = plt.subplots(nrows=1, ncols=1)
     plt.tight_layout()
@@ -33,9 +47,9 @@ def plot_slice  (img_data, slice_dir=2, x_data=None, y_data=None, \
     L = np.shape(img_data)
     dim = len(L) 
 
-    x_dir = (slice_dir+1)%dim
-    y_dir = (slice_dir+2)%dim
-    z_dir = slice_dir
+    x_dir = (view_dir+1)%dim
+    y_dir = (view_dir+2)%dim
+    z_dir = view_dir
 
     if x_data == None:
         x_data = np.linspace(0, L[x_dir], num=L[x_dir]+1)
@@ -60,7 +74,7 @@ def plot_slice  (img_data, slice_dir=2, x_data=None, y_data=None, \
 
     slice_plot = img_data[slice_syntax]
 
-    if slice_dir==1:
+    if view_dir==1:
         slc = ax.pcolormesh(x_data, y_data, slice_plot, \
                         vmin=color_range[0], vmax=color_range[1],  \
                         cmap=cmap  )
@@ -81,12 +95,26 @@ def plot_slice  (img_data, slice_dir=2, x_data=None, y_data=None, \
 
     return plt_dict
 
-def plot_projection (img_data, proj_dir=2, x_data=None, y_data=None, \
-                     z_data=None, weight_data=None,\
-                     ax_log= {'x_log': False, 'y_log':False, 'col_log':False}, \
-                     normalise_list = {'x_norm':[None], 'y_norm':[None]}, \
-                     color_range = [None, None],\
-                     cmap=cr.rainforest):
+def plot_projection (img_data, \
+                     view_dir:int = 2, \
+                     x_data = None, y_data = None, z_data = None, \
+                     weight_data = None,\
+                     color_range: list = [None, None],\
+                     cmap = cr.rainforest):
+
+    """
+    Plot 2d projection plots for 3D data
+
+    Args:
+        img_data (numpy array): Numpy 3D array for the projection plot
+        view_dir (int, optional): Viewing direction, normal to the screen. Defaults to 2.
+        x_data (numpy array, optional): 1D numpy array to define vertices in x axis. Defaults to integer array.
+        y_data (numpy array, optional): 1D numpy array to define vertices in y axis. Defaults to integer array.
+        z_data (numpy array, optional): 1D numpy array to define vertices in z axis. Defaults to integer array.
+        weight_data (numpy array, optional): 3D numpy array as weight for the averaging. Defaults to unit array.
+        color_range (list, optional): List for color range. Defaults to [None, None].
+        cmap (optional): Colormap name. Defaults to cr.rainforest.
+    """
 
     fig, ax = plt.subplots(nrows=1, ncols=1)
     plt.tight_layout()
@@ -94,9 +122,9 @@ def plot_projection (img_data, proj_dir=2, x_data=None, y_data=None, \
     L = np.shape(img_data)
     dim = len(L) 
 
-    x_dir = (proj_dir+1)%dim
-    y_dir = (proj_dir+2)%dim
-    z_dir = proj_dir
+    x_dir = (view_dir+1)%dim
+    y_dir = (view_dir+2)%dim
+    z_dir = view_dir
 
     if x_data == None:
         x_data = np.linspace(0, L[x_dir], num=L[x_dir]+1)
@@ -108,9 +136,9 @@ def plot_projection (img_data, proj_dir=2, x_data=None, y_data=None, \
     if weight_data == None:
         weight_data = np.ones_like(img_data)
 
-    proj_plot = np.average(img_data, weights=weight_data, axis=proj_dir)
+    proj_plot = np.average(img_data, weights=weight_data, axis=view_dir)
 
-    if proj_dir==1:
+    if view_dir==1:
         slc = ax.pcolormesh(x_data, y_data, proj_plot, \
                         vmin=color_range[0], vmax=color_range[1],  \
                         cmap=cmap  )
@@ -130,6 +158,164 @@ def plot_projection (img_data, proj_dir=2, x_data=None, y_data=None, \
     plt_dict['cbar'] = cbar
 
     return plt_dict
+
+def parallel_plot_fn (plot_fn,  \
+                      n_snap: int,  \
+                      sim_loc: str, \
+                      snap_name_fn, \
+                      arg_dict={} , \
+                      field_list: list = ['all'], \
+                      save_dir: str = 'save_dir', \
+                      MHD_flag: bool = False,       \
+                      n_start:int = 0,  \
+                      cmap = 'plasma'  ):
+    """
+    Function to iterate when parallelising plot routine
+
+    Args:
+        plot_fn (func): Function to do the plotting, supported functions: plot_slice, plot_projection
+        n_snap (int) : Snapshot number
+        sim_loc (str): Path to directory with simlulation data
+        snap_name_fn (func): Function that takes an int and returns name of file with data
+        arg_dict (dict, optional): Dictionary with additional arguments. Defaults to {}
+        field_list (list, optional): List fields to plot. Defaults to ['all'].
+        save_dir (str, optional): Directory name to save plots in. Defaults to 'save_dir'
+        MHD_flag (bool, optional): Magnetic field enabled or not. Defaults to False
+        n_start (int, optional): Starting snapshot number. Defaults to 0.
+        cmap (str, optional): Colormap name. Defaults to 'plasma'.
+    """
+
+
+    print(f"{n_snap = }")
+
+    print(f"Analysing files in {sim_loc}...")
+
+    file_loc = sim_loc + snap_name_fn(n_snap)
+
+    out_dict = dr.get_array_athena(file_loc, fields=field_list, MHD_flag=MHD_flag)
+    T = (out_dict['prs']/out_dict['rho']) * un.KELVIN * un.mu
+
+
+    #* Nested dictionary for plotting the different quantities
+
+    quant_dict = {}
+
+    if 'rho' or 'all' in field_list:
+        quant_dict['rho'] = {}
+        quant_dict['rho']['title'] = 'Log_10 Density'
+        quant_dict['rho']['save_loc'] = f"{sim_loc}Plots/slices/rho/rho_{str(n_snap).zfill(5)}.png"
+
+        quant_dict['rho']['arg_dict'] = {}
+        quant_dict['rho']['arg_dict']['img_data'] = np.log10(out_dict['rho'])
+        quant_dict['rho']['arg_dict']['color_range'] = [-5,-1]
+        quant_dict['rho']['arg_dict']['cmap'] = cmap
+        quant_dict['rho']['arg_dict']['view_dir'] = 1 
+
+    if 'prs' or 'all' in field_list:
+        quant_dict['prs'] = {}
+        quant_dict['prs']['title'] = 'Pressure'
+        quant_dict['prs']['save_loc'] = f"{sim_loc}Plots/slices/prs/prs_{str(n_snap).zfill(5)}.png"
+
+        quant_dict['prs']['arg_dict'] = {}
+        quant_dict['prs']['arg_dict']['img_data'] = np.log10(out_dict['rho'])
+        quant_dict['prs']['arg_dict']['cmap'] = cmap
+        quant_dict['prs']['arg_dict']['view_dir'] = 1 
+
+    if 'logT' or 'all' in field_list:
+        quant_dict['logT'] = {}
+        quant_dict['logT']['title'] = 'log_10 T'
+        quant_dict['logT']['save_loc'] = f"{sim_loc}Plots/slices/logT/logT_{str(n_snap).zfill(5)}.png"
+
+        quant_dict['logT']['arg_dict'] = {}
+        quant_dict['logT']['arg_dict']['img_data'] = np.log10(out_dict['T'])
+        quant_dict['logT']['arg_dict']['cmap'] = cmap
+        quant_dict['logT']['arg_dict']['view_dir'] = 1 
+
+    if 'vx' or 'all' in field_list:
+        quant_dict['vx'] = {}
+        quant_dict['vx']['title'] = 'v_x'
+        quant_dict['vx']['save_loc'] = f"{sim_loc}Plots/slices/vx/vx_{str(n_snap).zfill(5)}.png"
+
+        quant_dict['vx']['arg_dict'] = {}
+        quant_dict['vx']['arg_dict']['img_data'] = out_dict['vel'][0]
+        quant_dict['vx']['arg_dict']['cmap'] = cmap
+        quant_dict['vx']['arg_dict']['view_dir'] = 1 
+
+    if 'vy' or 'all' in field_list:
+        quant_dict['vy'] = {}
+        quant_dict['vy']['title'] = 'v_y'
+        quant_dict['vy']['save_loc'] = f"{sim_loc}Plots/slices/vy/vy_{str(n_snap).zfill(5)}.png"
+
+        quant_dict['vy']['arg_dict'] = {}
+        quant_dict['vy']['arg_dict']['img_data'] = out_dict['vel'][1]
+        quant_dict['vy']['arg_dict']['cmap'] = cmap
+        quant_dict['vy']['arg_dict']['view_dir'] = 1 
+
+    if 'vz' or 'all' in field_list:
+        quant_dict['vz'] = {}
+        quant_dict['vz']['title'] = 'v_z'
+        quant_dict['vz']['save_loc'] = f"{sim_loc}Plots/slices/vz/vz_{str(n_snap).zfill(5)}.png"
+
+        quant_dict['vz']['arg_dict'] = {}
+        quant_dict['vz']['arg_dict']['img_data'] = out_dict['vel'][2]
+        quant_dict['vz']['arg_dict']['cmap'] = cmap
+        quant_dict['vz']['arg_dict']['view_dir'] = 1 
+
+    if MHD_flag and ('Bx' or 'all' in field_list):
+        quant_dict['Bx'] = {}
+        quant_dict['Bx']['title'] = 'B_x'
+        quant_dict['Bx']['save_loc'] = f"{sim_loc}Plots/slices/Bx/Bx_{str(n_snap).zfill(5)}.png"
+
+        quant_dict['Bx']['arg_dict'] = {}
+        quant_dict['Bx']['arg_dict']['img_data'] = out_dict['B'][0]
+        quant_dict['Bx']['arg_dict']['cmap'] = cmap
+        quant_dict['Bx']['arg_dict']['view_dir'] = 1 
+
+    if MHD_flag and ('By' or 'all' in field_list):
+        quant_dict['By'] = {}
+        quant_dict['By']['title'] = 'B_y'
+        quant_dict['By']['save_loc'] = f"{sim_loc}Plots/slices/By/By_{str(n_snap).zfill(5)}.png"
+
+        quant_dict['By']['arg_dict'] = {}
+        quant_dict['By']['arg_dict']['img_data'] = out_dict['B'][1]
+        quant_dict['By']['arg_dict']['cmap'] = cmap
+        quant_dict['By']['arg_dict']['view_dir'] = 1 
+
+    if MHD_flag and ('Bz' or 'all' in field_list):
+        quant_dict['Bz'] = {}
+        quant_dict['Bz']['title'] = 'B_z'
+        quant_dict['Bz']['save_loc'] = f"{sim_loc}Plots/slices/Bz/Bz_{str(n_snap).zfill(5)}.png"
+
+        quant_dict['Bz']['arg_dict'] = {}
+        quant_dict['Bz']['arg_dict']['img_data'] = out_dict['B'][2]
+        quant_dict['Bz']['arg_dict']['cmap'] = cmap
+        quant_dict['Bz']['arg_dict']['view_dir'] = 1 
+
+
+    #* To loop over the different quantities and plot them
+    for key in quant_dict:
+
+        if n_snap==n_start:
+            try:
+                os.system(f"mkdir {sim_loc}Plots")
+                os.system(f"mkdir {sim_loc}Plots/{save_dir}")
+                os.system(f"mkdir {sim_loc}Plots/{save_dir}/{key}")
+            except:
+                print("Couldn't create the directory for {out_loc} ...")
+                # return
+
+        plt_dict = plot_fn(**quant_dict[key]['arg_dict'], **arg_dict)
+        plt_dict['ax'].set_title(quant_dict[key]['title'])
+        plt.savefig(quant_dict[key]['save_loc'])
+
+        plt.close()
+        plt.clf()
+        plt.cla()
+        del(plt_dict)
+
+        gc.collect()
+
+
 
 if __name__ == "__main__":
 
