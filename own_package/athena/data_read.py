@@ -108,8 +108,15 @@ def get_array_athena(fn, fields, MHD_flag = False):
         P_arr    = ds['press']
         out_dict['prs']   = P_arr
     
-    # T_arr    = np.array(all_data_level_0_hyd["temp"])
-    # out_dict['T']   = T_arr
+    if 'T' or 'logT' or 'all' in fields:
+        rho_arr  = ds['rho']
+        P_arr    = ds['press']
+        T_arr    = (P_arr/rho_arr) * un.KELVIN * un.mu
+
+        if 'T' or 'all' in fields:
+            out_dict['T'] = T_arr
+        if 'logT' or 'all' in fields:
+            out_dict['logT'] = np.log10(T_arr)
 
     if "vel" or "all" in fields:
         vel1_arr = ds["vel1"]
