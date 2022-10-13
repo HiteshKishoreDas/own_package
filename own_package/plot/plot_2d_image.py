@@ -159,8 +159,8 @@ def plot_projection (img_data, \
 
     return plt_dict
 
-def parallel_plot_fn (plot_fn,  \
-                      n_snap: int,  \
+def parallel_plot_fn (n_snap: int,  \
+                      plot_fn,  \
                       sim_loc: str, \
                       snap_name_fn, \
                       arg_dict={} , \
