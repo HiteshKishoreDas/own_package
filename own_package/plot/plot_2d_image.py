@@ -298,14 +298,16 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['Bz']['arg_dict']['cmap'] = cmap
         quant_dict['Bz']['arg_dict']['view_dir'] = 1 
 
+    if not(os.path.exists(f"{sim_loc}Plots")):
+        os.system(f"mkdir {sim_loc}Plots")
+    if not(os.path.exists(f"{sim_loc}Plots/{save_dir}")):
+        os.system(f"mkdir {sim_loc}Plots/{save_dir}")
 
     #* To loop over the different quantities and plot them
     for key in quant_dict:
 
-        if n_snap==n_start:
+        if not(os.path.exists(f"{sim_loc}Plots/{save_dir}/{key}")):
             try:
-                os.system(f"mkdir {sim_loc}Plots")
-                os.system(f"mkdir {sim_loc}Plots/{save_dir}")
                 os.system(f"mkdir {sim_loc}Plots/{save_dir}/{key}")
             except:
                 print("Couldn't create the directory for {out_loc} ...")
