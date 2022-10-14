@@ -7,6 +7,7 @@ import numpy as np
 import cmasher as cr
 import sys
 import os
+import gc
 
 import matplotlib as mt
 import matplotlib.pyplot as plt
@@ -193,7 +194,12 @@ def parallel_plot_fn (n_snap: int,  \
 
     file_loc = sim_loc + snap_name_fn(n_snap)
 
-    out_dict = data_read_fn(file_loc, fields=field_list, MHD_flag=MHD_flag)
+    try:
+        out_dict = data_read_fn(file_loc, fields=field_list, MHD_flag=MHD_flag)
+    except:
+        print(f"[plot_2d_image.py] File couln't be opened! ... \n{file_loc}...")
+        return
+
     T = (out_dict['prs']/out_dict['rho']) * un.KELVIN * un.mu
 
 
@@ -315,7 +321,9 @@ def parallel_plot_fn (n_snap: int,  \
         del(plt_dict)
 
         gc.collect()
-
+    
+    # del(quant_dict)
+    # gc.collect()
 
 
 if __name__ == "__main__":
