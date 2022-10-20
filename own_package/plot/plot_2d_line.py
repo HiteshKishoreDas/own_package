@@ -21,14 +21,55 @@ sys.path.insert(0, f'{package_abs_path}utils/')
 from timer import timer 
 import units as un
 
+sys.path.insert(0, f'{package_abs_path}data_analysis/')
+import array_operations as ao
 
-def plot_multiline(x_data_list, y_data_list, \
-                   color_list=None, \
-                   ax_log= {'x_log': False, 'y_log':False, 'col_log':False}, \
-                   normalise_list = {'x_norm':[None], 'y_norm':[None]}, \
-                   label_list = None, linestyle='solid', \
-                   mark_flag = False, markevery = 10, \
-                   cmap=cr.rainforest, new_fig=True, fig=None, ax=None):
+
+def plot_multiline(x_data_list: list,         \
+                   y_data_list: list,         \
+                   color_list: list = None,   \
+                   ax_log = {'x_log': False, 'y_log':False, 'col_log':False}, \
+                   normalise_list = {'x_norm':[None], 'y_norm':[None]},       \
+                   label_list: list = None,   \
+                   linestyle='solid',         \
+                   mark_flag: bool = False,   \
+                   markevery: int = 10,       \
+                   smooth_flag: bool = False, \
+                   smooth_window: int = 5,    \
+                   cmap = cr.rainforest,      \
+                   new_fig: bool = True,      \
+                   fig = None, ax = None      ):
+    """_summary_
+
+    Args:
+        x_data_list (list): list of 1D Numpy arrays with x-values 
+        y_data_list (list): list of 1D Numpy arrays with y-values
+
+        color_list  (list): list of 1D Numpy arrays with values for color
+
+        ax_log (dict): Dictionary to define scale of x-axis, y-axis and color
+        
+        normalise_list (dict): Dictionary to define list of normalisation constants 
+
+        label_list (dict): list of labels for the lines
+
+        linestyle (optional): list of strings to define linestyle. Defaults to 'solid'.
+
+        mark_flag (bool, optional): Flag to mark the lines with points. Defaults to False.
+        markevery (int, optional): Number of datapoints for which one marker will be places. Defaults to 10.
+
+        smooth_flag (bool, optional): Flag to define if lines will be smoothened or not. Defaults to False.
+        smooth_window (int, optional): Smoothening window. Defaults to 5.
+
+        cmap (optional): Colormap for linecolors. Defaults to cr.rainforest.
+
+        new_fig (bool, optional): Flag to define if a new figure needs to be created. Defaults to True.
+        fig (optional): figure object to be reused, if new_fig=False. Defaults to None.
+        ax (optional): axis object to be reused, if new_fig=False. Defaults to None.
+
+    Returns:
+        Dict: Dictionary with the figure and axis object
+    """
 
     line_border_color = mt.rcParams['lines.color']
     line_border_width = mt.rcParams['lines.linewidth'] + 1
@@ -77,10 +118,9 @@ def plot_multiline(x_data_list, y_data_list, \
 
     for i in range(L):
 
-        # ax.plot(x_data_list[i]/normalise_list['x_norm'][i], \
-        #         y_data_list[i]/normalise_list['y_norm'][i], \
-        #         linestyle = linestyle, \
-        #         color=line_border_color, linewidth = line_border_width)
+        if smooth_flag:
+            y_data_list[i] = ao.smoothen(y_data_list[i], window=smooth_window)
+            x_data_list[i] = x_data_list[i][int(smooth_window/2):-int(smooth_window/2)]
 
         if style_arr_flag:
             linestyle_i = linestyle[i]
@@ -104,4 +144,8 @@ def plot_multiline(x_data_list, y_data_list, \
     if ax_log['y_log']:
         ax.set_yscale('log')
 
-    return fig, ax
+    plt_dict = {}
+    plt_dict['fig'] = fig
+    plt_dict['ax']  = ax
+
+    return plt_dict

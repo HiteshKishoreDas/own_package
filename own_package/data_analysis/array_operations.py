@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def dot_product (A, B):
     A_dot_B  = A[0]*B[0]
     A_dot_B += A[1]*B[1]
@@ -62,3 +63,7 @@ def radial_vector(A_list):
     AdotR = AdotR/R
 
     return AdotR
+
+def smoothen (A, window):
+    A_smooth = np.convolve(A, np.ones(window)/window, mode='valid')
+    return A_smooth

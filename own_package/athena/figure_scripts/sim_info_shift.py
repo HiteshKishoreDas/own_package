@@ -27,9 +27,9 @@ T_cold    = 2*T_floor                   # For cold gas mass calculation
 T_cut_mul = 0.5                         # For cooling cutoff
 T_cut     = T_cut_mul*T_hot             # For cooling cutoff
 
-amb_rho   = np.array([1.6e-4])
+amb_rho   = np.array([1.6e-4]) 
 # Lambda_fac = np.array([1e4,5000,1000.0,500.0,100.0, 50.0, 10.0, 5.0, 1.0, 0.5, 0.1]) 
-Lambda_fac = np.array([1.0])
+Lambda_fac = np.array([1.0]) 
 
 # Density of the ambient medium
 
@@ -76,20 +76,20 @@ cloud_radius = R_lsh*l_sh
 
 # box_width  = 0.1 * np.array([100000.0, 50000.0, 10000.0, 5000.0, 1000.0, 500.0, 100.0, 50.0, 10.0, 5.0, 1.0, 0.5, 0.1])
 # box_width  = 0.1 * np.array([10000.0, 1000.0, 100.0, 10.0, 1.0, 0.1, 0.01, 0.001, 0.0001])
+# box_width  = 0.1 * np.array([10000.0, 1.0, 0.0001])
+box_width  = 0.1 * np.array([10000.0, \
+                             100.0  , \
+                             1.0    , \
+                             0.001  , \
+                             0.0001   ])
 
-box_width  = 0.1 * np.array([10000.0, 10000.0, \
-                             100.0  , 100.0  , \
-                             1.0    , 1.0    , \
-                             0.001  , 0.001  , \
-                             0.0001 , 0.0001   ])
+# shift_flag = np.array([1, 0, \
+#                        1, 0, \
+#                        1, 0, \
+#                        1, 0, \
+#                        1, 0  ])
 
-shift_flag = np.array([1, 0, \
-                       1, 0, \
-                       1, 0, \
-                       1, 0, \
-                       1, 0  ])
-
-box_length = 10*box_width
+box_length = 10*box_width 
 
 # Cooling flag
 cooling_flag = 1  # 1 for cooling and 0 for no cooling
@@ -100,7 +100,8 @@ cloud_flag   = 0  # 1 for a cloud and 0 for no cloud
                   # Cloud_init() is added(not added) to Source() depending on the flag 
 
 # Magnetic field flag
-B_flag       = 0  # 1 for adding magnetic fields
+B_flag       = 1  # 1 for adding magnetic fields
+shift_flag   = 1
 
 # Ma = np.array([0.1, 10])
 Ma = np.array([10])
@@ -135,12 +136,16 @@ v_shear         = 0.1022   # M*vt.cs_calc(T_hot,mu)
 # M  = 0.5     # Required Mach number
 M = v_shear/vt.cs_calc(T_hot, g.mu)     # Required Mach number
 
-v_m = 0.00238
-v_b = 0.00390
+
+shift_start= 10*t_cool_mix
+
+# v_m = 0.00238
+# v_b = 0.00390
 
 # v_shift = -0.01 * (box_width/box_width[4])
 # v_shift  = v_m*np.log10(box_width) + v_b
 # v_shift *= -1.0
+
 v_shift = 0.0
 
 knx_KH = 1.0
@@ -160,7 +165,7 @@ out_dt_arr = tlim/200
 rst_dt_arr = tlim/10
 
 # rseed
-rseed = 1
+rseed = 1 
 
 
 # Magnetic fields
@@ -178,7 +183,7 @@ B_z = np.array([ [ [0.0] *len(B_dir) ] *len(Ma)] *len(box_width) )
 
 if B_flag:
 
-    for i_l, Lam_fac in enumerate(box_width):
+    for i_l, Lam_fac in enumerate(box_width): 
 
         for i_b, beta in enumerate(beta_list):
 
@@ -188,7 +193,7 @@ if B_flag:
             # Assuming that cgs relation between B_mag and P_B is used
             B_mag = np.sqrt(P_B * 2.0)
 
-            for i_d, B_d in enumerate(B_dir):
+            for i_d, B_d in enumerate(B_dir): 
                if B_d=='x':
                    B_x[i_l, i_b, i_d] = B_mag
                elif B_d=='y':

@@ -118,21 +118,20 @@ class hst_data:
     
         # N_last = 2000
         aft_cut = np.copy(hst_var)
+        time = np.copy(self.time)
         cold_fraction = np.copy(self.cold_gas_fraction)
     
         box_full_hot  = np.argwhere(cold_fraction<cut_list[0])
 
         if len(box_full_hot)!=0:
-            aft_cut = aft_cut  [:np.min(box_full_hot)]
-            time    = self.time[:np.min(box_full_hot)]
-            cold_fraction = self.cold_gas_fraction[:np.min(box_full_hot)]
+            aft_cut = aft_cut [:np.min(box_full_hot)]
+            time    = time    [:np.min(box_full_hot)]
+            cold_fraction = cold_fraction[:np.min(box_full_hot)]
 
         box_full_cold = np.argwhere(cold_fraction>cut_list[1])
 
         if len(box_full_cold)!=0:
-            aft_cut = aft_cut  [:np.min(box_full_cold)]
-            time    = self.time[:np.min(box_full_cold)]
+            aft_cut = aft_cut [:np.min(box_full_cold)]
+            time    = time    [:np.min(box_full_cold)]
     
-        return time, aft_cut    
-            
-            
+        return time, aft_cut
