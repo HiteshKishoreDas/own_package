@@ -4,7 +4,7 @@ import sys
 class hst_data:
 
     def __init__(self, fn, ncells=[None, None, None], box_size=[None, None, None],\
-                 MHD_flag=False, cool_flag=False, shift_flag=False, verbose=False):
+                 MHD_flag=False, cool_flag=False, shift_flag=False, Chi=None, verbose=False):
 
         """Read hst and return structured numpy dict.
         Keyword Arguments:
@@ -39,8 +39,8 @@ class hst_data:
             self.ncell_y = ncells[1]
             self.ncell_z = ncells[2]
 
-        print('boxsize: ', type(box_size))
-        print('ncells : ', type(ncells))
+        # print('boxsize: ', type(box_size))
+        # print('ncells : ', type(ncells))
 
         if None in box_size:
             raise ValueError('hst_data() :: Invalid argument for box_size...')
@@ -49,6 +49,11 @@ class hst_data:
             self.box_size_y = box_size[1]
             self.box_size_z = box_size[2]
 
+
+        if Chi is None:
+            print("Assuming a Chi of 100...")
+            Chi = 100.0
+        self.Chi = Chi
 
         self.dict = r
 
@@ -67,9 +72,14 @@ class hst_data:
         self.E_tot = self.dict['tot-E']
 
         if cool_flag:
-            self.cold_gas          = self.dict['cold_gas']
+            self.cold_gas            = self.dict['cold_gas']
             # self.tcool_avg         = self.dict['tcool_sum']/cells
-            self.cold_gas_fraction = self.cold_gas/self.mass_tot
+            self.cold_gas_fraction   = self.cold_gas/self.mass_tot
+
+            #* Front position for a box size of 1.0
+            self.front_posn_fraction = self.cold_gas_fraction
+            self.front_posn_fraction /= self.Chi * (1-self.cold_gas_fraction) + self.cold_gas_fraction
+
             self.total_cooling = self.dict['total_cooling']
 
             #* Luminosity calculation
@@ -114,24 +124,34 @@ class hst_data:
 
 
 
-    def overflow_cut(self, hst_var, cut_list=[0.1, 0.998]):
+    def overflow_cut(self, hst_var, cut_var=None, cut_list=[0.1, 0.9]):
     
         # N_last = 2000
         aft_cut = np.copy(hst_var)
         time = np.copy(self.time)
-        cold_fraction = np.copy(self.cold_gas_fraction)
-    
+
+        if cut_var is None:
+            cut_var = self.cold_gas_fraction
+        cold_fraction = np.copy(cut_var)
+
+        if len(aft_cut) != len(time):
+            # This means hst_var is a derivative
+            dN = len(time) - len(aft_cut)
+            time          = time         [int(dN/2):-int(dN/2)]
+            cold_fraction = cold_fraction[int(dN/2):-int(dN/2)]
+
         box_full_hot  = np.argwhere(cold_fraction<cut_list[0])
 
         if len(box_full_hot)!=0:
-            aft_cut = aft_cut [:np.min(box_full_hot)]
-            time    = time    [:np.min(box_full_hot)]
-            cold_fraction = cold_fraction[:np.min(box_full_hot)]
+            aft_cut       = aft_cut       [:np.min(box_full_hot)]
+            time          = time          [:np.min(box_full_hot)]
+            cold_fraction = cold_fraction [:np.min(box_full_hot)]
 
         box_full_cold = np.argwhere(cold_fraction>cut_list[1])
 
         if len(box_full_cold)!=0:
             aft_cut = aft_cut [:np.min(box_full_cold)]
             time    = time    [:np.min(box_full_cold)]
-    
+
+
         return time, aft_cut

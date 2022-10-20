@@ -119,22 +119,25 @@ def plot_multiline(x_data_list: list,         \
     for i in range(L):
 
         if smooth_flag:
-            y_data_list[i] = ao.smoothen(y_data_list[i], window=smooth_window)
-            x_data_list[i] = x_data_list[i][int(smooth_window/2):-int(smooth_window/2)]
+            plot_y = ao.smoothen(y_data_list[i], window=smooth_window)
+            plot_x = x_data_list[i][int(smooth_window/2):-int(smooth_window/2)]
+        else:
+            plot_y = np.copy(y_data_list[i])
+            plot_x = np.copy(x_data_list[i])
 
         if style_arr_flag:
             linestyle_i = linestyle[i]
 
         if mark_flag: 
-            ax.plot(np.array(x_data_list[i])/np.array(normalise_list['x_norm'][i]), \
-                    np.array(y_data_list[i])/np.array(normalise_list['y_norm'][i]), '-o',\
+            ax.plot(np.array(plot_x)/np.array(normalise_list['x_norm'][i]), \
+                    np.array(plot_y)/np.array(normalise_list['y_norm'][i]), '-o',\
                     color=line_col[i],  linestyle=linestyle_i, \
                     label = label_list[i], markevery=markevery,  \
                     path_effects=[pe.Stroke(linewidth=line_border_width, \
                                             foreground=line_border_color), pe.Normal()])
         else:
-            ax.plot(np.array(x_data_list[i])/np.array(normalise_list['x_norm'][i]), \
-                    np.array(y_data_list[i])/np.array(normalise_list['y_norm'][i]), \
+            ax.plot(np.array(plot_x)/np.array(normalise_list['x_norm'][i]), \
+                    np.array(plot_y)/np.array(normalise_list['y_norm'][i]), \
                     color=line_col[i],  linestyle=linestyle_i, \
                     label = label_list[i], 
                     path_effects=[pe.Stroke(linewidth=line_border_width, \

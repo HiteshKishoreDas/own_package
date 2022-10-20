@@ -115,7 +115,7 @@ for i in range(len(si.box_width)):
         for B_fl in [True, False]:
         # for B_fl in [False]:
         # for B_fl in [True]:
-            for k in range(3):
+            for k in range(1):
             # for B_fl in [True]:
 
                 if not B_fl and k>0:
@@ -178,13 +178,13 @@ for i in range(len(si.box_width)):
 
                 #* From history file
                 # time, luminosity = hst.overflow_cut(hst, hst.luminosity)
-                # time, luminosity = hst.overflow_cut(hst.luminosity)
-                time, luminosity = overflow_cut(hst, i)
+                time, luminosity = hst.overflow_cut(hst.luminosity, \
+                                                    cut_var = hst.front_posn_fraction, \
+                                                    cut_list = [0.15,0.85] )
+                # time, luminosity = overflow_cut(hst, i)
 
-                # plot_dict['x_data_list'].append(time[-100:]/si.t_KH[i])
-                plot_dict['x_data_list'].append((hst.time/si.t_KH[i])[:-100])
-                # plot_dict['y_data_list'].append(luminosity[-100:])
-                plot_dict['y_data_list'].append(hst.shift_velocity[:-100])
+                plot_dict['x_data_list'].append(time/si.t_KH[i])
+                plot_dict['y_data_list'].append(luminosity)
 
                 plot_dict['col_list'].append(np.log10(si.box_width[i]))
 
@@ -199,7 +199,7 @@ for i in range(len(si.box_width)):
 
 
 
-                plot_dict['L_avg_plot_list'].append([L_avg for i in range(len(luminosity))])
+                plot_dict['L_avg_plot_list'].append([L_avg for i in range(len(plot_dict['x_data_list'][-1]))])
                 plot_dict['L_avg_list'].append(L_avg)
 
         # print(f'Box_width: {si.box_width[i_plot]} kpc, Da = {Da}')
@@ -212,10 +212,10 @@ plt_dict = p2l.plot_multiline(plot_dict['x_data_list'], plot_dict['y_data_list']
                               label_list=plot_dict['label_list'],    \
                               smooth_flag=True , smooth_window=11)
 
-# fig, ax  = p2l.plot_multiline(x_data_list, L_avg_plot_list,\
-#                               cmap='plasma', linestyle='dotted',\
-#                               color_list=col_list, \
-#                               new_fig=False, fig=fig, ax=ax)
+plt_dict = p2l.plot_multiline(plot_dict['x_data_list'], plot_dict['L_avg_plot_list'],\
+                              cmap='plasma', linestyle='dotted',\
+                              color_list=plot_dict['col_list'], \
+                              new_fig=False, fig=plt_dict['fig'], ax=plt_dict['ax'])
 
 # ax.legend(loc='lower left')
 # ax.set_xlim(0,12)
@@ -228,6 +228,8 @@ plt_dict['ax'].set_yscale('log')
 
 plt_dict['ax'].set_xlabel(r'$t/t_{\rm KH}$')
 plt_dict['ax'].set_ylabel(r'$Q$ (code units)')
+
+# plt_dict['ax'].legend()
 
 
 # from matplotlib.patches import Patch
@@ -257,8 +259,8 @@ legend_elements = [ Line2D([0], [0], color='tab:orange', lw=4, label=r'$\alpha=1
 #                     Line2D([0], [0], marker='X', color='w', markerfacecolor='tab:green' , label='Without shift', markersize=15), 
 #                     Line2D([0], [0], marker='D', color='w', markerfacecolor='tab:blue', label='With shift', markersize=15)  ] 
 
-plt.plot(Da_list, 1.65e-6*Da_list**0.5 , linestyle='dashed', color='tab:orange', zorder=-10,  label=r'$\alpha=1/2$')
-plt.plot(Da_list, 1.75e-6*Da_list**0.25, linestyle='dashed', color='tab:red'   , zorder=-10,  label=r'$\alpha=1/4$')
+plt.plot(Da_list, 1.7e-6*Da_list**0.5 , linestyle='dashed', color='tab:orange', zorder=-10,  label=r'$\alpha=1/2$')
+plt.plot(Da_list, 1.7e-6*Da_list**0.25, linestyle='dashed', color='tab:red'   , zorder=-10,  label=r'$\alpha=1/4$')
 
 plt.xscale('log')
 plt.yscale('log')
