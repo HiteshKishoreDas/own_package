@@ -3,8 +3,6 @@
 @Date: 2022-09-01 19:07:23 
 '''
 
-# TODO: Add function to plot multicolor line plots
-
 import numpy as np
 import cmasher as cr
 import sys

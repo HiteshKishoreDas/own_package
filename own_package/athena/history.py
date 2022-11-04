@@ -1,5 +1,13 @@
 import numpy as np
 import sys
+import os
+
+cwd = os.path.dirname(__file__)
+package_abs_path = cwd[:-len(cwd.split('/')[-1])]
+
+sys.path.insert(0, f'{package_abs_path}data_analysis/')
+import array_operations as ao
+    
 
 class hst_data:
 
@@ -83,8 +91,12 @@ class hst_data:
             self.total_cooling = self.dict['total_cooling']
 
             #* Luminosity calculation
-            dcool = np.roll(self.total_cooling, -1) - self.total_cooling 
-            dt    = np.roll(self.time, -1) - self.time
+            lum_smooth_win = 5
+            smooth_tot_cool = ao.smoothen(self.total_cooling, window=lum_smooth_win)
+            smooth_time     = self.time [int(lum_smooth_win/2):-int(lum_smooth_win/2)]
+
+            dcool = np.roll(smooth_tot_cool, -1) - smooth_tot_cool
+            dt    = np.roll(smooth_time, -1) - smooth_time
 
             dz = self.box_size_z / self.ncell_z
             dy = self.box_size_y / self.ncell_y
@@ -124,7 +136,9 @@ class hst_data:
 
 
 
-    def overflow_cut(self, hst_var, cut_var=None, cut_list=[0.1, 0.9]):
+    def overflow_cut(self, hst_var, \
+                     cut_var = None, cut_list:list = [0.1, 0.9], \
+                     smooth_flag: bool = False, smooth_window:int = 5):
     
         # N_last = 2000
         aft_cut = np.copy(hst_var)
@@ -132,22 +146,27 @@ class hst_data:
 
         if cut_var is None:
             cut_var = self.cold_gas_fraction
-        cold_fraction = np.copy(cut_var)
+        cut_var = np.copy(cut_var)
+
+        if smooth_flag:
+            cut_var = ao.smoothen(cut_var, window=smooth_window)
+            time    = time    [int(smooth_window/2):-int(smooth_window/2)]
+            aft_cut = aft_cut [int(smooth_window/2):-int(smooth_window/2)]
 
         if len(aft_cut) != len(time):
             # This means hst_var is a derivative
             dN = len(time) - len(aft_cut)
-            time          = time         [int(dN/2):-int(dN/2)]
-            cold_fraction = cold_fraction[int(dN/2):-int(dN/2)]
+            time    = time    [int(dN/2):-int(dN/2)]
+            cut_var = cut_var [int(dN/2):-int(dN/2)]
 
-        box_full_hot  = np.argwhere(cold_fraction<cut_list[0])
+        box_full_hot  = np.argwhere(cut_var<cut_list[0])
 
         if len(box_full_hot)!=0:
-            aft_cut       = aft_cut       [:np.min(box_full_hot)]
-            time          = time          [:np.min(box_full_hot)]
-            cold_fraction = cold_fraction [:np.min(box_full_hot)]
+            aft_cut = aft_cut [:np.min(box_full_hot)]
+            time    = time    [:np.min(box_full_hot)]
+            cut_var = cut_var [:np.min(box_full_hot)]
 
-        box_full_cold = np.argwhere(cold_fraction>cut_list[1])
+        box_full_cold = np.argwhere(cut_var>cut_list[1])
 
         if len(box_full_cold)!=0:
             aft_cut = aft_cut [:np.min(box_full_cold)]

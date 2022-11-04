@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def dot_product (A, B):
     A_dot_B  = A[0]*B[0]
     A_dot_B += A[1]*B[1]
@@ -67,3 +66,68 @@ def radial_vector(A_list):
 def smoothen (A, window):
     A_smooth = np.convolve(A, np.ones(window)/window, mode='valid')
     return A_smooth
+
+
+def array_column_sort(A, axis=0):
+
+    return A[A[:,axis].argsort()]
+
+
+def match_array(t_A, A, t_B, B):
+
+    if len(t_A)>=len(t_B):
+        #* Short array
+        short_t   = np.copy(t_B)
+        short_arr = np.copy(B)
+
+        #* Long array
+        long_t    = np.copy(t_A)
+        long_arr  = np.copy(A)
+    else:
+        #* Short array
+        short_t   = np.copy(t_A)
+        short_arr = np.copy(A)
+
+        #* Long array
+        long_t    = np.copy(t_B)
+        long_arr  = np.copy(B)
+
+    # #* Placeholder for final matched array
+    # match_arr = np.ones_like(short_arr, dtype=float) * -1
+
+    #* Array like long_arr, for index of match_arr corresponding to each element
+    ind_arr = np.ones_like(long_arr) * -1
+
+    def elements_greater_than(i):
+        return np.sum(np.greater_equal(i, short_t))
+
+    ind_arr += np.vectorize(elements_greater_than)(long_t)
+
+
+    #* Averaging the elements with same ind_arr values
+
+    def select_average(i):
+        return np.average(long_arr[np.argwhere(ind_arr==i)])
+
+    match_arr = np.vectorize(select_average)(np.array(range(len(short_arr))))
+    # print(long_arr[np.argwhere(ind_arr==1)])
+
+    return match_arr
+
+if __name__ == "__main__":
+
+    A   = np.array([0,1,4,1,4])
+    t_A = np.array([0,1,5,6,9])
+        
+    B   = np.array([0,4,2,1,4,15,9,7,7,9])
+    t_B = np.array([0,1,2,3,4,5,6,7,8,9])
+
+    match_arr = match_array(t_A,A,t_B,B)
+
+
+    print(f'{A         = }')
+    print(f'{B         = }\n')
+    print(f'{t_A       = }')
+    print(f'{t_B       = }\n')
+    # print(f'{ind_arr   = }')
+    print(f'{match_arr = }')

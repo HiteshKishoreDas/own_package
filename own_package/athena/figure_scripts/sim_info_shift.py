@@ -66,8 +66,8 @@ t_cool_cloud_fix = cf.tcool_calc(amb_rho_fix*chi_cold,T_floor,Z, Lambda_fac=Lamb
 l_sh = vt.cs_calc(T_floor,mu)*t_cool_cloud_fix
 
 
-cs_hot  = vt.cs_calc(T_floor, mu)
-cs_cold = vt.cs_calc(T_hot, mu)
+cs_cold  = vt.cs_calc(T_floor, mu)
+cs_hot = vt.cs_calc(T_hot, mu)
 
 cloud_radius = R_lsh*l_sh
 

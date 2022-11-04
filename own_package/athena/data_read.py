@@ -84,9 +84,13 @@ def get_array_uservar_yt(fn, MHD_flag = False):
     return out_dict
 
 
-def get_array_athena(fn, fields, MHD_flag = False):
+def get_array_athena(fn, fields, \
+                     MHD_flag = False, \
+                     trc_flag = False, trc_N = 1):
 
     ds = ar.athdf(fn)
+    # print(ds.keys())
+
     out_dict = {}
 
     out_dict['time'] = ds['Time']
@@ -135,6 +139,9 @@ def get_array_athena(fn, fields, MHD_flag = False):
         Bcc = [Bcc1,Bcc2,Bcc3]
 
         out_dict['B'] = Bcc
+
+    if trc_flag and ("trc" or "all" in fields):
+        out_dict['trc'] = [ds[f"r{i}"] for i in range(trc_N)]
 
     return out_dict
 

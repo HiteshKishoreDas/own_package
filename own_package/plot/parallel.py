@@ -33,3 +33,5 @@ def parallelise (fn, iter_list=None, processes=2):
     
     with Pool(processes) as pool:
         processed = pool.map(fn, iter_list)
+
+    return processed
