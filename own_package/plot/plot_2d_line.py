@@ -3,6 +3,7 @@
 @Date: 2022-09-01 19:07:23 
 '''
 
+from e13tools import isin
 import numpy as np
 import cmasher as cr
 import sys
@@ -27,7 +28,7 @@ def plot_multiline(x_data_list: list,         \
                    y_data_list: list,         \
                    color_list: list = None,   \
                    ax_log = {'x_log': False, 'y_log':False, 'col_log':False}, \
-                   normalise_list = {'x_norm':[None], 'y_norm':[None]},       \
+                   normalise_list = {'x_norm':None, 'y_norm':None},       \
                    label_list: list = None,   \
                    linestyle='solid',         \
                    mark_flag: bool = False,   \
@@ -91,18 +92,31 @@ def plot_multiline(x_data_list: list,         \
 
 
 
-    if None in normalise_list['x_norm']:
+    if isinstance(normalise_list['x_norm'], float):
+        print("plot_2d: float found in normalise_list['x_norm'] ...")
+        print(f"plot_2d: x-axis normalisation set to {normalise_list['x_norm']} ...")
+
+        normalise_list['x_norm'] = [normalise_list['x_norm'] for i in range(len(y_data_list))]
+
+    elif  normalise_list['x_norm'] is None:
         print("plot_2d: None found in normalise_list['x_norm'] ...")
         print("plot_2d: x-axis normalisation set to 1.0 ...")
 
         normalise_list['x_norm'] = [1.0 for i in range(len(y_data_list))]
 
-    if None in normalise_list['y_norm']:
+        
+    if isinstance(normalise_list['y_norm'], float):
+        print("plot_2d: float found in normalise_list['y_norm'] ...")
+        print(f"plot_2d: y-axis normalisation set to {normalise_list['y_norm']} ...")
+
+        normalise_list['y_norm'] = [normalise_list['y_norm'] for i in range(len(y_data_list))]
+
+    elif normalise_list['y_norm'] is None:
         print("plot_2d: None found in normalise_list['y_norm'] ...")
         print("plot_2d: y-axis normalisation set to 1.0 ...")
 
         normalise_list['y_norm'] = [1.0 for i in range(len(y_data_list))]
-        
+
 
     if label_list == None:
         label_list = [None for i in range(len(y_data_list))]

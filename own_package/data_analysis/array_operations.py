@@ -114,6 +114,11 @@ def match_array(t_A, A, t_B, B):
 
     return match_arr
 
+
+def gaussian_filter (A ):
+    pass
+
+
 if __name__ == "__main__":
 
     A   = np.array([0,1,4,1,4])

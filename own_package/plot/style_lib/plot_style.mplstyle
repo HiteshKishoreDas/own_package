@@ -55,3 +55,16 @@ figure.figsize:     10, 8  # figure size in inches
 #path.effects:
 
 
+
+## ***************************************************************************
+## * AXES                                                                    *
+## ***************************************************************************
+## Following are default face and edge colors, default tick sizes,
+## default font sizes for tick labels, and so on.  See
+## https://matplotlib.org/api/axes_api.html#module-matplotlib.axes
+
+axes.linewidth:     2.0     # edge line width
+#axes.grid:          False   # display grid or not
+#axes.grid.axis:     both    # which axis the grid should apply to
+#axes.grid.which:    major   # grid lines at {major, minor, both} ticks
+#axes.titlelocation: center  # alignment of the title: {left, right, center}
