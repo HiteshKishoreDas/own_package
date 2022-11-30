@@ -434,7 +434,8 @@ def parallel_plot_fn (n_snap: int,  \
                       field_list: list = ['all'], \
                       save_dir: str = 'save_dir', \
                       MHD_flag: bool = False,       \
-                      cmap = 'plasma'  ):
+                      cmap = 'plasma',\
+                      theme = 'bright'  ):
     """
     Function to iterate when parallelising plot routine
 
@@ -450,6 +451,19 @@ def parallel_plot_fn (n_snap: int,  \
         cmap (str, optional): Colormap name. Defaults to 'plasma'.
     """
 
+    style_lib  = f'{package_abs_path}/plot/style_lib/' 
+
+    if theme=='dark':
+        pallette   = style_lib + 'dark_pallette.mplstyle'
+    else:
+        pallette   = style_lib + 'bright_pallette.mplstyle'
+    plot_style = style_lib + 'plot_style.mplstyle'
+    text_style = style_lib + 'text.mplstyle'
+    
+    plt.style.use([pallette, plot_style, text_style])
+    
+    line_border_color = mt.rcParams['lines.color']
+    fig_face_color = mt.rcParams['figure.facecolor']
 
     print(f"{n_snap = }")
 
