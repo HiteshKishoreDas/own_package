@@ -548,7 +548,7 @@ def parallel_plot_fn (n_snap: int,  \
     if 'vy' or 'all' in field_list:
         quant_dict['vy'] = {}
         quant_dict['vy']['title'] = 'v_y'
-        quant_dict['vy']['save_loc'] = f"{sim_loc}Plots/slices/{save_dir}/vy_{str(n_snap).zfill(5)}.png"
+        quant_dict['vy']['save_loc'] = f"{sim_loc}Plots/{save_dir}/vy/vy_{str(n_snap).zfill(5)}.png"
 
         quant_dict['vy']['arg_dict'] = {}
         quant_dict['vy']['arg_dict']['img_data'] = out_dict['vel'][1]
@@ -560,7 +560,7 @@ def parallel_plot_fn (n_snap: int,  \
     if 'vz' or 'all' in field_list:
         quant_dict['vz'] = {}
         quant_dict['vz']['title'] = 'v_z'
-        quant_dict['vz']['save_loc'] = f"{sim_loc}Plots/slices/{save_dir}/vz_{str(n_snap).zfill(5)}.png"
+        quant_dict['vz']['save_loc'] = f"{sim_loc}Plots/{save_dir}/vz/vz_{str(n_snap).zfill(5)}.png"
 
         quant_dict['vz']['arg_dict'] = {}
         quant_dict['vz']['arg_dict']['img_data'] = out_dict['vel'][2]
