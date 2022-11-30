@@ -494,16 +494,19 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['rho']['arg_dict']['cmap'] = cmap
         quant_dict['rho']['arg_dict']['view_dir'] = 1 
 
-    if 'log_rho' or 'all' in field_list:
-        quant_dict['rho'] = {}
-        quant_dict['rho']['title'] = 'Log_10 Density'
-        quant_dict['rho']['save_loc'] = f"{sim_loc}Plots/{save_dir}/log_rho/log_rho_{str(n_snap).zfill(5)}.png"
+        print('rho added to dictionary....')
 
-        quant_dict['rho']['arg_dict'] = {}
-        quant_dict['rho']['arg_dict']['img_data'] = np.log10(out_dict['rho'])
-        quant_dict['rho']['arg_dict']['color_range'] = [-5,-1]
-        quant_dict['rho']['arg_dict']['cmap'] = cmap
-        quant_dict['rho']['arg_dict']['view_dir'] = 1 
+    if 'log_rho' or 'all' in field_list:
+        quant_dict['log_rho'] = {}
+        quant_dict['log_rho']['title'] = 'Log_10 Density'
+        quant_dict['log_rho']['save_loc'] = f"{sim_loc}Plots/{save_dir}/log_rho/log_rho_{str(n_snap).zfill(5)}.png"
+        quant_dict['log_rho']['arg_dict'] = {}
+        quant_dict['log_rho']['arg_dict']['img_data'] = np.log10(out_dict['rho'])
+        quant_dict['log_rho']['arg_dict']['color_range'] = [-5,-1]
+        quant_dict['log_rho']['arg_dict']['cmap'] = cmap
+        quant_dict['log_rho']['arg_dict']['view_dir'] = 1 
+
+        print('log_rho added to dictionary....')
 
     if 'prs' or 'all' in field_list:
         quant_dict['prs'] = {}
@@ -515,6 +518,8 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['prs']['arg_dict']['cmap'] = cmap
         quant_dict['prs']['arg_dict']['view_dir'] = 1 
 
+        print('prs added to dictionary....')
+
     if 'logT' or 'all' in field_list:
         quant_dict['logT'] = {}
         quant_dict['logT']['title'] = 'log_10 T'
@@ -524,6 +529,9 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['logT']['arg_dict']['img_data'] = out_dict['logT']
         quant_dict['logT']['arg_dict']['cmap'] = cmap
         quant_dict['logT']['arg_dict']['view_dir'] = 1 
+
+        print('logT added to dictionary....')
+
 
     if 'vx' or 'all' in field_list:
         quant_dict['vx'] = {}
@@ -535,6 +543,8 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['vx']['arg_dict']['cmap'] = cmap
         quant_dict['vx']['arg_dict']['view_dir'] = 1 
 
+        print('vx added to dictionary....')
+
     if 'vy' or 'all' in field_list:
         quant_dict['vy'] = {}
         quant_dict['vy']['title'] = 'v_y'
@@ -544,6 +554,8 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['vy']['arg_dict']['img_data'] = out_dict['vel'][1]
         quant_dict['vy']['arg_dict']['cmap'] = cmap
         quant_dict['vy']['arg_dict']['view_dir'] = 1 
+
+        print('vy added to dictionary....')
 
     if 'vz' or 'all' in field_list:
         quant_dict['vz'] = {}
@@ -555,6 +567,8 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['vz']['arg_dict']['cmap'] = cmap
         quant_dict['vz']['arg_dict']['view_dir'] = 1 
 
+        print('vz added to dictionary....')
+
     if MHD_flag and ('Bx' or 'all' in field_list):
         quant_dict['Bx'] = {}
         quant_dict['Bx']['title'] = 'B_x'
@@ -564,6 +578,8 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['Bx']['arg_dict']['img_data'] = out_dict['B'][0]
         quant_dict['Bx']['arg_dict']['cmap'] = cmap
         quant_dict['Bx']['arg_dict']['view_dir'] = 1 
+
+        print('Bx added to dictionary....')
 
     if MHD_flag and ('By' or 'all' in field_list):
         quant_dict['By'] = {}
@@ -575,6 +591,8 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['By']['arg_dict']['cmap'] = cmap
         quant_dict['By']['arg_dict']['view_dir'] = 1 
 
+        print('By added to dictionary....')
+
     if MHD_flag and ('Bz' or 'all' in field_list):
         quant_dict['Bz'] = {}
         quant_dict['Bz']['title'] = 'B_z'
@@ -584,6 +602,8 @@ def parallel_plot_fn (n_snap: int,  \
         quant_dict['Bz']['arg_dict']['img_data'] = out_dict['B'][2]
         quant_dict['Bz']['arg_dict']['cmap'] = cmap
         quant_dict['Bz']['arg_dict']['view_dir'] = 1 
+
+        print('Bz added to dictionary....')
 
 
 
@@ -605,6 +625,8 @@ def parallel_plot_fn (n_snap: int,  \
         plt_dict = plot_fn(**quant_dict[key]['arg_dict'], **arg_dict)
         plt_dict['ax'].set_title(quant_dict[key]['title'])
         plt.savefig(quant_dict[key]['save_loc'])
+
+        print(f"{key} saved for {n_snap = } ...")
 
         plt.close()
         plt.clf()
