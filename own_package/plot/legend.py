@@ -11,7 +11,7 @@ import os
 import matplotlib as mt
 import matplotlib.pyplot as plt
 
-def add_legend(plot_args_lst, legend_type='line', legend_loc = 'lower left', default_plot_args = {'color' : 'black'},
+def add_legend(plot_args_lst, ax=None, legend_type='line', legend_loc = 'lower left', default_plot_args = {'color' : 'black'},
                **kwargs):
     """Adds another legend to plot. (Stolen from Max! :D )
 
@@ -32,7 +32,9 @@ def add_legend(plot_args_lst, legend_type='line', legend_loc = 'lower left', def
                              default_plot_args = {'c' : 'k'})
     Will add two different line with 'HD' and 'MHD' as labels.
     """
-    ax = plt.gca()
+    if ax is None:
+        ax = plt.gca()
+
     leg = ax.get_legend()
 
     linelst = []
@@ -41,9 +43,9 @@ def add_legend(plot_args_lst, legend_type='line', legend_loc = 'lower left', def
             if k not in cargs:
                 cargs[k] = v
         if legend_type == 'point': 
-            l = plt.scatter(np.nan, np.nan, **cargs)
+            l = ax.scatter(np.nan, np.nan, **cargs)
         else:
-            l, = plt.plot(np.nan, **cargs)
+            l, = ax.plot(np.nan, **cargs)
 
         linelst.append(l)
 
@@ -54,7 +56,7 @@ def add_legend(plot_args_lst, legend_type='line', legend_loc = 'lower left', def
         o['loc'] = 'lower left'
         o['bbox_to_anchor'] = (0.5, 1.01)
 
-    plt.legend(handles = linelst, **o)
+    ax.legend(handles = linelst, **o)
     if leg is not None:
         ax.add_artist(leg) # Add old legend
 

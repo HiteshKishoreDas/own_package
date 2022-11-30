@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.ndimage as ndi
 
 def dot_product (A, B):
     A_dot_B  = A[0]*B[0]
@@ -115,11 +116,16 @@ def match_array(t_A, A, t_B, B):
     return match_arr
 
 
-def gaussian_filter (A ):
-    pass
+def gaussian_filter (A, sigma = 1.0 ):
+
+    A_gauss = ndi.gaussian_filter(A, sigma=sigma*0.5)
+
+    return A_gauss
 
 
 if __name__ == "__main__":
+
+    import matplotlib.pyplot as plt
 
     A   = np.array([0,1,4,1,4])
     t_A = np.array([0,1,5,6,9])
@@ -136,3 +142,15 @@ if __name__ == "__main__":
     print(f'{t_B       = }\n')
     # print(f'{ind_arr   = }')
     print(f'{match_arr = }')
+
+    # A_img = np.random.random((25,25))
+    A_img = np.zeros((25,25), dtype=float)
+    A_img[12,12] = 1.0
+
+    A_img_gauss = gaussian_filter(A_img, sigma=1.0)
+
+    plt.figure()
+    plt.imshow(A_img)
+
+    plt.figure()
+    plt.imshow(A_img_gauss)

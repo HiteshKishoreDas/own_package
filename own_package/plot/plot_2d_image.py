@@ -34,7 +34,7 @@ def plot_slice  (img_data, \
                  cbar_flag: bool = True, 
                  cmap = cr.rainforest, \
                  new_fig = True, ax=None, fig=None,  \
-                 kwargs = {}):
+                 kwargs = {}, cbar_args={}):
 
     """
     Plot 2d slice plots for 3D data
@@ -110,9 +110,9 @@ def plot_slice  (img_data, \
         # create an axes on the right side of ax. The width of cax will be 5%
         # of ax and the padding between cax and ax will be fixed at 0.05 inch.
         divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cax = divider.append_axes("right", size='5%', pad=0.05)
         
-        cbar = fig.colorbar(slc, cax=cax)
+        cbar = fig.colorbar(slc, cax=cax, **cbar_args)
         plt_dict['cbar'] = cbar
 
     return plt_dict
@@ -131,7 +131,7 @@ def plot_projection (img_data, \
                      cmap = cr.rainforest , \
                      cbar_flag: bool = True, \
                      new_fig = True, ax=None, fig=None, \
-                     kwargs = {}):
+                     kwargs = {}, cbar_args={}):
 
     """
     Plot 2d projection plots for 3D data
@@ -195,9 +195,9 @@ def plot_projection (img_data, \
         # create an axes on the right side of ax. The width of cax will be 5%
         # of ax and the padding between cax and ax will be fixed at 0.05 inch.
         divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cax = divider.append_axes("right", size="10%", pad=0.05)
         
-        cbar = fig.colorbar(slc, cax=cax)
+        cbar = fig.colorbar(slc, cax=cax, **cbar_args)
         plt_dict['cbar'] = cbar
 
     return plt_dict
@@ -434,7 +434,6 @@ def parallel_plot_fn (n_snap: int,  \
                       field_list: list = ['all'], \
                       save_dir: str = 'save_dir', \
                       MHD_flag: bool = False,       \
-                      n_start:int = 0,  \
                       cmap = 'plasma'  ):
     """
     Function to iterate when parallelising plot routine
@@ -448,7 +447,6 @@ def parallel_plot_fn (n_snap: int,  \
         field_list (list, optional): List fields to plot. Defaults to ['all'].
         save_dir (str, optional): Directory name to save plots in. Defaults to 'save_dir'
         MHD_flag (bool, optional): Magnetic field enabled or not. Defaults to False
-        n_start (int, optional): Starting snapshot number. Defaults to 0.
         cmap (str, optional): Colormap name. Defaults to 'plasma'.
     """
 
@@ -473,6 +471,16 @@ def parallel_plot_fn (n_snap: int,  \
     quant_dict = {}
 
     if 'rho' or 'all' in field_list:
+        quant_dict['rho'] = {}
+        quant_dict['rho']['title'] = 'Density'
+        quant_dict['rho']['save_loc'] = f"{sim_loc}Plots/slices/rho/rho_{str(n_snap).zfill(5)}.png"
+
+        quant_dict['rho']['arg_dict'] = {}
+        quant_dict['rho']['arg_dict']['img_data'] = out_dict['rho']
+        quant_dict['rho']['arg_dict']['cmap'] = cmap
+        quant_dict['rho']['arg_dict']['view_dir'] = 1 
+
+    if 'log_rho' or 'all' in field_list:
         quant_dict['rho'] = {}
         quant_dict['rho']['title'] = 'Log_10 Density'
         quant_dict['rho']['save_loc'] = f"{sim_loc}Plots/slices/rho/rho_{str(n_snap).zfill(5)}.png"

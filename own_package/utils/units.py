@@ -28,5 +28,16 @@ mH = 1.0
 
 g = 5/3
 
+def B_mag_fn (Ma, M, T_hot, amb_rho):
+
+    import numpy as np
+
+    beta_arr = (2/g) * (Ma/M)**2
+    P_th  = (T_hot/(KELVIN*mu))*amb_rho
+    P_B = P_th/beta_arr
+    # Assuming that cgs relation between B_mag and P_B is used
+    B_mag = np.sqrt(P_B * 2.0)
+
+    return B_mag
 
 # TODO: Move all these into a class, whose constructor takes Xsol, Ysol values

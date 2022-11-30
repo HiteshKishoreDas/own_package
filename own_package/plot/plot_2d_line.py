@@ -3,7 +3,6 @@
 @Date: 2022-09-01 19:07:23 
 '''
 
-from e13tools import isin
 import numpy as np
 import cmasher as cr
 import sys
@@ -37,7 +36,8 @@ def plot_multiline(x_data_list: list,         \
                    smooth_window: int = 5,    \
                    cmap = cr.rainforest,      \
                    new_fig: bool = True,      \
-                   fig = None, ax = None      ):
+                   fig = None, ax = None,      \
+                   kwargs = {}    ):
     """_summary_
 
     Args:
@@ -146,14 +146,16 @@ def plot_multiline(x_data_list: list,         \
                     color=line_col[i],  linestyle=linestyle_i, \
                     label = label_list[i], markevery=markevery,  \
                     path_effects=[pe.Stroke(linewidth=line_border_width, \
-                                            foreground=line_border_color), pe.Normal()])
+                                            foreground=line_border_color), pe.Normal()], \
+                    **kwargs)
         else:
             ax.plot(np.array(plot_x)/np.array(normalise_list['x_norm'][i]), \
                     np.array(plot_y)/np.array(normalise_list['y_norm'][i]), \
                     color=line_col[i],  linestyle=linestyle_i, \
                     label = label_list[i], 
                     path_effects=[pe.Stroke(linewidth=line_border_width, \
-                                            foreground=line_border_color), pe.Normal()])
+                                            foreground=line_border_color), pe.Normal()], \
+                    **kwargs)
     if ax_log['x_log']:
         ax.set_xscale('log')
     if ax_log['y_log']:
