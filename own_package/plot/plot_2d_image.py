@@ -431,7 +431,7 @@ def parallel_plot_fn (n_snap: int,  \
                       snap_name_fn, \
                       data_read_fn, \
                       arg_dict={} , \
-                      field_list: list = ['all'], \
+                      field_list: list = ['rho'],  #['all'], \
                       save_dir: str = 'save_dir', \
                       MHD_flag: bool = False,       \
                       cmap = 'plasma',\
@@ -477,26 +477,26 @@ def parallel_plot_fn (n_snap: int,  \
         print(f"[plot_2d_image.py] File couln't be opened! ... \n{file_loc}...")
         return
 
-    T = (out_dict['prs']/out_dict['rho']) * un.KELVIN * un.mu
-
-
     #* Nested dictionary for plotting the different quantities
 
     quant_dict = {}
 
-    if 'rho' or 'all' in field_list:
+    print(f'{field_list}')
+
+    if ('rho' in field_list) or ('all' in field_list):
         quant_dict['rho'] = {}
         quant_dict['rho']['title'] = 'Density'
         quant_dict['rho']['save_loc'] = f"{sim_loc}Plots/{save_dir}/rho/rho_{str(n_snap).zfill(5)}.png"
 
         quant_dict['rho']['arg_dict'] = {}
+        quant_dict['rho']['arg_dict']['color_range'] = [1.0,5.0]
         quant_dict['rho']['arg_dict']['img_data'] = out_dict['rho']
         quant_dict['rho']['arg_dict']['cmap'] = cmap
         quant_dict['rho']['arg_dict']['view_dir'] = 1 
 
         print('rho added to dictionary....')
 
-    if 'log_rho' or 'all' in field_list:
+    if ('log_rho' in field_list) or ('all' in field_list):
         quant_dict['log_rho'] = {}
         quant_dict['log_rho']['title'] = 'Log_10 Density'
         quant_dict['log_rho']['save_loc'] = f"{sim_loc}Plots/{save_dir}/log_rho/log_rho_{str(n_snap).zfill(5)}.png"
@@ -508,7 +508,7 @@ def parallel_plot_fn (n_snap: int,  \
 
         print('log_rho added to dictionary....')
 
-    if 'prs' or 'all' in field_list:
+    if ('prs' in field_list) or ('all' in field_list):
         quant_dict['prs'] = {}
         quant_dict['prs']['title'] = 'Pressure'
         quant_dict['prs']['save_loc'] = f"{sim_loc}Plots/{save_dir}/prs/prs_{str(n_snap).zfill(5)}.png"
@@ -520,7 +520,7 @@ def parallel_plot_fn (n_snap: int,  \
 
         print('prs added to dictionary....')
 
-    if 'logT' or 'all' in field_list:
+    if ('logT' in field_list) or ('all' in field_list):
         quant_dict['logT'] = {}
         quant_dict['logT']['title'] = 'log_10 T'
         quant_dict['logT']['save_loc'] = f"{sim_loc}Plots/{save_dir}/logT/logT_{str(n_snap).zfill(5)}.png"
@@ -533,7 +533,7 @@ def parallel_plot_fn (n_snap: int,  \
         print('logT added to dictionary....')
 
 
-    if 'vx' or 'all' in field_list:
+    if ('vx' in field_list) or ('all' in field_list):
         quant_dict['vx'] = {}
         quant_dict['vx']['title'] = 'v_x'
         quant_dict['vx']['save_loc'] = f"{sim_loc}Plots/{save_dir}/vx/vx_{str(n_snap).zfill(5)}.png"
@@ -545,7 +545,7 @@ def parallel_plot_fn (n_snap: int,  \
 
         print('vx added to dictionary....')
 
-    if 'vy' or 'all' in field_list:
+    if ('vy' in field_list) or ('all' in field_list):
         quant_dict['vy'] = {}
         quant_dict['vy']['title'] = 'v_y'
         quant_dict['vy']['save_loc'] = f"{sim_loc}Plots/{save_dir}/vy/vy_{str(n_snap).zfill(5)}.png"
@@ -557,7 +557,7 @@ def parallel_plot_fn (n_snap: int,  \
 
         print('vy added to dictionary....')
 
-    if 'vz' or 'all' in field_list:
+    if ('vz' in field_list) or ('all' in field_list):
         quant_dict['vz'] = {}
         quant_dict['vz']['title'] = 'v_z'
         quant_dict['vz']['save_loc'] = f"{sim_loc}Plots/{save_dir}/vz/vz_{str(n_snap).zfill(5)}.png"
@@ -569,7 +569,7 @@ def parallel_plot_fn (n_snap: int,  \
 
         print('vz added to dictionary....')
 
-    if MHD_flag and ('Bx' or 'all' in field_list):
+    if MHD_flag and (('Bx' in field_list) or ('all' in field_list)):
         quant_dict['Bx'] = {}
         quant_dict['Bx']['title'] = 'B_x'
         quant_dict['Bx']['save_loc'] = f"{sim_loc}Plots/slices/{save_dir}/Bx_{str(n_snap).zfill(5)}.png"
@@ -581,7 +581,7 @@ def parallel_plot_fn (n_snap: int,  \
 
         print('Bx added to dictionary....')
 
-    if MHD_flag and ('By' or 'all' in field_list):
+    if MHD_flag and (('By' in field_list) or ('all' in field_list)):
         quant_dict['By'] = {}
         quant_dict['By']['title'] = 'B_y'
         quant_dict['By']['save_loc'] = f"{sim_loc}Plots/slices/{save_dir}/By_{str(n_snap).zfill(5)}.png"
@@ -593,7 +593,7 @@ def parallel_plot_fn (n_snap: int,  \
 
         print('By added to dictionary....')
 
-    if MHD_flag and ('Bz' or 'all' in field_list):
+    if MHD_flag and (('Bz' in field_list) or ('all' in field_list)):
         quant_dict['Bz'] = {}
         quant_dict['Bz']['title'] = 'B_z'
         quant_dict['Bz']['save_loc'] = f"{sim_loc}Plots/slices/{save_dir}/Bz_{str(n_snap).zfill(5)}.png"

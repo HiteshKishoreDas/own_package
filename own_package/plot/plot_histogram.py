@@ -3,7 +3,6 @@
 @Date: 2022-11-24 14:07:23 
 '''
 
-from re import I
 import numpy as np
 import cmasher as cr
 import sys
