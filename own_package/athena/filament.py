@@ -30,7 +30,7 @@ package_abs_path = cwd[:-len(cwd.split('/')[-1])]
 
 sys.path.insert(0, f'{package_abs_path}data_analysis/')
 import clump_analysis as ca
-import structure_tensor_own as st
+import coherence as ch
 
 sys.path.insert(0, f'{package_abs_path}plot/')
 import plot_3d as pt
@@ -45,14 +45,14 @@ from units import KELVIN, mu
 
 #%%
 
-# file_loc  = '/afs/mpa/home/hitesh/remote/cobra/athena_fork_turb_box/turb_v2/'
-# file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_beta_100/'
+file_loc  = '/afs/mpa/home/hitesh/remote/cobra/athena_fork_turb_box/turb_v2/'
+file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_beta_100/'
 # file_loc += 'para_scan_Rlsh5_1000_res0_256_rseed_1_M_0.5_chi_100_hydro/'
 # file_loc += 'para_scan_Rlsh4_2500_res0_128_rseed_1_M_0.5_chi_100_hydro/'
-# file_loc += 'Turb.out2.00600.athdf'
+file_loc += 'Turb.out2.00600.athdf'
 
-file_loc1 = '../../../Turb.hydro.out2.00600.athdf'
-file_loc2 = '../../../Turb.mhd.out2.00600.athdf'
+# file_loc1 = '../../../Turb.hydro.out2.00600.athdf'
+# file_loc2 = '../../../Turb.mhd.out2.00600.athdf'
 
 
 MHD_flag = True
@@ -61,30 +61,22 @@ MHD_flag = False
 wnd_list = []
 coh_list = []
 
-for file_loc in [file_loc1, file_loc2]:
+file_loc_list = [file_loc]
 
-    out_dict = dr.get_array(file_loc, fields=["rho"],MHD_flag=MHD_flag)
+for file_loc in file_loc_list:
+
+    out_dict = dr.get_array_athena(file_loc, fields=["rho"],MHD_flag=MHD_flag)
 
     rho = out_dict['rho']
     # prs = out_dict['P']
 
     # T = (prs/rho) * KELVIN * mu
 
-    coh_list_i = []
-    wnd_list_i = []
 
-    L = np.array(np.shape(rho))
+    devices = 4*['cpu']
+    parallel_flag = False
+    coh_list_i, wnd_list_i = ch.frac_aniso_window_variation(inp_arr=rho, num=2, parallel_flag=parallel_flag, devices=devices)
 
-    for wnd in np.linspace(1.5,50.5, num=25):
-        # coh_avg = np.sum(st.coherence(rho, window=wnd))/np.product(L)
-        coh_avg = np.sum(st.fractional_anisotropy(rho, window=wnd))/np.product(L)
-
-        print(f'coh_avg: {coh_avg}')
-        print(f'wnd    : {wnd}')
-
-        coh_list_i.append(coh_avg)
-        wnd_list_i.append(wnd)
-        
     wnd_list.append(wnd_list_i)
     coh_list.append(coh_list_i)
 
@@ -92,7 +84,7 @@ for file_loc in [file_loc1, file_loc2]:
 plt.figure()
 
 plt.plot(wnd_list[0], coh_list[0], label='HD')
-plt.plot(wnd_list[1], coh_list[1], label='MHD')
+# plt.plot(wnd_list[1], coh_list[1], label='MHD')
 
 plt.xlabel('Window (in grid cells)')
 plt.ylabel('Anisotropy')
@@ -101,7 +93,8 @@ plt.ylabel('Anisotropy')
 # plt.xscale('log')
 plt.legend()
 
-plt.savefig('anisotropy.png')
+# plt.show()
+# plt.savefig('anisotropy.png')
 
 
 # %%

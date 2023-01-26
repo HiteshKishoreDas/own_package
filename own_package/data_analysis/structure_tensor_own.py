@@ -5,15 +5,10 @@ import matplotlib.pyplot as plt
 import os
 import sys
 
-from structure_tensor import eig_special_3d, structure_tensor_3d
-
 import array_operations as ao
 
 cwd = os.path.dirname(__file__)
 package_abs_path = cwd[:-len(cwd.split('/')[-1])]
-
-sys.path.insert(0, f'{package_abs_path}plot/')
-import plot_3d as pt
 
 sys.path.insert(0, f'{package_abs_path}data_analysis/')
 import array_operations as ao
@@ -24,7 +19,7 @@ from timer import timer
 # plt.style.use('../plot/plot_style.mplstyle')
 plt.style.use('dark_background')
 
-# TODO: Structure tensor
+# TODO: Maybe fix structure tensor
 
 def gauss(r, sigma):
 
@@ -149,100 +144,3 @@ def S_eig (S_arr):
 
     return S_eval_new, S_evec_new
 
-def coherence(inp_arr, sigma=1.5, window=5.5, algo_select='package'):
-
-    L = np.shape(inp_arr)
-    dim = len(L)
-
-    if algo_select=='own':
-        S_arr = structure_tensor(inp_arr)
-        S_eval, S_evec = S_eig(S_arr)
-    elif algo_select=='package':
-        S_arr = structure_tensor_3d(inp_arr, sigma=sigma, rho=window)
-        S_eval, S_evec = eig_special_3d(S_arr, full=True)
-
-    coh = [0]*dim
-    for i in range(dim):
-        j = np.mod(i+1, dim)
-
-        coh[i]  = (S_eval[i]-S_eval[j])**2
-        coh[i] /= (S_eval[i]+S_eval[j])**2
-
-    return np.array(coh)
-
-def fractional_anisotropy(inp_arr, sigma=1.5, window=5.5, algo_select='package'):
-
-    L = np.shape(inp_arr)
-    dim = len(L)
-
-    if algo_select=='own':
-        S_arr = structure_tensor(inp_arr)
-        S_eval, S_evec = S_eig(S_arr)
-    elif algo_select=='package':
-        S_arr = structure_tensor_3d(inp_arr, sigma=sigma, rho=window)
-        S_eval, S_evec = eig_special_3d(S_arr, full=True)
-
-    frac_an_num = 0
-    frac_an_den = 0
-
-    for i in range(dim):
-        j = np.mod(i+1, dim)
-
-        frac_an_num += (S_eval[i]-S_eval[j])**2
-        frac_an_den += S_eval[i]**2
-        
-    return np.sqrt(0.5*frac_an_num/frac_an_den)
-
-if __name__ == "__main__":
-
-    rho = np.load('data/rho.npy')
-
-    coh = coherence(rho)
-    coh_sum = np.sum(coh, axis=0)
-
-    def alpha_plot(c_arr, log_flag=False):
-        return pt.poly_alpha(c_arr,log_flag=log_flag, order=1,cut=10)
-
-    fig, ax, sc  = pt.render_scatter_3d(inp_arr = coh_sum*rho, \
-                             alpha_fn = alpha_plot,\
-                             cmap=cr.neon)
-
-    fig, ax, sc  = pt.render_scatter_3d(inp_arr = rho, \
-                             alpha_fn = pt.lin_alpha,\
-                             cmap=cr.neon)
-
-#     grad_rho = ao.gradient(rho)
-
-
-#     def grad_alpha(c_arr, log_flag=False):
-
-#         alpha0 = 1.0
-#         return alpha0*c_arr/c_arr.max()
-
-
-#     fig, ax, sc  = pt.scatter_3d(inp_arr = rho, \
-#                              cut = 25, \
-#                              col_data = grad_rho[0], \
-#                              cmap=cr.neon, \
-#                              above_cut=True)
-
-#     plt.show()
-
-#     grad_mag  = grad_rho[0]*grad_rho[0]
-#     grad_mag += grad_rho[1]*grad_rho[1]
-#     grad_mag += grad_rho[2]*grad_rho[2]
-#     grad_mag  = np.sqrt(grad_mag)
-
-#     grad_cut = np.max(grad_mag) + 1 
-
-# #    if True:
-# #        %matplotlib qt
-
-#     fig, ax, sc  = pt.render_scatter_3d(inp_arr = grad_mag, \
-#                              alpha_fn = grad_alpha,\
-#                              cmap=cr.neon)
-
-#     # ax.get_yaxis().set_visible(False)
-
-#     fig.savefig('filament_grad.png')
-#     plt.show()

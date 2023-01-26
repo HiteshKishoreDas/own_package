@@ -119,6 +119,7 @@ def match_array(t_A, A, t_B, B):
 def gaussian_filter (A, sigma = 1.0 ):
 
     A_gauss = ndi.gaussian_filter(A, sigma=sigma*0.5)
+    # In sp.ndimage.gaussian_filter(), sigma of 1.0 give a standard deviation of 2.0 cells.
 
     return A_gauss
 
