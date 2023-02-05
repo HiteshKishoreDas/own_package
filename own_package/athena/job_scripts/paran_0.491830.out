@@ -1,0 +1,131 @@
+No Modulefiles Currently Loaded.
+N_procs set  : 8 processors...
+file_int set : 0...
+test_array_type : random...
+i_wnd  : 0
+wnd    : 4.500000000000001
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06320454925298691
+i_wnd  : 1
+wnd    : 5.174474956162649
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06317899376153946
+i_wnd  : 2
+wnd    : 5.950042460434318
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06312514841556549
+i_wnd  : 3
+wnd    : 6.841854599915947
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06311134994029999
+i_wnd  : 4
+wnd    : 7.867334506882504
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06312508881092072
+i_wnd  : 5
+wnd    : 9.046516750581718
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06309052556753159
+i_wnd  : 6
+wnd    : 10.402438748086887
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06318902969360352
+i_wnd  : 7
+wnd    : 11.961590841109228
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.063462994992733
+i_wnd  : 8
+wnd    : 13.754433831818703
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06347371637821198
+i_wnd  : 9
+wnd    : 15.815994088653804
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06378738582134247
+i_wnd  : 10
+wnd    : 18.18654784856791
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06337986141443253
+i_wnd  : 11
+wnd    : 20.91240808477073
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06311415880918503
+i_wnd  : 12
+wnd    : 24.04682931282209
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06286802142858505
+i_wnd  : 13
+wnd    : 27.65104801207017
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06317703425884247
+i_wnd  : 14
+wnd    : 31.7954789889129
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06311549246311188
+i_wnd  : 15
+wnd    : 36.56109105496122
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06399720162153244
+i_wnd  : 16
+wnd    : 42.04098889641756
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06563503295183182
+i_wnd  : 17
+wnd    : 48.34223203929433
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06761915981769562
+i_wnd  : 18
+wnd    : 55.587926447184905
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06780415773391724
+i_wnd  : 19
+wnd    : 63.91962961465991
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.06570758670568466
+i_wnd  : 20
+wnd    : 73.50011614405555
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.05943881347775459
+i_wnd  : 21
+wnd    : 84.51655783610249
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.050981730222702026
+i_wnd  : 22
+wnd    : 97.18418042310762
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.044694606214761734
+i_wnd  : 23
+wnd    : 111.75046838545836
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.04410804435610771
+i_wnd  : 24
+wnd    : 128.5
+All good at block_size = 128
+All good at S_evec and s_eval
+coh_avg: 0.04610254988074303
+Elapsed: 0hrs 25min 59sec
+Boom!

@@ -12,6 +12,8 @@
 
 #*_________________________________________________
 
+from cProfile import label
+from re import I
 import matplotlib
 import matplotlib as mt
 import matplotlib.pyplot as plt
@@ -21,6 +23,8 @@ import scipy.ndimage.measurements as sm
 import cmasher as cr 
 import sys
 import os
+
+from sympy import O
 
 cwd = os.path.dirname(__file__)
 package_abs_path = cwd[:-len(cwd.split('/')[-1])]
@@ -33,9 +37,8 @@ import plot_3d as pt
 
 
 
-#* Returns number of clumps and label array for any given array
-
-def clump_finder_scipy(arr,arr_cut,above_cut=False):
+#* Clump finder from scipy 
+def clump_finder_scipy(arr,arr_cut, above_cut=False):
     # arr      : Input array
     # arr_cut  : Cutoff for defining clumps
     # above_cut: True if values above arr_cut are clumps, False otherwise
@@ -49,30 +52,66 @@ def clump_finder_scipy(arr,arr_cut,above_cut=False):
 
     return n_blob,label_arr
 
+#* Parent function for all clump finder functions
+#* Returns number of clumps and label array for any given array
+def clump_finder(arr,arr_cut, method='scipy', above_cut=False):
+
+    if method=='scipy':
+        return clump_finder_scipy(arr,arr_cut, above_cut=False)
+    else:
+        print('clump_analysis.py::clump_finder(): Invalid "method", using default("scipy")... ')
+        return clump_finder_scipy(arr,arr_cut, above_cut=False)
+
+#* Returns label array after selecting the specific clump
+def clump_select(clump_num, label_arr):
+
+    label_arr_cp = np.copy(label_arr)
+    label_arr_cp[label_arr!=clump_num] = 0
+
+    return label_arr_cp
+
+def clump_center(label_arr):
+
+    label_arr_cp = np.copy(label_arr)
+    label_arr_cp[label_arr>0] == 1
+    L = np.shape(label_arr)
+
+    grid_arr = np.indices(np.shape(label_arr))
+
+    com = [0,0,0]
+    # com[0] = int(L[0]/2) - int(np.average(grid_arr[0][label_arr_cp]))
+    com[1] = int(L[1]/2) - int(np.average(grid_arr[1][label_arr_cp]))
+    # com[2] = int(L[2]/2) - int(np.average(grid_arr[2][label_arr_cp]))
+    com[0] = int(np.average(grid_arr[0][label_arr_cp]))
+    com[1] = int(np.average(grid_arr[1][label_arr_cp]))
+    com[2] = int(np.average(grid_arr[2][label_arr_cp]))
+
+    # label_arr_cp = np.roll(label_arr_cp, shift=tuple(com), axis=(2,1,0))
+
+    return label_arr_cp, com
 
 
+# #* Plots the label arr of clumps for any given array
 
-#* Plots the label arr of clumps for any given array
+# def clump_find_plot(arr, arr_cut, above_cut, interactive=False):
+#     # arr      : Input array
+#     # arr_cut  : Cutoff for defining clumps
+#     # above_cut: True if values above arr_cut are clumps, False otherwise
 
-def clump_find_plot(arr, arr_cut, above_cut, interactive=False):
-    # arr      : Input array
-    # arr_cut  : Cutoff for defining clumps
-    # above_cut: True if values above arr_cut are clumps, False otherwise
+#     # if interactive:
+#         # %matplotlib qt 
 
-    # if interactive:
-        # %matplotlib qt 
+#     # matplotlib.interactive('True')
 
-    # matplotlib.interactive('True')
+#     n_blob_sp, label_arr_sp = clump_finder(arr, arr_cut, above_cut)
+#     print(f'No. of clumps: {n_blob_sp}')
 
-    n_blob_sp, label_arr_sp = clump_finder_scipy(arr, arr_cut, above_cut)
-    print(f'No. of clumps: {n_blob_sp}')
+#     fig, ax  = pt.scatter_3d(arr, arr_cut, arr, cmap=cr.neon, above_cut=above_cut)#, interactive=interactive)
+#     plt.show()
 
-    fig, ax  = pt.scatter_3d(arr, arr_cut, arr, cmap=cr.neon, above_cut=above_cut)#, interactive=interactive)
-    plt.show()
-
-    fig, ax  = pt.scatter_3d(label_arr_sp, 0, label_arr_sp, cmap=cr.neon, above_cut=True)#, interactive=interactive)
-    # above_cut in this line will always be True
-    plt.show()
+#     fig, ax  = pt.scatter_3d(label_arr_sp, 0, label_arr_sp, cmap=cr.neon, above_cut=True)#, interactive=interactive)
+#     # above_cut in this line will always be True
+#     plt.show()
 
 
 # TODO: Function to calculate shear
@@ -237,6 +276,8 @@ def clump_hist (label_arr, dx, rho, T, n_bins, dim=3):
 
 if __name__ == "__main__":
 
+    plt.style.use('dark_background') 
+
     CONST_pc  = 3.086e18
     CONST_yr  = 3.154e7
     CONST_amu = 1.66053886e-24
@@ -270,36 +311,61 @@ if __name__ == "__main__":
     cut = 5e4
     # clump_find_plot(test_arr, cut, above_cut=True)
 
-    n_blob_sp, label_arr_sp = clump_finder_scipy(T, cut, above_cut=False)
+    n_blob_sp, label_arr_sp = clump_finder(T, cut, above_cut=False)
 
-    # clump_find_plot(T, cut, above_cut=False)#, interactive=True)
-    plt.style.use('dark_background') 
+    def alpha_plot(c_arr, log_flag=False):
+        return pt.poly_alpha(c_arr,log_flag=log_flag, order=1, cut=0)#,cut=np.sqrt(frac_aniso.min()*frac_aniso.max()))
 
-    v1 = np.load('data/v1.npy')
-    v2 = np.load('data/v2.npy')
-    v3 = np.load('data/v3.npy')
 
-    v_arr = [v1,v2,v3]
+    clump_num = 19 
 
-    nbr_arr = boundary_detect(label_arr_sp)
+    fig, ax, sc  = pt.render_scatter_3d(inp_arr = clump_select(clump_num, label_arr_sp), \
+                             alpha_fn = alpha_plot,\
+                             cmap="Paired")
 
-    shear_dict, shear_map = shear_calc(label_arr_sp, v_arr)
+    # fig, ax, sc  = pt.render_scatter_3d(inp_arr = label_arr_sp, \
+    #                          alpha_fn = alpha_plot,\
+    #                          cmap="Paired")
 
-    def grad_alpha(c_arr):
 
-        alpha0 = 1.0
-        alp = alpha0 * (c_arr-c_arr.min())/(c_arr.max()-c_arr.min())
-        alp[c_arr==0] = 0.0
-        return alp
+    label_arr_shifted, com = clump_center(clump_select(clump_num, label_arr_sp))
+    fig, ax, sc  = pt.render_scatter_3d(inp_arr = label_arr_shifted, \
+                             alpha_fn = alpha_plot,\
+                             cmap="Paired")
 
-    plt.hist(np.array(shear_dict['shear_vmag']))
+
+
+    norm = mt.colors.Normalize(vmin=label_arr_sp.min(), vmax=label_arr_sp.max())
+    fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap="Paired"), ax=ax)
     plt.show()
 
-    # %matplotlib qt 
+    # # clump_find_plot(T, cut, above_cut=False)#, interactive=True)
 
-    fig, ax, sc  = pt.render_scatter_3d(inp_arr = shear_map, \
-                             alpha_fn = grad_alpha,\
-                             cmap=cr.neon)
-    norm = mt.colors.Normalize(vmin=shear_map.min(), vmax=shear_map.max())
-    fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap=cr.neon), ax=ax)
-    plt.show()
+    # v1 = np.load('data/v1.npy')
+    # v2 = np.load('data/v2.npy')
+    # v3 = np.load('data/v3.npy')
+
+    # v_arr = [v1,v2,v3]
+
+    # nbr_arr = boundary_detect(label_arr_sp)
+
+    # shear_dict, shear_map = shear_calc(label_arr_sp, v_arr)
+
+    # def grad_alpha(c_arr, log_flag=False):
+
+    #     alpha0 = 1.0
+    #     alp = alpha0 * (c_arr-c_arr.min())/(c_arr.max()-c_arr.min())
+    #     alp[c_arr==0] = 0.0
+    #     return alp
+
+    # plt.hist(np.array(shear_dict['shear_vmag']))
+    # plt.show()
+
+    # # %matplotlib qt 
+
+    # fig, ax, sc  = pt.render_scatter_3d(inp_arr = shear_map, \
+    #                          alpha_fn = grad_alpha,\
+    #                          cmap=cr.neon)
+    # norm = mt.colors.Normalize(vmin=shear_map.min(), vmax=shear_map.max())
+    # fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap=cr.neon), ax=ax)
+    # plt.show()

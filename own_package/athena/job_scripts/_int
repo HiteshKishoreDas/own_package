@@ -1,0 +1,70 @@
+No Modulefiles Currently Loaded.
+N_procs set  : 8 processors...
+file_int set : 0...
+i_wnd  : 0
+wnd    : 1.5
+All good at block_size = 128
+N_procs set  : 8 processors...
+file_int set : 0...
+i_wnd  : 0
+wnd    : 1.5
+All good at block_size = 128
+N_procs set  : 8 processors...
+file_int set : 0...
+i_wnd  : 0
+wnd    : 1.5
+All good at block_size = 128
+All good at S_evec and s_eval
+All good at len(frac_an_num) = 256
+coh_avg: 0.8687375783920288
+i_wnd  : 1
+wnd    : 15.61111111111111
+All good at block_size = 128
+All good at S_evec and s_eval
+All good at len(frac_an_num) = 256
+coh_avg: 0.8687375783920288
+i_wnd  : 1
+wnd    : 15.61111111111111
+All good at block_size = 128
+All good at S_evec and s_eval
+All good at len(frac_an_num) = 256
+coh_avg: 0.8687375783920288
+i_wnd  : 1
+wnd    : 15.61111111111111
+All good at block_size = 128
+All good at S_evec and s_eval
+All good at len(frac_an_num) = 256
+coh_avg: 0.28297871351242065
+i_wnd  : 2
+wnd    : 29.72222222222222
+All good at block_size = 128
+All good at S_evec and s_eval
+All good at len(frac_an_num) = 256
+coh_avg: 0.28297871351242065
+i_wnd  : 2
+wnd    : 29.72222222222222
+All good at block_size = 128
+All good at S_evec and s_eval
+All good at len(frac_an_num) = 256
+coh_avg: 0.28297871351242065
+i_wnd  : 2
+wnd    : 29.72222222222222
+All good at block_size = 128
+All good at S_evec and s_eval
+All good at len(frac_an_num) = 256
+coh_avg: 0.25566408038139343
+i_wnd  : 3
+wnd    : 43.83333333333333
+All good at block_size = 128
+All good at S_evec and s_eval
+All good at len(frac_an_num) = 256
+coh_avg: 0.25566408038139343
+i_wnd  : 3
+wnd    : 43.83333333333333
+All good at block_size = 128
+All good at S_evec and s_eval
+All good at len(frac_an_num) = 256
+coh_avg: 0.25566408038139343
+i_wnd  : 3
+wnd    : 43.83333333333333
+All good at block_size = 128

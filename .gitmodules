@@ -1,0 +1,3 @@
+[submodule "own_package/utils/structure_tensor_fork"]
+	path = own_package/utils/structure_tensor_fork
+	url = git@github.com:HiteshKishoreDas/structure-tensor.git
