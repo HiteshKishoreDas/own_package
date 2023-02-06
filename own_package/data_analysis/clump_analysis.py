@@ -12,19 +12,16 @@
 
 #*_________________________________________________
 
-from cProfile import label
-from re import I
 import matplotlib
 import matplotlib as mt
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.ndimage.measurements as sm
 
+
 import cmasher as cr 
 import sys
 import os
-
-from sympy import O
 
 cwd = os.path.dirname(__file__)
 package_abs_path = cwd[:-len(cwd.split('/')[-1])]
@@ -73,22 +70,85 @@ def clump_select(clump_num, label_arr):
 def clump_center(label_arr):
 
     label_arr_cp = np.copy(label_arr)
-    label_arr_cp[label_arr>0] == 1
+    label_arr_cp[label_arr>0] = 1
     L = np.shape(label_arr)
 
     grid_arr = np.indices(np.shape(label_arr))
 
     com = [0,0,0]
-    # com[0] = int(L[0]/2) - int(np.average(grid_arr[0][label_arr_cp]))
-    com[1] = int(L[1]/2) - int(np.average(grid_arr[1][label_arr_cp]))
-    # com[2] = int(L[2]/2) - int(np.average(grid_arr[2][label_arr_cp]))
-    com[0] = int(np.average(grid_arr[0][label_arr_cp]))
-    com[1] = int(np.average(grid_arr[1][label_arr_cp]))
-    com[2] = int(np.average(grid_arr[2][label_arr_cp]))
+    com[0] = int(L[0]/2) - int(np.average(grid_arr[0][label_arr_cp==1]))
+    com[1] = int(L[1]/2) - int(np.average(grid_arr[1][label_arr_cp==1]))
+    com[2] = int(L[2]/2) - int(np.average(grid_arr[2][label_arr_cp==1]))
+    # com[0] = int(np.average(grid_arr[0][label_arr_cp==1]))
+    # com[1] = int(np.average(grid_arr[1][label_arr_cp==1]))
+    # com[2] = int(np.average(grid_arr[2][label_arr_cp==1]))
 
-    # label_arr_cp = np.roll(label_arr_cp, shift=tuple(com), axis=(2,1,0))
+    label_arr_cp = np.roll(label_arr_cp, shift=tuple(com), axis=(0,1,2))
+
+    com = [0,0,0]
+    com[0] = int(np.average(grid_arr[0][label_arr_cp==1]))
+    com[1] = int(np.average(grid_arr[1][label_arr_cp==1]))
+    com[2] = int(np.average(grid_arr[2][label_arr_cp==1]))
 
     return label_arr_cp, com
+
+def clump_flatten (label_arr):
+
+    label_arr_cp = np.copy(label_arr)
+    label_arr_cp[label_arr>0] = 1
+    L = np.shape(label_arr)
+
+    grid_arr = np.indices(L)
+
+    label_arr_cp = np.ravel(label_arr_cp) 
+
+    i_arr = (np.ravel(grid_arr[0]))[label_arr_cp==1]
+    j_arr = (np.ravel(grid_arr[1]))[label_arr_cp==1]
+    k_arr = (np.ravel(grid_arr[2]))[label_arr_cp==1]
+
+    return np.stack((i_arr,j_arr,k_arr))
+
+def clump_covariance (label_arr, only_cov=False):
+
+    label_arr_cp = np.copy(label_arr)
+    label_arr_cp[label_arr>0] = 1
+    L = np.shape(label_arr)
+
+    grid_arr = np.indices(L)
+
+    label_arr_cp = np.ravel(label_arr_cp) 
+
+    r_list  = np.stack( 
+                        ( 
+                            (np.ravel(grid_arr[0]))[label_arr_cp==1],
+                            (np.ravel(grid_arr[1]))[label_arr_cp==1],
+                            (np.ravel(grid_arr[2]))[label_arr_cp==1]
+                        )
+                      )
+
+    if only_cov:
+        return np.cov(r_list)
+    else:
+        return np.cov(r_list), r_list
+
+
+def clump_size (label_arr):
+
+    cov, r_list = clump_covariance(label_arr)
+
+    eval, evec = np.linalg.eig(cov)
+
+    clump_size = [0]*3
+
+    for i in range(3):
+        norm_ev = np.sqrt(np.sum(evec[i]**2))
+        proj_arr = np.dot(r_list.T, evec[i])
+        dproj = (proj_arr.max()-proj_arr.min())/norm_ev
+        dproj = np.abs(dproj)
+
+        clump_size[i] = dproj
+        
+    return clump_size
 
 
 # #* Plots the label arr of clumps for any given array
@@ -317,11 +377,11 @@ if __name__ == "__main__":
         return pt.poly_alpha(c_arr,log_flag=log_flag, order=1, cut=0)#,cut=np.sqrt(frac_aniso.min()*frac_aniso.max()))
 
 
-    clump_num = 19 
+    clump_num = 4 
 
-    fig, ax, sc  = pt.render_scatter_3d(inp_arr = clump_select(clump_num, label_arr_sp), \
-                             alpha_fn = alpha_plot,\
-                             cmap="Paired")
+    # fig, ax, sc  = pt.render_scatter_3d(inp_arr = clump_select(clump_num, label_arr_sp), \
+    #                          alpha_fn = alpha_plot,\
+    #                          cmap="Paired")
 
     # fig, ax, sc  = pt.render_scatter_3d(inp_arr = label_arr_sp, \
     #                          alpha_fn = alpha_plot,\
@@ -329,15 +389,51 @@ if __name__ == "__main__":
 
 
     label_arr_shifted, com = clump_center(clump_select(clump_num, label_arr_sp))
+    L = np.shape(label_arr_shifted)
+
     fig, ax, sc  = pt.render_scatter_3d(inp_arr = label_arr_shifted, \
                              alpha_fn = alpha_plot,\
                              cmap="Paired")
 
+    clump_cov = clump_covariance(label_arr_shifted, only_cov=True)
+    eval, evec = np.linalg.eig(clump_cov)
+    clump_sz = clump_size(label_arr_shifted)    
+    
+    for i in range(3):
+        evec_plot = []
+        for j in range(3):
+            evec_plot.append(  [  int(L[j]/2)-evec[i,j]*clump_sz[i]/2 , 
+                                  int(L[j]/2)+evec[i,j]*clump_sz[i]/2  ]
+                            )
+        
+        if eval[i]==np.max(eval):
+            col = 'C0'
+        else:
+            col = 'C1'
+        ax.plot3D(*evec_plot, color=col, zorder=5)
 
-
-    norm = mt.colors.Normalize(vmin=label_arr_sp.min(), vmax=label_arr_sp.max())
-    fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap="Paired"), ax=ax)
     plt.show()
+
+    
+    # plt.figure()
+    # # plt.imshow(label_arr_shifted[:,:,int(L[2]/2)])
+    # plt.imshow(np.sum(label_arr_shifted, axis=2))
+    # plt.show()
+
+    # plt.figure()
+    # # plt.imshow(label_arr_shifted[:,int(L[1]/2),:])
+    # plt.imshow(np.sum(label_arr_shifted, axis=1))
+    # plt.show()
+
+    # plt.figure()
+    # # plt.imshow(label_arr_shifted[int(L[0]/2),:,:])
+    # plt.imshow(np.sum(label_arr_shifted, axis=2))
+    # plt.show()
+
+
+    # norm = mt.colors.Normalize(vmin=label_arr_sp.min(), vmax=label_arr_sp.max())
+    # fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap="Paired"), ax=ax)
+    # plt.show()
 
     # # clump_find_plot(T, cut, above_cut=False)#, interactive=True)
 
