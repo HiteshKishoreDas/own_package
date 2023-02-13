@@ -132,4 +132,4 @@ dmypy.json
 .vscode/
 
 #Large_files
-*filamentariness*.pkl
+*.pkl
