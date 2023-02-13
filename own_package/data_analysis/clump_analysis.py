@@ -13,6 +13,8 @@
 #*_________________________________________________
 
 from importlib.resources import path
+from re import I
+from unittest import skip
 import matplotlib
 import matplotlib as mt
 import matplotlib.pyplot as plt
@@ -28,6 +30,7 @@ import gc
 import cmasher as cr 
 import sys
 import os
+from own_package.plot.plot_3d import new_plot
 
 cwd = os.path.dirname(__file__)
 package_abs_path = cwd[:-len(cwd.split('/')[-1])]
@@ -196,8 +199,29 @@ def clump_size (clump_num, label_arr, clump_centering=False):
 
     return return_dict
 
-def clump_length( clump_num, label_arr, k_n=1, n_jobs=1, skip_data=1):
 
+#* Find clump length using neighbourhood graph
+#* While high skip_data, the filament length might jump small gaps.
+
+# TODO: Add a weight to the graph edges, with weight being the difference in
+# TODO: the density between the points. Maybe the difference is higher across the gap
+
+# TODO: Come up with a smarter way of decreasing the points
+def clump_length(clump_num, label_arr, k_n=1, n_jobs=1, skip_data=1):
+    """
+    Find clump length using neighbourhood graph
+    While high skip_data, the filament length might jump small gaps.
+
+    Args:
+        clump_num (int): Index number of the clump
+        label_arr (numpy array): label array, output from clump_finder() 
+        k_n (int, optional): kth neighbour to be considered for an edge. Defaults to 1.
+        n_jobs (int, optional): number of threads to use for adjacency calculation. Defaults to 1.
+        skip_data (int, optional): =n means every nth point will be used for creating the graph. Defaults to 1.
+
+    Returns:
+        int: Longest shortest path, corresponds to filament length
+    """
     label_clump = clump_select(clump_num, label_arr)
     data = ((clump_flatten(label_clump).astype(float)).T)
 
@@ -214,18 +238,6 @@ def clump_length( clump_num, label_arr, k_n=1, n_jobs=1, skip_data=1):
     b = time.time()
     print(f"Calculating adjucency matrix: {b-a} s")
 
-    # a = time.time()
-    # adj_mat = np.zero
-    # adj_mat = (np.abs(skm.pairwise_distances(data[:,0].reshape(-1,1), n_jobs=n_jobs))<=k_n) & \
-    #           (np.abs(skm.pairwise_distances(data[:,1].reshape(-1,1), n_jobs=n_jobs))<=k_n) & \
-    #           (np.abs(skm.pairwise_distances(data[:,2].reshape(-1,1), n_jobs=n_jobs))<=k_n)
-
-    # np.fill_diagonal(adj_mat, False)
-
-    # b = time.time()
-    # print(f"Calculating adjucency matrix: {b-a} s")
-
-
     a = time.time()
     graph_nx = nx.from_numpy_array(adj_mat.astype(int))
     b = time.time()
@@ -238,10 +250,12 @@ def clump_length( clump_num, label_arr, k_n=1, n_jobs=1, skip_data=1):
 
     a = time.time()
     max_path_length = 0
+    max_path_pair = [0]*2
     for k1 in path_length.keys():
         for k2 in path_length[k1].keys():
             if path_length[k1][k2]>max_path_length:
                 max_path_length = path_length[k1][k2]
+                max_path_pair = [k1,k2]
 
     b = time.time()
     print(f"Finding longest length: {b-a} s")
@@ -249,34 +263,21 @@ def clump_length( clump_num, label_arr, k_n=1, n_jobs=1, skip_data=1):
     print(f"Longest path skip_data(={skip_data}): {max_path_length*skip_data}")
     print( "_______________________________________________")
 
+
+
     del (adj_mat)
-    del(graph_nx)
-    del(path_length)
-    gc.collect()
+    del(label_clump)
 
-    return max_path_length*skip_data
+    if __name__=="__main__":
+        gc.collect()
+        return max_path_length*skip_data, max_path_pair, graph_nx, data
+    else:
+        del(graph_nx)
+        del(path_length)
+        del(data)
+        gc.collect()
+        return max_path_length*skip_data
 
-# #* Plots the label arr of clumps for any given array
-
-# def clump_find_plot(arr, arr_cut, above_cut, interactive=False):
-#     # arr      : Input array
-#     # arr_cut  : Cutoff for defining clumps
-#     # above_cut: True if values above arr_cut are clumps, False otherwise
-
-#     # if interactive:
-#         # %matplotlib qt 
-
-#     # matplotlib.interactive('True')
-
-#     n_blob_sp, label_arr_sp = clump_finder(arr, arr_cut, above_cut)
-#     print(f'No. of clumps: {n_blob_sp}')
-
-#     fig, ax  = pt.scatter_3d(arr, arr_cut, arr, cmap=cr.neon, above_cut=above_cut)#, interactive=interactive)
-#     plt.show()
-
-#     fig, ax  = pt.scatter_3d(label_arr_sp, 0, label_arr_sp, cmap=cr.neon, above_cut=True)#, interactive=interactive)
-#     # above_cut in this line will always be True
-#     plt.show()
 
 
 # TODO: Function to calculate shear
@@ -310,7 +311,6 @@ def boundary_detect (label_arr):
 
 
 #* Calculates shear on the clumps
-
 def shear_calc (label_arr, v_arr):
 
     nbr_arr = boundary_detect(label_arr)
@@ -369,7 +369,6 @@ def shear_calc (label_arr, v_arr):
 
 
 #* Calculates surface area of the clumps
-
 def surface_area (label_arr):
 
     nbr_arr = boundary_detect(label_arr)
@@ -396,7 +395,6 @@ def surface_area (label_arr):
 
 #* Returns the size and mass histogram for a given label array
 #* and property arrays
-
 def clump_hist (label_arr, dx, rho, T, n_bins, dim=3):
     # label_arr : Label array
     # dx        : Cell size
@@ -481,86 +479,78 @@ if __name__ == "__main__":
     def alpha_plot(c_arr, log_flag=False):
         return pt.poly_alpha(c_arr,log_flag=log_flag, order=1, cut=0)#,cut=np.sqrt(frac_aniso.min()*frac_aniso.max()))
 
-    clump_num = 4 
+    clump_num = 8 
+    rho_cut = 10
 
-    # fig, ax, sc  = pt.render_scatter_3d(inp_arr = clump_select(clump_num, label_arr_sp), \
-    #                          alpha_fn = alpha_plot,\
-    #                          cmap="Paired")
-    # plt.show()
+    label_arr_select = clump_select(clump_num, label_arr_sp)*(rho>rho_cut)
+    L = np.shape(label_arr_select)
 
-
-    # label_arr_shifted = clump_center(clump_select(clump_num, label_arr_sp))
-    label_arr_shifted = clump_select(clump_num, label_arr_sp)
-    L = np.shape(label_arr_shifted)
-
-    fig, ax, sc  = pt.render_scatter_3d(inp_arr = label_arr_shifted, \
+    fig, ax, sc  = pt.render_scatter_3d(inp_arr = label_arr_select, \
                              alpha_fn = alpha_plot,\
                              cmap="Paired")
+    plt.show()
+
+    #*_______________________________________________________________________________*#
+    # Clump size from 
 
     clump_sz = clump_size(clump_num, label_arr_sp, clump_centering=False)    
-    evec = clump_sz['evec']
-    eval = clump_sz['eval']
-    clump_sz = clump_sz['clump_size']
 
-    grid = np.indices(np.shape(label_arr_sp))
-    com = [0]*3
-    com[0] = np.average(grid[0][clump_select(clump_num, label_arr_sp)==1])
-    com[1] = np.average(grid[1][clump_select(clump_num, label_arr_sp)==1])
-    com[2] = np.average(grid[2][clump_select(clump_num, label_arr_sp)==1])
-    
-    for i in range(3):
-        evec_plot = []
-        for j in range(3):
-            evec_plot.append(  [  com[j-2]-evec[i,j]*clump_sz[i]/2 , 
-                                  com[j-2]+evec[i,j]*clump_sz[i]/2  ]
-                            )
-        
-        if eval[i]==np.max(eval):
-            col = 'C0'
-        else:
-            col = 'C1'
-        ax.plot3D(*evec_plot, color=col, zorder=5)
-
-    ax.set_title('Clump size code test') 
-
-    norm = mt.colors.Normalize(vmin=label_arr_sp.min(), vmax=label_arr_sp.max())
-    fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap="Paired"), ax=ax)
-    plt.show()
+    print("___________________________________________________")
 
     #*_______________________________________________________________________________*#
 
-    clump_length_test = clump_length(clump_num, label_arr_sp)
+    skip_data = 4
+    return_list = clump_length(clump_num, label_arr_sp, skip_data=skip_data)
 
-    #*_______________________________________________________________________________*#
-    v1 = np.load('data/v1.npy')
-    v2 = np.load('data/v2.npy')
-    v3 = np.load('data/v3.npy')
+    max_path_length = return_list[0]
+    k1, k2          = return_list[1]
+    graph_nx        = return_list[2]
+    data            = return_list[3]
 
-    v_arr = [v1,v2,v3]
+    max_path = nx.dijkstra_path(graph_nx, k1, k2)
+    max_path = np.array(max_path)*skip_data 
 
-    nbr_arr = boundary_detect(label_arr_sp)
+    max_coord = data[max_path]
 
-    shear_dict, shear_map = shear_calc(label_arr_sp, v_arr)
+    fig, ax = new_plot()
 
-    def grad_alpha(c_arr, log_flag=False):
+    ax.scatter3D(data[::skip_data,0], data[::skip_data,1], data[::skip_data,2], alpha=0.5, color='C3', s=200)
+    ax.plot(max_coord[:,0], max_coord[:,1], max_coord[:,2], zorder=5, linewidth=4)
 
-        alpha0 = 1.0
-        alp = alpha0 * (c_arr-c_arr.min())/(c_arr.max()-c_arr.min())
-        alp[c_arr==0] = 0.0
-        return alp
-
-    plt.hist(np.array(shear_dict['shear_vmag']))
-    plt.title('Shear histogram')
-    plt.show()
-
-    # %matplotlib qt 
-
-    fig, ax, sc  = pt.render_scatter_3d(inp_arr = shear_map, \
-                             alpha_fn = grad_alpha,\
-                             cmap=cr.neon)
-    norm = mt.colors.Normalize(vmin=shear_map.min(), vmax=shear_map.max())
-    fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap=cr.neon), ax=ax)
-
-    ax.set_title('Shear map')
+    ax.set_title(f"skip_data={skip_data}, length={max_path_length}")
 
     plt.show()
+
+    # #*_______________________________________________________________________________*#
+    # v1 = np.load('data/v1.npy')
+    # v2 = np.load('data/v2.npy')
+    # v3 = np.load('data/v3.npy')
+
+    # v_arr = [v1,v2,v3]
+
+    # nbr_arr = boundary_detect(label_arr_sp)
+
+    # shear_dict, shear_map = shear_calc(label_arr_sp, v_arr)
+
+    # def grad_alpha(c_arr, log_flag=False):
+
+    #     alpha0 = 1.0
+    #     alp = alpha0 * (c_arr-c_arr.min())/(c_arr.max()-c_arr.min())
+    #     alp[c_arr==0] = 0.0
+    #     return alp
+
+    # plt.hist(np.array(shear_dict['shear_vmag']))
+    # plt.title('Shear histogram')
+    # plt.show()
+
+    # # %matplotlib qt 
+
+    # fig, ax, sc  = pt.render_scatter_3d(inp_arr = shear_map, \
+    #                          alpha_fn = grad_alpha,\
+    #                          cmap=cr.neon)
+    # norm = mt.colors.Normalize(vmin=shear_map.min(), vmax=shear_map.max())
+    # fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap=cr.neon), ax=ax)
+
+    # ax.set_title('Shear map')
+
+    # plt.show()
