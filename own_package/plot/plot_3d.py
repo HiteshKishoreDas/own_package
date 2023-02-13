@@ -219,7 +219,6 @@ def render_scatter_3d ( inp_arr,          \
     
 
 
-
 def render_voxel_3d ( inp_arr,          \
                  cmap=cr.rainforest,      \
                  alpha_fn = const_alpha,  \
@@ -285,13 +284,7 @@ def render_voxel_3d ( inp_arr,          \
     return fig, ax 
 
 
-def full_render (inp_arr,          \
-                 cmap=cr.rainforest,      \
-                 alpha_fn = const_alpha,  \
-                 pnt_size = 50,           \
-                 log_flag = False,        \
-                 view = [30, -60],        \
-                 coord = [None, None, None], new_fig=True, fig=None, ax=None):       
+def full_render (**kwargs):
 
 
     
@@ -309,28 +302,48 @@ def full_render (inp_arr,          \
 
     #*_______________________________________________________
 
-    fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
-                                        alpha_fn = alpha_plot,
-                                        pnt_size = 1, \
-                                        cmap=cmap)
+    # fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
+    #                                     alpha_fn = alpha_plot,
+    #                                     pnt_size = 1, \
+    #                                     cmap=cmap)
+    fig, ax, sc  = render_scatter_3d(alpha_fn = alpha_plot, \
+                                     pnt_size = 1, \
+                                     **kwargs)
+    print("First layer is done!...")
 
-    fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
-                                        alpha_fn = alpha_plot_smooth1,
-                                        pnt_size = 2, \
-                                        cmap=cmap, new_fig=False,   \
-                                        ax=ax, fig=fig)
+    # fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
+    #                                     alpha_fn = alpha_plot_smooth1,
+    #                                     pnt_size = 2, \
+    #                                     cmap=cmap, new_fig=False,   \
+    #                                     ax=ax, fig=fig)
+    fig, ax, sc  = render_scatter_3d(alpha_fn = alpha_plot_smooth1, \
+                                     pnt_size = 2, \
+                                     new_fig=False,   \
+                                     ax=ax, fig=fig, **kwargs)
+    print("Second layer is done!...")
 
-    fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
-                                        alpha_fn = alpha_plot_smooth2,
-                                        pnt_size = 3, \
-                                        cmap=cmap, new_fig=False,   \
-                                        ax=ax, fig=fig)
+    # fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
+    #                                     alpha_fn = alpha_plot_smooth2,
+    #                                     pnt_size = 3, \
+    #                                     cmap=cmap, new_fig=False,   \
+    #                                     ax=ax, fig=fig)
+    fig, ax, sc  = render_scatter_3d(alpha_fn = alpha_plot_smooth2, \
+                                     pnt_size = 3, \
+                                     new_fig=False,   \
+                                     ax=ax, fig=fig, **kwargs)
+    print("Third layer is done!...")
 
-    fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
-                                        alpha_fn = alpha_plot_smooth3,
-                                        pnt_size = 4, \
-                                        cmap=cmap, new_fig=False,   \
-                                        ax=ax, fig=fig)
+    # fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
+    #                                     alpha_fn = alpha_plot_smooth3,
+    #                                     pnt_size = 4, \
+    #                                     cmap=cmap, new_fig=False,   \
+    #                                     ax=ax, fig=fig)
+    fig, ax, sc  = render_scatter_3d(alpha_fn = alpha_plot_smooth3, \
+                                     pnt_size = 4, \
+                                     new_fig=False,   \
+                                     ax=ax, fig=fig, **kwargs)
+    print("Fourth and last layer is done!...")
+
 
     ax.grid(False)
     ax.set_axis_off()
@@ -369,6 +382,7 @@ if __name__ == "__main__":
     def alpha_plot(c_arr, log_flag=False):
         return poly_alpha(c_arr,log_flag=log_flag, order=1,cut=5)
 
+    # fig, ax = render_voxel_3d(rho, alpha_fn=alpha_plot, log_flag=True)
     fig, ax = render_voxel_3d(rho, alpha_fn=alpha_plot, log_flag=True)
 
     plt.show()
