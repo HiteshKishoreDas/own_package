@@ -13,7 +13,7 @@ def new_plot():
     fig = plt.figure(figsize=(10,10))
     ax = plt.axes(projection='3d')
 
-    return fig,ax
+    return fig, ax
 
 def const_alpha (x, cut=0.0, cut_above=False, log_flag=False):
 
@@ -205,13 +205,9 @@ def render_scatter_3d ( inp_arr,          \
     # TODO: Add log scaling in alpha_fn
     alpha_arr = alpha_fn(c_arr, log_flag=log_flag)
 
-    color = make_color(c_arr, alpha_arr, cmap, log_flag=log_flag)
+    color_arr = make_color(c_arr, alpha_arr, cmap, log_flag=log_flag)
 
-    sc = ax.scatter3D(i_arr, j_arr, k_arr,          \
-                 c=color,                      \
-                 s=pnt_size, edgecolors='None',\
-                 cmap=cmap,                    \
-                 depthshade=True)
+    sc = ax.scatter3D(i_arr, j_arr, k_arr, c=color_arr, s=pnt_size, edgecolors='None', cmap=cmap, depthshade=True)
 
     ax.view_init(elev=view[0], azim=view[1])
 
@@ -289,7 +285,64 @@ def render_voxel_3d ( inp_arr,          \
     return fig, ax 
 
 
+def full_render (inp_arr,          \
+                 cmap=cr.rainforest,      \
+                 alpha_fn = const_alpha,  \
+                 pnt_size = 50,           \
+                 log_flag = False,        \
+                 view = [30, -60],        \
+                 coord = [None, None, None], new_fig=True, fig=None, ax=None):       
 
+
+    
+    def alpha_plot(c_arr, log_flag=False):
+        return poly_alpha(c_arr,log_flag=log_flag, order=1,cut=5, alpha0=0.75)
+
+    def alpha_plot_smooth1(c_arr, log_flag=False):
+        return poly_alpha(c_arr,log_flag=log_flag, order=1,cut=5, alpha0=0.6)
+    def alpha_plot_smooth2(c_arr, log_flag=False):
+        return poly_alpha(c_arr,log_flag=log_flag, order=1,cut=5, alpha0=0.4)
+    def alpha_plot_smooth3(c_arr, log_flag=False):
+        return poly_alpha(c_arr,log_flag=log_flag, order=1,cut=5, alpha0=0.2)
+
+    # cmp = 'gist_rainbow'
+
+    #*_______________________________________________________
+
+    fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
+                                        alpha_fn = alpha_plot,
+                                        pnt_size = 1, \
+                                        cmap=cmap)
+
+    fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
+                                        alpha_fn = alpha_plot_smooth1,
+                                        pnt_size = 2, \
+                                        cmap=cmap, new_fig=False,   \
+                                        ax=ax, fig=fig)
+
+    fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
+                                        alpha_fn = alpha_plot_smooth2,
+                                        pnt_size = 3, \
+                                        cmap=cmap, new_fig=False,   \
+                                        ax=ax, fig=fig)
+
+    fig, ax, sc  = render_scatter_3d(inp_arr = inp_arr, \
+                                        alpha_fn = alpha_plot_smooth3,
+                                        pnt_size = 4, \
+                                        cmap=cmap, new_fig=False,   \
+                                        ax=ax, fig=fig)
+
+    ax.grid(False)
+    ax.set_axis_off()
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_zticks([])
+
+    # ax.set_title(MHD_label[i_fl])
+
+    # fig.savefig(f"./rho_smooth_{MHD_label[i_fl]}_{cmp}_black_bcg.png", format='png', dpi=300)
+
+    return fig, ax
 
 
 

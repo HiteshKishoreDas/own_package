@@ -397,7 +397,7 @@ def plot_line_integral_convolution( img_data_x, img_data_y,\
             alpha_arr     = np.average(alpha_arr , weights=weight_data, axis=view_dir)
 
     else:
-        print("get_array(): Invalid mode, choose betwee 'slice' and 'average' ... ")
+        print("get_array(): Invalid mode, choose between 'slice' and 'average' ... ")
         exit()
 
     lic_result = lic.lic(stream_data_y, stream_data_x, length=50)

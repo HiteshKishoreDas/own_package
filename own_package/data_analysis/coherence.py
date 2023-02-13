@@ -156,7 +156,7 @@ def frac_aniso_window_variation(inp_arr, sigma_start=1.5, sigma_wnd_mul=3.0, mod
 
 
     if avg_mask is None:
-        avg_mask = np.ones_like(inp_arr)
+        avg_mask = np.ones_like(inp_arr).astype(bool)
 
     if window_list is None:
         if num is None:
@@ -176,7 +176,7 @@ def frac_aniso_window_variation(inp_arr, sigma_start=1.5, sigma_wnd_mul=3.0, mod
         coh_avg  =  np.average(
                             fractional_anisotropy(inp_arr, sigma=wnd/sigma_wnd_mul, window=wnd, \
                                          algo_select=algo_select, \
-                                         parallel_flag=parallel_flag, mode=mode,devices=devices)*avg_mask,
+                                         parallel_flag=parallel_flag, mode=mode,devices=devices)[avg_mask],
                     weights=weights)
 
         print(f'coh_avg: {coh_avg}')

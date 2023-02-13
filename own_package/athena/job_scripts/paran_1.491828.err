@@ -1,3 +1,0 @@
-WARNING:root:Could not load CuPy: No module named 'cupy'
-/ptmp/mpa/hitesh/env/athenaenv/lib/python3.9/_collections_abc.py:769: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
-  self[key]

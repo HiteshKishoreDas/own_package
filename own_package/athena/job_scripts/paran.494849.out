@@ -1,0 +1,430 @@
+No Modulefiles Currently Loaded.
+clump_analysis.py::Debug OFF
+N_procs set to: 1...
+file_int set : 0...
+test_array_type : None...
+clump_size.py:: 656 clumps found .. 
+
+clump_size.py:: Analysing clump number 1 ..
+Points in the clump: 5
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005514621734619141 s
+Creating graph: 0.00031828880310058594 s
+Calculating path lengths: 4.935264587402344e-05 s
+Finding longest length: 3.5762786865234375e-06 s
+Longest path: 1
+_______________________________________________
+clump_size.py:: Analysing clump number 2 ..
+Points in the clump: 173
+Running with 1 jobs
+Calculating adjucency matrix: 0.0013225078582763672 s
+Creating graph: 0.0028319358825683594 s
+Calculating path lengths: 0.02542734146118164 s
+Finding longest length: 0.0017132759094238281 s
+Longest path: 17
+_______________________________________________
+clump_size.py:: Analysing clump number 3 ..
+Points in the clump: 43
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005443096160888672 s
+Creating graph: 0.0007464885711669922 s
+Calculating path lengths: 0.001377105712890625 s
+Finding longest length: 0.00010609626770019531 s
+Longest path: 4
+_______________________________________________
+clump_size.py:: Analysing clump number 4 ..
+Points in the clump: 12
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004794597625732422 s
+Creating graph: 0.00013017654418945312 s
+Calculating path lengths: 0.0001430511474609375 s
+Finding longest length: 1.1205673217773438e-05 s
+Longest path: 3
+_______________________________________________
+clump_size.py:: Analysing clump number 5 ..
+Points in the clump: 18
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005028247833251953 s
+Creating graph: 0.00017189979553222656 s
+Calculating path lengths: 0.0003361701965332031 s
+Finding longest length: 2.2649765014648438e-05 s
+Longest path: 8
+_______________________________________________
+clump_size.py:: Analysing clump number 6 ..
+Points in the clump: 73
+Running with 1 jobs
+Calculating adjucency matrix: 0.0006432533264160156 s
+Creating graph: 0.0012269020080566406 s
+Calculating path lengths: 0.004396915435791016 s
+Finding longest length: 0.00029659271240234375 s
+Longest path: 8
+_______________________________________________
+clump_size.py:: Analysing clump number 7 ..
+Points in the clump: 12
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004937648773193359 s
+Creating graph: 0.0001366138458251953 s
+Calculating path lengths: 0.0001685619354248047 s
+Finding longest length: 1.1444091796875e-05 s
+Longest path: 5
+_______________________________________________
+clump_size.py:: Analysing clump number 8 ..
+Points in the clump: 4
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004818439483642578 s
+Creating graph: 6.580352783203125e-05 s
+Calculating path lengths: 4.0531158447265625e-05 s
+Finding longest length: 3.337860107421875e-06 s
+Longest path: 1
+_______________________________________________
+clump_size.py:: Analysing clump number 9 ..
+Points in the clump: 9
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004830360412597656 s
+Creating graph: 0.00010943412780761719 s
+Calculating path lengths: 0.0001049041748046875 s
+Finding longest length: 7.3909759521484375e-06 s
+Longest path: 3
+_______________________________________________
+clump_size.py:: Analysing clump number 10 ..
+Points in the clump: 52
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005769729614257812 s
+Creating graph: 0.0007333755493164062 s
+Calculating path lengths: 0.0022840499877929688 s
+Finding longest length: 0.0001533031463623047 s
+Longest path: 8
+_______________________________________________
+clump_size.py:: Analysing clump number 11 ..
+Points in the clump: 58
+Running with 1 jobs
+Calculating adjucency matrix: 0.0006022453308105469 s
+Creating graph: 0.0009276866912841797 s
+Calculating path lengths: 0.0027709007263183594 s
+Finding longest length: 0.0001914501190185547 s
+Longest path: 7
+_______________________________________________
+clump_size.py:: Analysing clump number 12 ..
+Points in the clump: 15
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004999637603759766 s
+Creating graph: 0.0001933574676513672 s
+Calculating path lengths: 0.00021076202392578125 s
+Finding longest length: 1.6927719116210938e-05 s
+Longest path: 3
+_______________________________________________
+clump_size.py:: Analysing clump number 13 ..
+Points in the clump: 5
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004773139953613281 s
+Creating graph: 7.009506225585938e-05 s
+Calculating path lengths: 7.081031799316406e-05 s
+Finding longest length: 4.291534423828125e-06 s
+Longest path: 2
+_______________________________________________
+clump_size.py:: Analysing clump number 14 ..
+Points in the clump: 61
+Running with 1 jobs
+Calculating adjucency matrix: 0.00066375732421875 s
+Creating graph: 0.001100301742553711 s
+Calculating path lengths: 0.0031092166900634766 s
+Finding longest length: 0.00022673606872558594 s
+Longest path: 7
+_______________________________________________
+clump_size.py:: Analysing clump number 15 ..
+Points in the clump: 54
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005774497985839844 s
+Creating graph: 0.0009281635284423828 s
+Calculating path lengths: 0.0023522377014160156 s
+Finding longest length: 0.000164031982421875 s
+Longest path: 5
+_______________________________________________
+clump_size.py:: Analysing clump number 16 ..
+Points in the clump: 70
+Running with 1 jobs
+Calculating adjucency matrix: 0.0006287097930908203 s
+Creating graph: 0.0009541511535644531 s
+Calculating path lengths: 0.004007816314697266 s
+Finding longest length: 0.00027298927307128906 s
+Longest path: 10
+_______________________________________________
+clump_size.py:: Analysing clump number 17 ..
+Points in the clump: 9
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004911422729492188 s
+Creating graph: 0.00010967254638671875 s
+Calculating path lengths: 0.00010085105895996094 s
+Finding longest length: 7.3909759521484375e-06 s
+Longest path: 3
+_______________________________________________
+clump_size.py:: Analysing clump number 18 ..
+Points in the clump: 3
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004780292510986328 s
+Creating graph: 5.91278076171875e-05 s
+Calculating path lengths: 3.838539123535156e-05 s
+Finding longest length: 2.6226043701171875e-06 s
+Longest path: 1
+_______________________________________________
+clump_size.py:: Analysing clump number 19 ..
+Points in the clump: 3
+Running with 1 jobs
+Calculating adjucency matrix: 0.00047969818115234375 s
+Creating graph: 5.888938903808594e-05 s
+Calculating path lengths: 3.814697265625e-05 s
+Finding longest length: 2.86102294921875e-06 s
+Longest path: 1
+_______________________________________________
+clump_size.py:: Analysing clump number 20 ..
+Points in the clump: 1
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004761219024658203 s
+Creating graph: 4.458427429199219e-05 s
+Calculating path lengths: 2.6464462280273438e-05 s
+Finding longest length: 1.6689300537109375e-06 s
+Longest path: 0
+_______________________________________________
+clump_size.py:: Analysing clump number 21 ..
+Points in the clump: 1
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004734992980957031 s
+Creating graph: 4.3392181396484375e-05 s
+Calculating path lengths: 2.47955322265625e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+_______________________________________________
+clump_size.py:: Analysing clump number 22 ..
+Points in the clump: 1
+Running with 1 jobs
+Calculating adjucency matrix: 0.00048613548278808594 s
+Creating graph: 4.3392181396484375e-05 s
+Calculating path lengths: 2.6941299438476562e-05 s
+Finding longest length: 1.6689300537109375e-06 s
+Longest path: 0
+_______________________________________________
+clump_size.py:: Analysing clump number 23 ..
+Points in the clump: 2
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004863739013671875 s
+Creating graph: 5.14984130859375e-05 s
+Calculating path lengths: 3.409385681152344e-05 s
+Finding longest length: 2.384185791015625e-06 s
+Longest path: 1
+_______________________________________________
+clump_size.py:: Analysing clump number 24 ..
+Points in the clump: 2
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004794597625732422 s
+Creating graph: 6.175041198730469e-05 s
+Calculating path lengths: 3.600120544433594e-05 s
+Finding longest length: 2.1457672119140625e-06 s
+Longest path: 1
+_______________________________________________
+clump_size.py:: Analysing clump number 25 ..
+Points in the clump: 15
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005109310150146484 s
+Creating graph: 0.00018739700317382812 s
+Calculating path lengths: 0.00022125244140625 s
+Finding longest length: 1.6927719116210938e-05 s
+Longest path: 4
+_______________________________________________
+clump_size.py:: Analysing clump number 26 ..
+Points in the clump: 1
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004775524139404297 s
+Creating graph: 4.38690185546875e-05 s
+Calculating path lengths: 2.4318695068359375e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+_______________________________________________
+clump_size.py:: Analysing clump number 27 ..
+Points in the clump: 15
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005121231079101562 s
+Creating graph: 0.0002167224884033203 s
+Calculating path lengths: 0.00018930435180664062 s
+Finding longest length: 1.6450881958007812e-05 s
+Longest path: 2
+_______________________________________________
+clump_size.py:: Analysing clump number 28 ..
+Points in the clump: 1
+Running with 1 jobs
+Calculating adjucency matrix: 0.00047206878662109375 s
+Creating graph: 4.220008850097656e-05 s
+Calculating path lengths: 3.4332275390625e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+_______________________________________________
+clump_size.py:: Analysing clump number 29 ..
+Points in the clump: 36
+Running with 1 jobs
+Calculating adjucency matrix: 0.000537872314453125 s
+Creating graph: 0.0004744529724121094 s
+Calculating path lengths: 0.0010480880737304688 s
+Finding longest length: 7.581710815429688e-05 s
+Longest path: 5
+_______________________________________________
+clump_size.py:: Analysing clump number 30 ..
+Points in the clump: 6
+Running with 1 jobs
+Calculating adjucency matrix: 0.0006139278411865234 s
+Creating graph: 0.00010347366333007812 s
+Calculating path lengths: 8.153915405273438e-05 s
+Finding longest length: 6.4373016357421875e-06 s
+Longest path: 2
+_______________________________________________
+clump_size.py:: Analysing clump number 31 ..
+Points in the clump: 35
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005657672882080078 s
+Creating graph: 0.0004413127899169922 s
+Calculating path lengths: 0.0010929107666015625 s
+Finding longest length: 7.200241088867188e-05 s
+Longest path: 8
+_______________________________________________
+clump_size.py:: Analysing clump number 32 ..
+Points in the clump: 28
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005197525024414062 s
+Creating graph: 0.0003311634063720703 s
+Calculating path lengths: 0.0007030963897705078 s
+Finding longest length: 4.8160552978515625e-05 s
+Longest path: 8
+_______________________________________________
+clump_size.py:: Analysing clump number 33 ..
+Points in the clump: 4
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004892349243164062 s
+Creating graph: 6.461143493652344e-05 s
+Calculating path lengths: 4.482269287109375e-05 s
+Finding longest length: 3.337860107421875e-06 s
+Longest path: 2
+_______________________________________________
+clump_size.py:: Analysing clump number 34 ..
+Points in the clump: 40
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005388259887695312 s
+Creating graph: 0.0004856586456298828 s
+Calculating path lengths: 0.0013475418090820312 s
+Finding longest length: 9.393692016601562e-05 s
+Longest path: 9
+_______________________________________________
+clump_size.py:: Analysing clump number 35 ..
+Points in the clump: 8
+Running with 1 jobs
+Calculating adjucency matrix: 0.00047898292541503906 s
+Creating graph: 0.00010657310485839844 s
+Calculating path lengths: 7.367134094238281e-05 s
+Finding longest length: 6.198883056640625e-06 s
+Longest path: 2
+_______________________________________________
+clump_size.py:: Analysing clump number 36 ..
+Points in the clump: 14
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005042552947998047 s
+Creating graph: 0.00014257431030273438 s
+Calculating path lengths: 0.0001983642578125 s
+Finding longest length: 1.5735626220703125e-05 s
+Longest path: 4
+_______________________________________________
+clump_size.py:: Analysing clump number 37 ..
+Points in the clump: 34
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005347728729248047 s
+Creating graph: 0.000370025634765625 s
+Calculating path lengths: 0.0009908676147460938 s
+Finding longest length: 6.794929504394531e-05 s
+Longest path: 7
+_______________________________________________
+clump_size.py:: Analysing clump number 38 ..
+Points in the clump: 3
+Running with 1 jobs
+Calculating adjucency matrix: 0.00047326087951660156 s
+Creating graph: 5.5789947509765625e-05 s
+Calculating path lengths: 4.1484832763671875e-05 s
+Finding longest length: 2.86102294921875e-06 s
+Longest path: 2
+_______________________________________________
+clump_size.py:: Analysing clump number 39 ..
+Points in the clump: 4
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004763603210449219 s
+Creating graph: 6.604194641113281e-05 s
+Calculating path lengths: 4.00543212890625e-05 s
+Finding longest length: 2.86102294921875e-06 s
+Longest path: 1
+_______________________________________________
+clump_size.py:: Analysing clump number 40 ..
+Points in the clump: 1
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004696846008300781 s
+Creating graph: 4.220008850097656e-05 s
+Calculating path lengths: 2.6226043701171875e-05 s
+Finding longest length: 1.6689300537109375e-06 s
+Longest path: 0
+_______________________________________________
+clump_size.py:: Analysing clump number 41 ..
+Points in the clump: 2
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004787445068359375 s
+Creating graph: 5.9604644775390625e-05 s
+Calculating path lengths: 3.337860107421875e-05 s
+Finding longest length: 1.9073486328125e-06 s
+Longest path: 1
+_______________________________________________
+clump_size.py:: Analysing clump number 42 ..
+Points in the clump: 15
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004994869232177734 s
+Creating graph: 0.0001494884490966797 s
+Calculating path lengths: 0.000244140625 s
+Finding longest length: 1.71661376953125e-05 s
+Longest path: 6
+_______________________________________________
+clump_size.py:: Analysing clump number 43 ..
+Points in the clump: 126
+Running with 1 jobs
+Calculating adjucency matrix: 0.0009412765502929688 s
+Creating graph: 0.002416372299194336 s
+Calculating path lengths: 0.013368844985961914 s
+Finding longest length: 0.0009119510650634766 s
+Longest path: 8
+_______________________________________________
+clump_size.py:: Analysing clump number 44 ..
+Points in the clump: 9
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004792213439941406 s
+Creating graph: 9.274482727050781e-05 s
+Calculating path lengths: 0.00010824203491210938 s
+Finding longest length: 7.867813110351562e-06 s
+Longest path: 5
+_______________________________________________
+clump_size.py:: Analysing clump number 45 ..
+Points in the clump: 1
+Running with 1 jobs
+Calculating adjucency matrix: 0.0004794597625732422 s
+Creating graph: 4.38690185546875e-05 s
+Calculating path lengths: 2.6226043701171875e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+_______________________________________________
+clump_size.py:: Analysing clump number 46 ..
+Points in the clump: 32
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005407333374023438 s
+Creating graph: 0.00043129920959472656 s
+Calculating path lengths: 0.0008499622344970703 s
+Finding longest length: 6.103515625e-05 s
+Longest path: 6
+_______________________________________________
+clump_size.py:: Analysing clump number 47 ..
+Points in the clump: 15
+Running with 1 jobs
+Calculating adjucency matrix: 0.0005044937133789062 s
+Creating graph: 0.00015592575073242188 s
+Calculating path lengths: 0.00024247169494628906 s
+Finding longest length: 1.6927719116210938e-05 s
+Longest path: 7
+_______________________________________________

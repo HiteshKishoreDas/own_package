@@ -52,11 +52,13 @@ test_array_type_default = None
 
 n_arg = len(sys.argv)
 if n_arg<=2:
-    print(f"Need atleast two arguments. Only {n_arg} were provided.")
+    print(f"Need atleast two arguments. Only {n_arg-1} were provided.")
     print(f"N_procs set to default: {N_procs_default} processors...")
     print(f"file_int set to default: {file_ind_default}...")
+    print(f"test_array_type set to default: {test_array_type_default}...")
     N_procs  = N_procs_default
     file_ind = file_ind_default
+    test_array_type = test_array_type_default
 
 elif n_arg==3:
     N_procs  = int(sys.argv[1])
@@ -90,6 +92,8 @@ else:
 # file_loc += 'Turb.out2.00600.athdf'
 
 data_dir = '/ptmp/mpa/hitesh/data/'
+# save_dir = './save_arr/anisotropy'
+save_dir = '/ptmp/mpa/hitesh/MHD_multiphase_turbulence/analysis/save_arr/anisotropy'
 
 sim_list  = []
 
@@ -121,28 +125,47 @@ MHD_flag = False
 
 # for i_file, file_loc in enumerate(file_loc_list):
 
-out_dict = dr.get_array_athena(file_loc_list[file_ind], fields=["rho"],MHD_flag=MHD_flag)
+out_dict = dr.get_array_athena(file_loc_list[file_ind], fields=["T"], MHD_flag=MHD_flag)
 
-# rho = out_dict['rho']
 T = out_dict['T']
-T_cut = 4e5
-T_max = T.max()
-T_min = T.min()
-
-# rho[rho<10.0] = 1.0
-
-# prs = out_dict['P']
-# T = (prs/rho) * KELVIN * mu
-
+T_max = 4e6#T.max()
+T_min = 4e4#T.min()
+T_cut = 2*T_min
 
 
 if test_array_type=="random":
+    save_loc = f'{save_dir}/random_array/'
+
     np.random.seed(file_ind)
     T = np.random.rand(*np.shape(T)) # Uniform random num between 0 to 1
 
     T = T_min + (T_max-T_min)*T # Uniform random num between T_min to T_max
 
+    plt.figure()
+    plt.imshow(T[:,int(L[2]/2),:])
+    plt.savefig(f"{save_loc}random_test_{file_ind}.png")
+
+elif test_array_type=="blob":
+    save_loc = f'{save_dir}/blob_test/'
+
+    k = 5
+    L = np.shape(T)
+    r = np.indices(L)
+    T  = np.sin(2*np.pi * k * (file_ind+1) *r[0]/L[0])
+    T += np.sin(2*np.pi * k * (file_ind+1) *r[1]/L[1])
+    T += np.sin(2*np.pi * k * (file_ind+1) *r[2]/L[2])
+    T -= T.min()
+    T /= T.max()   # Blob between 0 to 1
+
+    T = T_min + (T_max-T_min)*T  # Filament between T_min to T_max
+
+    plt.figure()
+    plt.imshow(T[:,int(L[2]/2),:])
+    plt.savefig(f"{save_loc}blob_test_{file_ind}.png")
+
 elif test_array_type=="filament":
+    save_loc = f'{save_dir}/filament_test/'
+
     k = 5
     L = np.shape(T)
     r = np.indices(L)
@@ -156,13 +179,15 @@ elif test_array_type=="filament":
 
     plt.figure()
     plt.imshow(T[:,int(L[2]/2),:])
-    plt.savefig(f"filament_test_{file_ind}.png")
+    plt.savefig(f"{save_loc}filament_test_{file_ind}.png")
 
-avg_mask = (T<np.sqrt(T.min()*T.max()))
+# avg_mask = (T<np.sqrt(T.min()*T.max()))
+avg_mask = (T<T_cut).astype(bool)
+
 
 devices = N_procs*['cpu']
 parallel_flag = True
-coh_list, wnd_list = ch.frac_aniso_window_variation(inp_arr=T, num=25,  \
+coh_list, wnd_list = ch.frac_aniso_window_variation(inp_arr=T, num=25, \
                                                     avg_mask=avg_mask, \
                                                     parallel_flag=parallel_flag, devices=devices)
 
@@ -170,20 +195,20 @@ save_dict={}
 save_dict['coherence'] = coh_list
 save_dict['wnd_list' ] = wnd_list
 
-if test_array_type in ["random", "filament"]:
-    save_dict['inp_arr'] = T
+save_dict['inp_arr'] = T
 
 
 if test_array_type=="random":
-    save_loc = './save_arr/anisotropy/random_array/'
-    with open(f'{save_loc}/anisotropy_filamentariness_seed_{file_ind}.pkl', 'wb') as f:
+    with open(f'{save_loc}/anisotropy_filamentariness_Tcut_2Tfloor_seed_{file_ind}.pkl', 'wb') as f:
+        pk.dump(save_dict, f)
+elif test_array_type=="blob":
+    with open(f'{save_loc}/anisotropy_filamentariness_Tcut_2Tfloor_blob_{file_ind}.pkl', 'wb') as f:
         pk.dump(save_dict, f)
 elif test_array_type=="filament":
-    save_loc = './save_arr/anisotropy/filament_test/'
-    with open(f'{save_loc}/anisotropy_filamentariness_filament_{file_ind}.pkl', 'wb') as f:
+    with open(f'{save_loc}/anisotropy_filamentariness_Tcut_2Tfloor_filament_{file_ind}.pkl', 'wb') as f:
         pk.dump(save_dict, f)
 else:
-    save_loc = './save_arr/anisotropy/'+sim_list[file_ind]
+    save_loc = f'{save_dir}/'+sim_list[file_ind]
     with open(f'{save_loc}/anisotropy_filamentariness_{N_snap}.pkl', 'wb') as f:
         pk.dump(save_dict, f)
 
@@ -191,19 +216,3 @@ del(coh_list)
 del(wnd_list)
 del(save_dict)
 gc.collect()
-
-
-# plt.figure()
-
-# plt.plot(wnd_list[0], coh_list[0], label='HD')
-# # plt.plot(wnd_list[1], coh_list[1], label='MHD')
-
-# plt.xlabel('Window (in grid cells)')
-# plt.ylabel('Anisotropy')
-
-# # plt.yscale('log')
-# # plt.xscale('log')
-# plt.legend()
-
-# # plt.show()
-# plt.savefig('anisotropy.png')

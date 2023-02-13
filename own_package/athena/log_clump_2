@@ -1,0 +1,618 @@
+clump_analysis.py::Debug OFF
+Only one argument was provided.
+file_int set : 2...
+test_array_type set to default: None...
+clump_size.py:: 102 clumps found .. 
+
+clump_size.py:: Analysing clump number 1 ..
+Calculating adjucency matrix: 0.014068841934204102 s
+Creating graph: 0.0014789104461669922 s
+Calculating path lengths: 0.0014858245849609375 s
+Finding longest length: 0.00012254714965820312 s
+Longest path: 4
+clump_size.py:: Analysing clump number 2 ..
+Calculating adjucency matrix: 0.008735418319702148 s
+Creating graph: 9.846687316894531e-05 s
+Calculating path lengths: 6.961822509765625e-05 s
+Finding longest length: 5.9604644775390625e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 3 ..
+Calculating adjucency matrix: 0.01167440414428711 s
+Creating graph: 6.842613220214844e-05 s
+Calculating path lengths: 3.9577484130859375e-05 s
+Finding longest length: 3.337860107421875e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 4 ..
+Calculating adjucency matrix: 0.009664058685302734 s
+Creating graph: 0.0006105899810791016 s
+Calculating path lengths: 0.0018079280853271484 s
+Finding longest length: 0.00013303756713867188 s
+Longest path: 6
+clump_size.py:: Analysing clump number 5 ..
+Calculating adjucency matrix: 0.012006044387817383 s
+Creating graph: 0.00047707557678222656 s
+Calculating path lengths: 0.0013484954833984375 s
+Finding longest length: 0.00010347366333007812 s
+Longest path: 7
+clump_size.py:: Analysing clump number 6 ..
+Calculating adjucency matrix: 0.010438680648803711 s
+Creating graph: 0.000614166259765625 s
+Calculating path lengths: 0.001726388931274414 s
+Finding longest length: 0.00012373924255371094 s
+Longest path: 7
+clump_size.py:: Analysing clump number 7 ..
+Calculating adjucency matrix: 0.009801387786865234 s
+Creating graph: 0.0004942417144775391 s
+Calculating path lengths: 0.0014004707336425781 s
+Finding longest length: 9.655952453613281e-05 s
+Longest path: 6
+clump_size.py:: Analysing clump number 8 ..
+Calculating adjucency matrix: 0.014488935470581055 s
+Creating graph: 0.00022029876708984375 s
+Calculating path lengths: 0.00012636184692382812 s
+Finding longest length: 5.9604644775390625e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 9 ..
+Calculating adjucency matrix: 0.008765220642089844 s
+Creating graph: 0.0004677772521972656 s
+Calculating path lengths: 0.0011873245239257812 s
+Finding longest length: 9.632110595703125e-05 s
+Longest path: 5
+clump_size.py:: Analysing clump number 10 ..
+Calculating adjucency matrix: 0.008627891540527344 s
+Creating graph: 5.221366882324219e-05 s
+Calculating path lengths: 3.528594970703125e-05 s
+Finding longest length: 2.86102294921875e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 11 ..
+Calculating adjucency matrix: 0.008429288864135742 s
+Creating graph: 6.890296936035156e-05 s
+Calculating path lengths: 5.125999450683594e-05 s
+Finding longest length: 4.0531158447265625e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 12 ..
+Calculating adjucency matrix: 0.008731365203857422 s
+Creating graph: 0.0002543926239013672 s
+Calculating path lengths: 0.00031375885009765625 s
+Finding longest length: 2.47955322265625e-05 s
+Longest path: 4
+clump_size.py:: Analysing clump number 13 ..
+Calculating adjucency matrix: 0.008529186248779297 s
+Creating graph: 0.0002143383026123047 s
+Calculating path lengths: 0.00023984909057617188 s
+Finding longest length: 2.1457672119140625e-05 s
+Longest path: 3
+clump_size.py:: Analysing clump number 14 ..
+Calculating adjucency matrix: 0.010225296020507812 s
+Creating graph: 6.628036499023438e-05 s
+Calculating path lengths: 4.0531158447265625e-05 s
+Finding longest length: 3.0994415283203125e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 15 ..
+Calculating adjucency matrix: 0.008905410766601562 s
+Creating graph: 0.0002644062042236328 s
+Calculating path lengths: 0.0006783008575439453 s
+Finding longest length: 4.982948303222656e-05 s
+Longest path: 7
+clump_size.py:: Analysing clump number 16 ..
+Calculating adjucency matrix: 0.4584789276123047 s
+Creating graph: 0.3087339401245117 s
+Calculating path lengths: 16.42085909843445 s
+Finding longest length: 0.9055581092834473 s
+Longest path: 56
+clump_size.py:: Analysing clump number 17 ..
+Calculating adjucency matrix: 0.01085519790649414 s
+Creating graph: 0.0001747608184814453 s
+Calculating path lengths: 9.226799011230469e-05 s
+Finding longest length: 6.4373016357421875e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 18 ..
+Calculating adjucency matrix: 0.009283065795898438 s
+Creating graph: 0.00013971328735351562 s
+Calculating path lengths: 0.0001366138458251953 s
+Finding longest length: 1.1205673217773438e-05 s
+Longest path: 3
+clump_size.py:: Analysing clump number 19 ..
+Calculating adjucency matrix: 0.011316299438476562 s
+Creating graph: 0.00016689300537109375 s
+Calculating path lengths: 7.915496826171875e-05 s
+Finding longest length: 3.814697265625e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 20 ..
+Calculating adjucency matrix: 0.009032726287841797 s
+Creating graph: 0.00010013580322265625 s
+Calculating path lengths: 7.891654968261719e-05 s
+Finding longest length: 7.152557373046875e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 21 ..
+Calculating adjucency matrix: 0.009202957153320312 s
+Creating graph: 0.00010061264038085938 s
+Calculating path lengths: 9.775161743164062e-05 s
+Finding longest length: 7.3909759521484375e-06 s
+Longest path: 4
+clump_size.py:: Analysing clump number 22 ..
+Calculating adjucency matrix: 0.01056528091430664 s
+Creating graph: 0.0005660057067871094 s
+Calculating path lengths: 0.0017256736755371094 s
+Finding longest length: 0.0001266002655029297 s
+Longest path: 6
+clump_size.py:: Analysing clump number 23 ..
+Calculating adjucency matrix: 0.009167194366455078 s
+Creating graph: 6.341934204101562e-05 s
+Calculating path lengths: 3.695487976074219e-05 s
+Finding longest length: 2.86102294921875e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 24 ..
+Calculating adjucency matrix: 0.009005546569824219 s
+Creating graph: 7.82012939453125e-05 s
+Calculating path lengths: 5.1975250244140625e-05 s
+Finding longest length: 4.0531158447265625e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 25 ..
+Calculating adjucency matrix: 0.007611751556396484 s
+Creating graph: 4.9114227294921875e-05 s
+Calculating path lengths: 2.2649765014648438e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 26 ..
+Calculating adjucency matrix: 0.008940935134887695 s
+Creating graph: 5.841255187988281e-05 s
+Calculating path lengths: 3.24249267578125e-05 s
+Finding longest length: 2.1457672119140625e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 27 ..
+Calculating adjucency matrix: 0.00900125503540039 s
+Creating graph: 5.6743621826171875e-05 s
+Calculating path lengths: 3.123283386230469e-05 s
+Finding longest length: 2.1457672119140625e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 28 ..
+Calculating adjucency matrix: 0.009104490280151367 s
+Creating graph: 0.0001888275146484375 s
+Calculating path lengths: 0.000316619873046875 s
+Finding longest length: 2.2411346435546875e-05 s
+Longest path: 6
+clump_size.py:: Analysing clump number 29 ..
+Calculating adjucency matrix: 0.009885072708129883 s
+Creating graph: 7.414817810058594e-05 s
+Calculating path lengths: 4.0531158447265625e-05 s
+Finding longest length: 3.814697265625e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 30 ..
+Calculating adjucency matrix: 0.010576486587524414 s
+Creating graph: 0.0006427764892578125 s
+Calculating path lengths: 0.0027964115142822266 s
+Finding longest length: 0.00020122528076171875 s
+Longest path: 9
+clump_size.py:: Analysing clump number 31 ..
+Calculating adjucency matrix: 0.007563114166259766 s
+Creating graph: 4.839897155761719e-05 s
+Calculating path lengths: 2.3126602172851562e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 32 ..
+Calculating adjucency matrix: 0.0075380802154541016 s
+Creating graph: 4.887580871582031e-05 s
+Calculating path lengths: 2.2649765014648438e-05 s
+Finding longest length: 1.1920928955078125e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 33 ..
+Calculating adjucency matrix: 0.007676124572753906 s
+Creating graph: 4.673004150390625e-05 s
+Calculating path lengths: 2.4318695068359375e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 34 ..
+Calculating adjucency matrix: 0.009207963943481445 s
+Creating graph: 9.441375732421875e-05 s
+Calculating path lengths: 7.033348083496094e-05 s
+Finding longest length: 5.9604644775390625e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 35 ..
+Calculating adjucency matrix: 0.009485960006713867 s
+Creating graph: 6.127357482910156e-05 s
+Calculating path lengths: 3.170967102050781e-05 s
+Finding longest length: 2.384185791015625e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 36 ..
+Calculating adjucency matrix: 0.009698867797851562 s
+Creating graph: 0.0002677440643310547 s
+Calculating path lengths: 0.0004444122314453125 s
+Finding longest length: 3.266334533691406e-05 s
+Longest path: 5
+clump_size.py:: Analysing clump number 37 ..
+Calculating adjucency matrix: 0.007445096969604492 s
+Creating graph: 4.982948303222656e-05 s
+Calculating path lengths: 2.3603439331054688e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 38 ..
+Calculating adjucency matrix: 0.007271289825439453 s
+Creating graph: 4.553794860839844e-05 s
+Calculating path lengths: 2.2411346435546875e-05 s
+Finding longest length: 1.6689300537109375e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 39 ..
+Calculating adjucency matrix: 0.008631706237792969 s
+Creating graph: 6.985664367675781e-05 s
+Calculating path lengths: 4.1961669921875e-05 s
+Finding longest length: 4.0531158447265625e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 40 ..
+Calculating adjucency matrix: 0.00724029541015625 s
+Creating graph: 4.410743713378906e-05 s
+Calculating path lengths: 2.2649765014648438e-05 s
+Finding longest length: 1.1920928955078125e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 41 ..
+Calculating adjucency matrix: 0.007570743560791016 s
+Creating graph: 5.698204040527344e-05 s
+Calculating path lengths: 2.09808349609375e-05 s
+Finding longest length: 1.1920928955078125e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 42 ..
+Calculating adjucency matrix: 0.008588552474975586 s
+Creating graph: 0.00012302398681640625 s
+Calculating path lengths: 0.00011944770812988281 s
+Finding longest length: 1.0251998901367188e-05 s
+Longest path: 3
+clump_size.py:: Analysing clump number 43 ..
+Calculating adjucency matrix: 0.008550405502319336 s
+Creating graph: 0.00013113021850585938 s
+Calculating path lengths: 0.0001010894775390625 s
+Finding longest length: 8.344650268554688e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 44 ..
+Calculating adjucency matrix: 0.0071370601654052734 s
+Creating graph: 4.38690185546875e-05 s
+Calculating path lengths: 2.1457672119140625e-05 s
+Finding longest length: 1.6689300537109375e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 45 ..
+Calculating adjucency matrix: 0.008656501770019531 s
+Creating graph: 0.0001163482666015625 s
+Calculating path lengths: 0.0001068115234375 s
+Finding longest length: 8.821487426757812e-06 s
+Longest path: 3
+clump_size.py:: Analysing clump number 46 ..
+Calculating adjucency matrix: 0.009020566940307617 s
+Creating graph: 5.6743621826171875e-05 s
+Calculating path lengths: 3.075599670410156e-05 s
+Finding longest length: 2.1457672119140625e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 47 ..
+Calculating adjucency matrix: 0.009056806564331055 s
+Creating graph: 0.0004329681396484375 s
+Calculating path lengths: 0.0008745193481445312 s
+Finding longest length: 6.651878356933594e-05 s
+Longest path: 4
+clump_size.py:: Analysing clump number 48 ..
+Calculating adjucency matrix: 0.007245302200317383 s
+Creating graph: 4.7206878662109375e-05 s
+Calculating path lengths: 2.288818359375e-05 s
+Finding longest length: 1.6689300537109375e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 49 ..
+Calculating adjucency matrix: 0.008833885192871094 s
+Creating graph: 0.00014925003051757812 s
+Calculating path lengths: 0.0001354217529296875 s
+Finding longest length: 1.1682510375976562e-05 s
+Longest path: 3
+clump_size.py:: Analysing clump number 50 ..
+Calculating adjucency matrix: 0.007073402404785156 s
+Creating graph: 4.506111145019531e-05 s
+Calculating path lengths: 2.288818359375e-05 s
+Finding longest length: 1.1920928955078125e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 51 ..
+Calculating adjucency matrix: 0.009050607681274414 s
+Creating graph: 5.53131103515625e-05 s
+Calculating path lengths: 3.147125244140625e-05 s
+Finding longest length: 2.6226043701171875e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 52 ..
+Calculating adjucency matrix: 0.008970022201538086 s
+Creating graph: 0.00032711029052734375 s
+Calculating path lengths: 0.0008451938629150391 s
+Finding longest length: 5.888938903808594e-05 s
+Longest path: 8
+clump_size.py:: Analysing clump number 53 ..
+Calculating adjucency matrix: 0.008678436279296875 s
+Creating graph: 0.00014829635620117188 s
+Calculating path lengths: 0.00016236305236816406 s
+Finding longest length: 1.33514404296875e-05 s
+Longest path: 3
+clump_size.py:: Analysing clump number 54 ..
+Calculating adjucency matrix: 0.00711369514465332 s
+Creating graph: 4.458427429199219e-05 s
+Calculating path lengths: 2.288818359375e-05 s
+Finding longest length: 2.1457672119140625e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 55 ..
+Calculating adjucency matrix: 0.00865483283996582 s
+Creating graph: 8.606910705566406e-05 s
+Calculating path lengths: 6.270408630371094e-05 s
+Finding longest length: 4.76837158203125e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 56 ..
+Calculating adjucency matrix: 0.008630037307739258 s
+Creating graph: 5.340576171875e-05 s
+Calculating path lengths: 2.956390380859375e-05 s
+Finding longest length: 1.9073486328125e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 57 ..
+Calculating adjucency matrix: 0.008702516555786133 s
+Creating graph: 5.3882598876953125e-05 s
+Calculating path lengths: 2.9087066650390625e-05 s
+Finding longest length: 2.1457672119140625e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 58 ..
+Calculating adjucency matrix: 0.008640766143798828 s
+Creating graph: 9.012222290039062e-05 s
+Calculating path lengths: 7.772445678710938e-05 s
+Finding longest length: 5.9604644775390625e-06 s
+Longest path: 3
+clump_size.py:: Analysing clump number 59 ..
+Calculating adjucency matrix: 0.008928775787353516 s
+Creating graph: 9.1552734375e-05 s
+Calculating path lengths: 8.869171142578125e-05 s
+Finding longest length: 5.9604644775390625e-06 s
+Longest path: 3
+clump_size.py:: Analysing clump number 60 ..
+Calculating adjucency matrix: 0.009058952331542969 s
+Creating graph: 0.00010418891906738281 s
+Calculating path lengths: 7.295608520507812e-05 s
+Finding longest length: 6.198883056640625e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 61 ..
+Calculating adjucency matrix: 0.009464740753173828 s
+Creating graph: 9.369850158691406e-05 s
+Calculating path lengths: 6.270408630371094e-05 s
+Finding longest length: 5.0067901611328125e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 62 ..
+Calculating adjucency matrix: 0.009056568145751953 s
+Creating graph: 5.459785461425781e-05 s
+Calculating path lengths: 3.147125244140625e-05 s
+Finding longest length: 2.1457672119140625e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 63 ..
+Calculating adjucency matrix: 0.009224176406860352 s
+Creating graph: 9.512901306152344e-05 s
+Calculating path lengths: 7.104873657226562e-05 s
+Finding longest length: 6.4373016357421875e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 64 ..
+Calculating adjucency matrix: 0.009157896041870117 s
+Creating graph: 0.00011301040649414062 s
+Calculating path lengths: 8.559226989746094e-05 s
+Finding longest length: 7.3909759521484375e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 65 ..
+Calculating adjucency matrix: 0.008664369583129883 s
+Creating graph: 6.937980651855469e-05 s
+Calculating path lengths: 4.0531158447265625e-05 s
+Finding longest length: 3.337860107421875e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 66 ..
+Calculating adjucency matrix: 0.009696006774902344 s
+Creating graph: 0.0012178421020507812 s
+Calculating path lengths: 0.009886741638183594 s
+Finding longest length: 0.0007388591766357422 s
+Longest path: 13
+clump_size.py:: Analysing clump number 67 ..
+Calculating adjucency matrix: 0.008774518966674805 s
+Creating graph: 0.00047087669372558594 s
+Calculating path lengths: 0.0013341903686523438 s
+Finding longest length: 9.226799011230469e-05 s
+Longest path: 6
+clump_size.py:: Analysing clump number 68 ..
+Calculating adjucency matrix: 0.007170438766479492 s
+Creating graph: 4.9591064453125e-05 s
+Calculating path lengths: 2.3126602172851562e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 69 ..
+Calculating adjucency matrix: 0.008581399917602539 s
+Creating graph: 9.369850158691406e-05 s
+Calculating path lengths: 7.748603820800781e-05 s
+Finding longest length: 6.4373016357421875e-06 s
+Longest path: 3
+clump_size.py:: Analysing clump number 70 ..
+Calculating adjucency matrix: 0.008695602416992188 s
+Creating graph: 9.512901306152344e-05 s
+Calculating path lengths: 6.628036499023438e-05 s
+Finding longest length: 5.9604644775390625e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 71 ..
+Calculating adjucency matrix: 0.008488655090332031 s
+Creating graph: 6.794929504394531e-05 s
+Calculating path lengths: 4.172325134277344e-05 s
+Finding longest length: 3.5762786865234375e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 72 ..
+Calculating adjucency matrix: 0.008289098739624023 s
+Creating graph: 7.653236389160156e-05 s
+Calculating path lengths: 5.078315734863281e-05 s
+Finding longest length: 4.5299530029296875e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 73 ..
+Calculating adjucency matrix: 0.008984565734863281 s
+Creating graph: 0.000133514404296875 s
+Calculating path lengths: 0.00010704994201660156 s
+Finding longest length: 8.821487426757812e-06 s
+Longest path: 3
+clump_size.py:: Analysing clump number 74 ..
+Calculating adjucency matrix: 0.008797168731689453 s
+Creating graph: 6.699562072753906e-05 s
+Calculating path lengths: 5.221366882324219e-05 s
+Finding longest length: 3.337860107421875e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 75 ..
+Calculating adjucency matrix: 0.008315324783325195 s
+Creating graph: 6.771087646484375e-05 s
+Calculating path lengths: 4.1484832763671875e-05 s
+Finding longest length: 3.5762786865234375e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 76 ..
+Calculating adjucency matrix: 0.010206937789916992 s
+Creating graph: 0.0002994537353515625 s
+Calculating path lengths: 0.00032830238342285156 s
+Finding longest length: 2.574920654296875e-05 s
+Longest path: 4
+clump_size.py:: Analysing clump number 77 ..
+Calculating adjucency matrix: 0.009034395217895508 s
+Creating graph: 5.91278076171875e-05 s
+Calculating path lengths: 3.9577484130859375e-05 s
+Finding longest length: 3.0994415283203125e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 78 ..
+Calculating adjucency matrix: 0.010220527648925781 s
+Creating graph: 0.0017507076263427734 s
+Calculating path lengths: 0.014333248138427734 s
+Finding longest length: 0.0009474754333496094 s
+Longest path: 17
+clump_size.py:: Analysing clump number 79 ..
+Calculating adjucency matrix: 0.008588552474975586 s
+Creating graph: 0.00016379356384277344 s
+Calculating path lengths: 0.0002510547637939453 s
+Finding longest length: 1.811981201171875e-05 s
+Longest path: 5
+clump_size.py:: Analysing clump number 80 ..
+Calculating adjucency matrix: 0.008742570877075195 s
+Creating graph: 5.936622619628906e-05 s
+Calculating path lengths: 3.528594970703125e-05 s
+Finding longest length: 2.6226043701171875e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 81 ..
+Calculating adjucency matrix: 0.006840944290161133 s
+Creating graph: 4.506111145019531e-05 s
+Calculating path lengths: 2.4557113647460938e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 82 ..
+Calculating adjucency matrix: 0.007033586502075195 s
+Creating graph: 4.410743713378906e-05 s
+Calculating path lengths: 2.0503997802734375e-05 s
+Finding longest length: 1.430511474609375e-06 s
+Longest path: 0
+clump_size.py:: Analysing clump number 83 ..
+Calculating adjucency matrix: 0.00947427749633789 s
+Creating graph: 0.00031876564025878906 s
+Calculating path lengths: 0.0014171600341796875 s
+Finding longest length: 0.00011038780212402344 s
+Longest path: 8
+clump_size.py:: Analysing clump number 84 ..
+Calculating adjucency matrix: 0.00922703742980957 s
+Creating graph: 0.00011539459228515625 s
+Calculating path lengths: 0.00012230873107910156 s
+Finding longest length: 9.5367431640625e-06 s
+Longest path: 4
+clump_size.py:: Analysing clump number 85 ..
+Calculating adjucency matrix: 0.009072303771972656 s
+Creating graph: 0.0005552768707275391 s
+Calculating path lengths: 0.001951456069946289 s
+Finding longest length: 0.0001232624053955078 s
+Longest path: 12
+clump_size.py:: Analysing clump number 86 ..
+Calculating adjucency matrix: 0.008773565292358398 s
+Creating graph: 0.00010752677917480469 s
+Calculating path lengths: 0.0001068115234375 s
+Finding longest length: 8.344650268554688e-06 s
+Longest path: 3
+clump_size.py:: Analysing clump number 87 ..
+Calculating adjucency matrix: 0.008956670761108398 s
+Creating graph: 6.508827209472656e-05 s
+Calculating path lengths: 4.553794860839844e-05 s
+Finding longest length: 3.5762786865234375e-06 s
+Longest path: 3
+clump_size.py:: Analysing clump number 88 ..
+Calculating adjucency matrix: 0.008614540100097656 s
+Creating graph: 0.0002002716064453125 s
+Calculating path lengths: 0.00023889541625976562 s
+Finding longest length: 2.0503997802734375e-05 s
+Longest path: 3
+clump_size.py:: Analysing clump number 89 ..
+Calculating adjucency matrix: 0.005807638168334961 s
+Creating graph: 0.00042176246643066406 s
+Calculating path lengths: 0.0006005764007568359 s
+Finding longest length: 4.124641418457031e-05 s
+Longest path: 4
+clump_size.py:: Analysing clump number 90 ..
+Calculating adjucency matrix: 0.009415626525878906 s
+Creating graph: 0.00039076805114746094 s
+Calculating path lengths: 0.0006749629974365234 s
+Finding longest length: 5.14984130859375e-05 s
+Longest path: 4
+clump_size.py:: Analysing clump number 91 ..
+Calculating adjucency matrix: 0.00896310806274414 s
+Creating graph: 6.532669067382812e-05 s
+Calculating path lengths: 3.504753112792969e-05 s
+Finding longest length: 2.86102294921875e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 92 ..
+Calculating adjucency matrix: 0.00932455062866211 s
+Creating graph: 7.82012939453125e-05 s
+Calculating path lengths: 5.340576171875e-05 s
+Finding longest length: 4.76837158203125e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 93 ..
+Calculating adjucency matrix: 0.009254217147827148 s
+Creating graph: 0.0006449222564697266 s
+Calculating path lengths: 0.0015556812286376953 s
+Finding longest length: 0.00012421607971191406 s
+Longest path: 4
+clump_size.py:: Analysing clump number 94 ..
+Calculating adjucency matrix: 0.00892329216003418 s
+Creating graph: 0.0002551078796386719 s
+Calculating path lengths: 0.0003216266632080078 s
+Finding longest length: 2.7418136596679688e-05 s
+Longest path: 3
+clump_size.py:: Analysing clump number 95 ..
+Calculating adjucency matrix: 0.009035110473632812 s
+Creating graph: 7.390975952148438e-05 s
+Calculating path lengths: 4.00543212890625e-05 s
+Finding longest length: 3.814697265625e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 96 ..
+Calculating adjucency matrix: 0.009063243865966797 s
+Creating graph: 5.817413330078125e-05 s
+Calculating path lengths: 3.1948089599609375e-05 s
+Finding longest length: 2.384185791015625e-06 s
+Longest path: 1
+clump_size.py:: Analysing clump number 97 ..
+Calculating adjucency matrix: 0.00935506820678711 s
+Creating graph: 0.00014066696166992188 s
+Calculating path lengths: 0.00014066696166992188 s
+Finding longest length: 1.2159347534179688e-05 s
+Longest path: 3
+clump_size.py:: Analysing clump number 98 ..
+Calculating adjucency matrix: 0.00927114486694336 s
+Creating graph: 0.0002090930938720703 s
+Calculating path lengths: 0.0002334117889404297 s
+Finding longest length: 2.3126602172851562e-05 s
+Longest path: 3
+clump_size.py:: Analysing clump number 99 ..
+Calculating adjucency matrix: 0.009091615676879883 s
+Creating graph: 0.00011873245239257812 s
+Calculating path lengths: 0.00010538101196289062 s
+Finding longest length: 7.3909759521484375e-06 s
+Longest path: 2
+clump_size.py:: Analysing clump number 100 ..
+Calculating adjucency matrix: 0.009309053421020508 s
+Creating graph: 0.00016379356384277344 s
+Calculating path lengths: 0.0001456737518310547 s
+Finding longest length: 1.2874603271484375e-05 s
+Longest path: 2
+clump_size.py:: Analysing clump number 101 ..
+Calculating adjucency matrix: 0.011749267578125 s
+Creating graph: 0.0005726814270019531 s
+Calculating path lengths: 0.0010766983032226562 s
+Finding longest length: 8.0108642578125e-05 s
+Longest path: 5
+clump_size.py:: Analysing clump number 102 ..
+Calculating adjucency matrix: 0.009037494659423828 s
+Creating graph: 0.0003421306610107422 s
+Calculating path lengths: 0.0005180835723876953 s
+Finding longest length: 4.2438507080078125e-05 s
+Longest path: 3

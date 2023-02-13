@@ -32,9 +32,10 @@ cd /ptmp/mpa/hitesh/own_package/own_package/athena/
 export OMP_NUM_THREADS=1
 
 # srun python filament.py $SLURM_CPUS_PER_TASK $SLURM_ARRAY_TASK_ID
-srun python filament.py $SLURM_CPUS_PER_TASK $SLURM_ARRAY_TASK_ID random
+# srun python filament.py $SLURM_CPUS_PER_TASK $SLURM_ARRAY_TASK_ID random
+# srun python filament.py $SLURM_CPUS_PER_TASK $SLURM_ARRAY_TASK_ID blob
 # srun python filament.py $SLURM_CPUS_PER_TASK $SLURM_ARRAY_TASK_ID filament
-# srun python filament_time.py $SLURM_CPUS_PER_TASK $SLURM_ARRAY_TASK_ID
+srun python filament_time.py $SLURM_CPUS_PER_TASK $SLURM_ARRAY_TASK_ID
 
 # srun python filament.py $SLURM_CPUS_PER_TASK 1 &
 # wait

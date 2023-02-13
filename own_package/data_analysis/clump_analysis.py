@@ -12,11 +12,17 @@
 
 #*_________________________________________________
 
+from importlib.resources import path
 import matplotlib
 import matplotlib as mt
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy.ndimage.measurements as sm
+# import scipy.ndimage.measurements as sm
+import scipy.ndimage as sm
+import networkx as nx
+import sklearn.metrics as skm
+import time
+import gc
 
 
 import cmasher as cr 
@@ -31,7 +37,10 @@ import plot_3d as pt
 
 #*_________________________________________________
 
-
+if __debug__:
+    print("clump_analysis.py::Debug ON")
+else:
+    print("clump_analysis.py::Debug OFF")
 
 
 #* Clump finder from scipy 
@@ -52,6 +61,8 @@ def clump_finder_scipy(arr,arr_cut, above_cut=False):
 #* Parent function for all clump finder functions
 #* Returns number of clumps and label array for any given array
 def clump_finder(arr,arr_cut, method='scipy', above_cut=False):
+    if __debug__:
+        print("clump_analysis.py::clump_finder(): clump finder called ...")
 
     if method=='scipy':
         return clump_finder_scipy(arr,arr_cut, above_cut=False)
@@ -63,7 +74,8 @@ def clump_finder(arr,arr_cut, method='scipy', above_cut=False):
 def clump_select(clump_num, label_arr):
 
     label_arr_cp = np.copy(label_arr)
-    label_arr_cp[label_arr!=clump_num] = 0
+    label_arr_cp[label_arr_cp!=clump_num] = 0
+    label_arr_cp[label_arr_cp==clump_num] = 1
 
     return label_arr_cp
 
@@ -72,6 +84,8 @@ def clump_center(label_arr):
     label_arr_cp = np.copy(label_arr)
     label_arr_cp[label_arr>0] = 1
     L = np.shape(label_arr)
+    if __debug__:
+        print("clump_analysis.py::clump_center(): label_arr copy capped at 1 ...")
 
     grid_arr = np.indices(np.shape(label_arr))
 
@@ -90,13 +104,15 @@ def clump_center(label_arr):
     com[1] = int(np.average(grid_arr[1][label_arr_cp==1]))
     com[2] = int(np.average(grid_arr[2][label_arr_cp==1]))
 
-    return label_arr_cp, com
+    return label_arr_cp
 
 def clump_flatten (label_arr):
 
     label_arr_cp = np.copy(label_arr)
     label_arr_cp[label_arr>0] = 1
     L = np.shape(label_arr)
+    if __debug__:
+        print("clump_analysis.py::clump_flatten(): label_arr copy capped at 1 ...")
 
     grid_arr = np.indices(L)
 
@@ -109,9 +125,10 @@ def clump_flatten (label_arr):
     return np.stack((i_arr,j_arr,k_arr))
 
 def clump_covariance (label_arr, only_cov=False):
+    if __debug__:
+        print(f"clump_analysis.py::clump_covariance(): clump_covariance called with {only_cov = }...")
 
     label_arr_cp = np.copy(label_arr)
-    label_arr_cp[label_arr>0] = 1
     L = np.shape(label_arr)
 
     grid_arr = np.indices(L)
@@ -120,36 +137,124 @@ def clump_covariance (label_arr, only_cov=False):
 
     r_list  = np.stack( 
                         ( 
-                            (np.ravel(grid_arr[0]))[label_arr_cp==1],
-                            (np.ravel(grid_arr[1]))[label_arr_cp==1],
-                            (np.ravel(grid_arr[2]))[label_arr_cp==1]
+                            (np.ravel(grid_arr[0]))[label_arr_cp>0],
+                            (np.ravel(grid_arr[1]))[label_arr_cp>0],
+                            (np.ravel(grid_arr[2]))[label_arr_cp>0]
                         )
                       )
 
+    return_dict = {}
+
     if only_cov:
-        return np.cov(r_list)
+        return_dict['cov'] = np.cov(r_list)
     else:
-        return np.cov(r_list), r_list
+        return_dict['cov'] = np.cov(r_list)
+        return_dict['r_list'] = r_list
 
+    return return_dict
 
-def clump_size (label_arr):
+# ! DOES NOT WORK PROPERLY! DO NOT USE THIS METHOD!
+def clump_size (clump_num, label_arr, clump_centering=False):
 
-    cov, r_list = clump_covariance(label_arr)
+    label_arr_shifted = clump_select(clump_num, label_arr)
 
-    eval, evec = np.linalg.eig(cov)
+    clump_vol = np.sum(label_arr_shifted)
 
+    #* Calculate covariance matrix for the isolated clump
+    cov_dict = clump_covariance(label_arr_shifted)
+
+    #* Check if NaN in covariance matrix
+    #* Happens if the clump has only one cell
+    if np.isnan(np.sum(cov_dict['cov'])):
+        print("clump_analysis.py::clump_size(): Insufficient number of cells (need >1) in the clump for covariance calculation...")
+        print(" Skipping covariance matrix calculation and diagonalisation ...")
+        return {'clump_size':[1.0,1.0,1.0], 'clump_volume': 1.0}
+
+    #* Calculate the principal axes, i.e. eigevectors of covariance matrix
+    eval, evec = np.linalg.eig(cov_dict['cov'])
+
+    #* Calculate size of clump
+    #* Using the extent of the projection of points on the principal axes
     clump_size = [0]*3
-
     for i in range(3):
+
         norm_ev = np.sqrt(np.sum(evec[i]**2))
-        proj_arr = np.dot(r_list.T, evec[i])
-        dproj = (proj_arr.max()-proj_arr.min())/norm_ev
-        dproj = np.abs(dproj)
+        proj_arr = np.dot(cov_dict['r_list'].T, evec[i])
+        print(f"{np.shape(proj_arr)=}")
+        print(f"{np.shape(cov_dict['r_list'])=}")
 
-        clump_size[i] = dproj
+        dproj = np.abs(proj_arr.max()-proj_arr.min())/norm_ev
+
+        clump_size[i] = dproj + 1
         
-    return clump_size
+    #* Return a dictionary with different values
+    return_dict = {}
+    return_dict['clump_size']   = clump_size        # List with clump sizes
+    return_dict['clump_volume'] = clump_vol         # List with clump sizes
+    return_dict['evec'] =  evec                     # Eigenvectors (Principal axes)
+    return_dict['eval'] =  eval                     # Eigenvalues
 
+    return return_dict
+
+def clump_length( clump_num, label_arr, k_n=1, n_jobs=1, skip_data=1):
+
+    label_clump = clump_select(clump_num, label_arr)
+    data = ((clump_flatten(label_clump).astype(float)).T)
+
+    print(f"Points in the clump: {len(data)}")
+    print(f"Running with {n_jobs} jobs")
+
+    a = time.time()
+    adj_mat = (np.abs(skm.pairwise_distances(data[::skip_data,0].reshape(-1,1) / skip_data, n_jobs=n_jobs))<=k_n) & \
+              (np.abs(skm.pairwise_distances(data[::skip_data,1].reshape(-1,1) / skip_data, n_jobs=n_jobs))<=k_n) & \
+              (np.abs(skm.pairwise_distances(data[::skip_data,2].reshape(-1,1) / skip_data, n_jobs=n_jobs))<=k_n)
+
+    np.fill_diagonal(adj_mat, False)
+
+    b = time.time()
+    print(f"Calculating adjucency matrix: {b-a} s")
+
+    # a = time.time()
+    # adj_mat = np.zero
+    # adj_mat = (np.abs(skm.pairwise_distances(data[:,0].reshape(-1,1), n_jobs=n_jobs))<=k_n) & \
+    #           (np.abs(skm.pairwise_distances(data[:,1].reshape(-1,1), n_jobs=n_jobs))<=k_n) & \
+    #           (np.abs(skm.pairwise_distances(data[:,2].reshape(-1,1), n_jobs=n_jobs))<=k_n)
+
+    # np.fill_diagonal(adj_mat, False)
+
+    # b = time.time()
+    # print(f"Calculating adjucency matrix: {b-a} s")
+
+
+    a = time.time()
+    graph_nx = nx.from_numpy_array(adj_mat.astype(int))
+    b = time.time()
+    print(f"Creating graph: {b-a} s")
+
+    a = time.time()
+    path_length = dict(nx.all_pairs_shortest_path_length(graph_nx))
+    b = time.time()
+    print(f"Calculating path lengths: {b-a} s")
+
+    a = time.time()
+    max_path_length = 0
+    for k1 in path_length.keys():
+        for k2 in path_length[k1].keys():
+            if path_length[k1][k2]>max_path_length:
+                max_path_length = path_length[k1][k2]
+
+    b = time.time()
+    print(f"Finding longest length: {b-a} s")
+    print(f"Longest path: {max_path_length}")
+    print(f"Longest path skip_data(={skip_data}): {max_path_length*skip_data}")
+    print( "_______________________________________________")
+
+    del (adj_mat)
+    del(graph_nx)
+    del(path_length)
+    gc.collect()
+
+    return max_path_length*skip_data
 
 # #* Plots the label arr of clumps for any given array
 
@@ -367,43 +472,47 @@ if __name__ == "__main__":
     rho = np.load('data/rho.npy')
     prs = np.load('data/prs.npy')
     T = (prs/rho) * KELVIN * mu
-
     cut = 5e4
-    # clump_find_plot(test_arr, cut, above_cut=True)
+
+    #*_______________________________________________________________________________*#
 
     n_blob_sp, label_arr_sp = clump_finder(T, cut, above_cut=False)
 
     def alpha_plot(c_arr, log_flag=False):
         return pt.poly_alpha(c_arr,log_flag=log_flag, order=1, cut=0)#,cut=np.sqrt(frac_aniso.min()*frac_aniso.max()))
 
-
     clump_num = 4 
 
     # fig, ax, sc  = pt.render_scatter_3d(inp_arr = clump_select(clump_num, label_arr_sp), \
     #                          alpha_fn = alpha_plot,\
     #                          cmap="Paired")
-
-    # fig, ax, sc  = pt.render_scatter_3d(inp_arr = label_arr_sp, \
-    #                          alpha_fn = alpha_plot,\
-    #                          cmap="Paired")
+    # plt.show()
 
 
-    label_arr_shifted, com = clump_center(clump_select(clump_num, label_arr_sp))
+    # label_arr_shifted = clump_center(clump_select(clump_num, label_arr_sp))
+    label_arr_shifted = clump_select(clump_num, label_arr_sp)
     L = np.shape(label_arr_shifted)
 
     fig, ax, sc  = pt.render_scatter_3d(inp_arr = label_arr_shifted, \
                              alpha_fn = alpha_plot,\
                              cmap="Paired")
 
-    clump_cov = clump_covariance(label_arr_shifted, only_cov=True)
-    eval, evec = np.linalg.eig(clump_cov)
-    clump_sz = clump_size(label_arr_shifted)    
+    clump_sz = clump_size(clump_num, label_arr_sp, clump_centering=False)    
+    evec = clump_sz['evec']
+    eval = clump_sz['eval']
+    clump_sz = clump_sz['clump_size']
+
+    grid = np.indices(np.shape(label_arr_sp))
+    com = [0]*3
+    com[0] = np.average(grid[0][clump_select(clump_num, label_arr_sp)==1])
+    com[1] = np.average(grid[1][clump_select(clump_num, label_arr_sp)==1])
+    com[2] = np.average(grid[2][clump_select(clump_num, label_arr_sp)==1])
     
     for i in range(3):
         evec_plot = []
         for j in range(3):
-            evec_plot.append(  [  int(L[j]/2)-evec[i,j]*clump_sz[i]/2 , 
-                                  int(L[j]/2)+evec[i,j]*clump_sz[i]/2  ]
+            evec_plot.append(  [  com[j-2]-evec[i,j]*clump_sz[i]/2 , 
+                                  com[j-2]+evec[i,j]*clump_sz[i]/2  ]
                             )
         
         if eval[i]==np.max(eval):
@@ -412,56 +521,46 @@ if __name__ == "__main__":
             col = 'C1'
         ax.plot3D(*evec_plot, color=col, zorder=5)
 
+    ax.set_title('Clump size code test') 
+
+    norm = mt.colors.Normalize(vmin=label_arr_sp.min(), vmax=label_arr_sp.max())
+    fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap="Paired"), ax=ax)
     plt.show()
 
-    
-    # plt.figure()
-    # # plt.imshow(label_arr_shifted[:,:,int(L[2]/2)])
-    # plt.imshow(np.sum(label_arr_shifted, axis=2))
-    # plt.show()
+    #*_______________________________________________________________________________*#
 
-    # plt.figure()
-    # # plt.imshow(label_arr_shifted[:,int(L[1]/2),:])
-    # plt.imshow(np.sum(label_arr_shifted, axis=1))
-    # plt.show()
+    clump_length_test = clump_length(clump_num, label_arr_sp)
 
-    # plt.figure()
-    # # plt.imshow(label_arr_shifted[int(L[0]/2),:,:])
-    # plt.imshow(np.sum(label_arr_shifted, axis=2))
-    # plt.show()
+    #*_______________________________________________________________________________*#
+    v1 = np.load('data/v1.npy')
+    v2 = np.load('data/v2.npy')
+    v3 = np.load('data/v3.npy')
 
+    v_arr = [v1,v2,v3]
 
-    # norm = mt.colors.Normalize(vmin=label_arr_sp.min(), vmax=label_arr_sp.max())
-    # fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap="Paired"), ax=ax)
-    # plt.show()
+    nbr_arr = boundary_detect(label_arr_sp)
 
-    # # clump_find_plot(T, cut, above_cut=False)#, interactive=True)
+    shear_dict, shear_map = shear_calc(label_arr_sp, v_arr)
 
-    # v1 = np.load('data/v1.npy')
-    # v2 = np.load('data/v2.npy')
-    # v3 = np.load('data/v3.npy')
+    def grad_alpha(c_arr, log_flag=False):
 
-    # v_arr = [v1,v2,v3]
+        alpha0 = 1.0
+        alp = alpha0 * (c_arr-c_arr.min())/(c_arr.max()-c_arr.min())
+        alp[c_arr==0] = 0.0
+        return alp
 
-    # nbr_arr = boundary_detect(label_arr_sp)
+    plt.hist(np.array(shear_dict['shear_vmag']))
+    plt.title('Shear histogram')
+    plt.show()
 
-    # shear_dict, shear_map = shear_calc(label_arr_sp, v_arr)
+    # %matplotlib qt 
 
-    # def grad_alpha(c_arr, log_flag=False):
+    fig, ax, sc  = pt.render_scatter_3d(inp_arr = shear_map, \
+                             alpha_fn = grad_alpha,\
+                             cmap=cr.neon)
+    norm = mt.colors.Normalize(vmin=shear_map.min(), vmax=shear_map.max())
+    fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap=cr.neon), ax=ax)
 
-    #     alpha0 = 1.0
-    #     alp = alpha0 * (c_arr-c_arr.min())/(c_arr.max()-c_arr.min())
-    #     alp[c_arr==0] = 0.0
-    #     return alp
+    ax.set_title('Shear map')
 
-    # plt.hist(np.array(shear_dict['shear_vmag']))
-    # plt.show()
-
-    # # %matplotlib qt 
-
-    # fig, ax, sc  = pt.render_scatter_3d(inp_arr = shear_map, \
-    #                          alpha_fn = grad_alpha,\
-    #                          cmap=cr.neon)
-    # norm = mt.colors.Normalize(vmin=shear_map.min(), vmax=shear_map.max())
-    # fig.colorbar(mt.cm.ScalarMappable(norm=norm, cmap=cr.neon), ax=ax)
-    # plt.show()
+    plt.show()

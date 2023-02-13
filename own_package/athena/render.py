@@ -19,12 +19,14 @@ sys.path.insert(0, f'{package_abs_path}utils/')
 from timer import timer 
 
 @timer
-def render(field,file_loc, img_loc,MHD_flag,\
+def render(field, file_loc, img_loc=None, MHD_flag=False,\
+           fig=None, ax=None, new_fig=True, \
            cut=0.0, cut_above=False, 
            view = [30,-60], \
-           log_flag=False):
+           log_flag=False, return_ax=True,\
+           cmap='plasma'):
 
-    out_dict = dr.get_array(file_loc,MHD_flag=MHD_flag)
+    out_dict = dr.get_array_athena(file_loc, fields=[field],MHD_flag=MHD_flag)
 
     try:
         plot_arr = out_dict[field]
@@ -40,10 +42,16 @@ def render(field,file_loc, img_loc,MHD_flag,\
                                         alpha_fn = alpha_plot, \
                                         log_flag=log_flag,\
                                         view=view,\
-                                        cmap='plasma')
+                                        cmap=cmap,\
+                                        fig=fig, ax=ax, new_fig=new_fig)
 
-    fig.savefig(img_loc)
+    if img_loc is not None:
+        fig.savefig(img_loc)
+
     print('Render done ...')
+
+    if return_ax:
+        return ax
 
 @timer
 def render_rotate_video (field, file_list, img_list, MHD_flag,\
@@ -64,7 +72,7 @@ def render_rotate_video (field, file_list, img_list, MHD_flag,\
         render(field, fl, img_list[i_fl], MHD_flag,\
                cut=cut, cut_above=cut_above,\
                view=i_view,\
-               log_flag=log_flag)  
+               log_flag=log_flag, return_ax=False)  
 
     print('Rotating render done ...')
 

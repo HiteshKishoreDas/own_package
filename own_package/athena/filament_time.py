@@ -78,6 +78,9 @@ else:
 # data_dir = '/afs/mpa/home/hitesh/remote/freya/data/'
 data_dir = '/ptmp/mpa/hitesh/data/'
 
+# save_dir = './save_arr/anisotropy'
+save_dir = '/ptmp/mpa/hitesh/MHD_multiphase_turbulence/analysis/save_arr/anisotropy'
+
 sim_list  = []
 
 sim_list += ['Rlsh_1000_res_256_M_0.5_hydro/']
@@ -110,104 +113,39 @@ for N_snap in range(N_snap_start, N_snap_end+1):
     # MHD_flag = True
     MHD_flag = False 
 
-    out_dict = dr.get_array_athena(file_name, fields=["rho"],MHD_flag=MHD_flag)
+    out_dict = dr.get_array_athena(file_name, fields=["T"],MHD_flag=MHD_flag)
 
-    # rho = out_dict['rho']
-    # rho_cut = 50.0
-    # rho[rho<10.0] = 1.0
 
     T = out_dict['T']
-    T_cut = 4e5
+    # T_cut = 4e5
+    T_min = 4e4
+    T_cut = 2*T_min
 
     time = out_dict['time']
     # prs = out_dict['P']
     # T = (prs/rho) * KELVIN * mu
 
-    wnd = int((np.shape(T))[0]/10)+0.5
+    wnd = 2.5*3 #int((np.shape(T))[0]/10)+0.5
     sigma_wnd_mul = 3.0
 
     devices = N_procs*['cpu']
     parallel_flag = True
 
     frac_aniso_arr = ch.fractional_anisotropy(inp_arr=T, sigma=wnd/sigma_wnd_mul,window=wnd, parallel_flag=parallel_flag, devices=devices)
-    frac_aniso_t = np.average(frac_aniso_arr*(T>T_cut))
+    frac_aniso_t = np.average(frac_aniso_arr[T<T_cut])
 
     frac_aniso_list.append(frac_aniso_t)
     time_list.append(time)
-
-
-    # def alpha_plot(c_arr, log_flag=False):
-    #     return pt.poly_alpha(c_arr,log_flag=log_flag, order=1,cut=0.75)
-
-    # fig, ax, sc  = pt.render_scatter_3d(inp_arr = frac_aniso_arr, \
-    #                          alpha_fn = alpha_plot,\
-    #                          cmap=cr.neon)
-
-    # plt.show()
-
-    # fig.savefig(f"frac_aniso_test_{file_ind}.png")
-
-    # def alpha_plot(c_arr, log_flag=False):
-    #     return pt.poly_alpha(c_arr,log_flag=log_flag, order=1,cut=50)
-
-    # fig, ax, sc  = pt.render_scatter_3d(inp_arr = rho, \
-    #                          alpha_fn = pt.lin_alpha,\
-    #                          cmap=cr.neon)
 
 
 save_dict={}
 save_dict['coherence'] = frac_aniso_list
 save_dict['time' ]     = time_list
 
-save_loc = './save_arr/anisotropy/'+sim_list[file_ind]
+save_loc = f'{save_dir}/{sim_list[file_ind]}'
 
-with open(f'{save_loc}/anisotropy_time_filamentariness.pkl', 'wb') as f:
+with open(f'{save_loc}/anisotropy_time_Tcut_2Tfloor_filamentariness.pkl', 'wb') as f:
     pk.dump(save_dict, f)
 
 del(save_dict)
 gc.collect()
-
-#%%
-
-# def alpha_plot(c_arr, log_flag=False):
-#     return pt.poly_alpha(c_arr,log_flag=log_flag, order=1,cut=0.75)
-
-# fig, ax, sc  = pt.render_scatter_3d(inp_arr = frac_aniso_arr, \
-#                              alpha_fn = alpha_plot,\
-#                              cmap=cr.neon)
-
-# plt.show()
-
-# def alpha_plot(c_arr, log_flag=False):
-#     return pt.poly_alpha(c_arr,log_flag=log_flag, order=1,cut=1)
-
-
-
-# fig, ax, sc  = pt.render_scatter_3d(inp_arr = rho*frac_aniso_arr, \
-#                              alpha_fn = alpha_plot,\
-#                              cmap=cr.neon)
-
-# fig.savefig(f"frac_aniso_test_{file_ind}.png")
-
-# plt.figure()
-# plt.imshow((rho*frac_aniso_arr)[100:200,100:200,128], vmin=0, vmax=100.0)
-# plt.title(np.average((rho*frac_aniso_arr)[100:200,100:200,128]))
-# plt.colorbar()
-# plt.savefig(f"rho_frac_mid_{file_ind}.png")
-
-# plt.figure()
-# plt.imshow((frac_aniso_arr)[100:200,100:200,128], vmin=0, vmax=1.0)
-# plt.title(np.average(frac_aniso_arr[100:200,100:200,128]))
-# plt.colorbar()
-# plt.savefig(f"frac_mid_{file_ind}.png")
-
-# frac_aniso_arr[frac_aniso_arr<0.1] = 0.0 
-# rho[rho<10] = 0.0
-
-# plt.figure()
-# plt.imshow((rho*frac_aniso_arr)[:,:,128])
-# plt.colorbar()
-# plt.savefig(f"rho_frac_slice_{file_ind}.png")
-
-# plt.show()
-# %%
