@@ -1,7 +1,7 @@
-'''
+"""
 @Author: Hitesh Kishore Das 
 @Date: 2022-09-01 19:07:23 
-'''
+"""
 
 import numpy as np
 import cmasher as cr
@@ -13,42 +13,45 @@ import matplotlib.pyplot as plt
 import matplotlib.patheffects as pe
 
 cwd = os.path.dirname(__file__)
-package_abs_path = cwd[:-len(cwd.split('/')[-1])]
+package_abs_path = cwd[: -len(cwd.split("/")[-1])]
 
-sys.path.insert(0, f'{package_abs_path}utils/')
-from timer import timer 
+sys.path.insert(0, f"{package_abs_path}utils/")
+from timer import timer
 import units as un
 
-sys.path.insert(0, f'{package_abs_path}data_analysis/')
+sys.path.insert(0, f"{package_abs_path}data_analysis/")
 import array_operations as ao
 
 
-def plot_multiline(x_data_list: list,         \
-                   y_data_list: list,         \
-                   color_list: list = None,   \
-                   ax_log = {'x_log': False, 'y_log':False, 'col_log':False}, \
-                   normalise_list = {'x_norm':None, 'y_norm':None},       \
-                   label_list: list = None,   \
-                   linestyle='solid',         \
-                   mark_flag: bool = False,   \
-                   markevery: int = 10,       \
-                   smooth_flag: bool = False, \
-                   smooth_window: int = 5,    \
-                   cmap = cr.rainforest,      \
-                   new_fig: bool = True,      \
-                   fig = None, ax = None,      \
-                   kwargs = {}    ):
+def plot_multiline(
+    x_data_list: list,
+    y_data_list: list,
+    color_list: list = None,
+    ax_log={"x_log": False, "y_log": False, "col_log": False},
+    normalise_list={"x_norm": None, "y_norm": None},
+    label_list: list = None,
+    linestyle="solid",
+    mark_flag: bool = False,
+    markevery: int = 10,
+    smooth_flag: bool = False,
+    smooth_window: int = 5,
+    cmap=cr.rainforest,
+    new_fig: bool = True,
+    fig=None,
+    ax=None,
+    kwargs={},
+):
     """_summary_
 
     Args:
-        x_data_list (list): list of 1D Numpy arrays with x-values 
+        x_data_list (list): list of 1D Numpy arrays with x-values
         y_data_list (list): list of 1D Numpy arrays with y-values
 
         color_list  (list): list of 1D Numpy arrays with values for color
 
         ax_log (dict): Dictionary to define scale of x-axis, y-axis and color
-        
-        normalise_list (dict): Dictionary to define list of normalisation constants 
+
+        normalise_list (dict): Dictionary to define list of normalisation constants
 
         label_list (dict): list of labels for the lines
 
@@ -70,53 +73,53 @@ def plot_multiline(x_data_list: list,         \
         Dict: Dictionary with the figure and axis object
     """
 
-    line_border_color = mt.rcParams['lines.color']
-    line_border_width = mt.rcParams['lines.linewidth'] + 1
+    line_border_color = mt.rcParams["lines.color"]
+    line_border_width = mt.rcParams["lines.linewidth"] + 1
 
     if new_fig:
         fig, ax = plt.subplots(nrows=1, ncols=1)
 
     L = len(y_data_list)
 
-    if color_list==None:
-        line_col = [f'C{i}' for i in range(L)]
+    if color_list == None:
+        line_col = [f"C{i}" for i in range(L)]
 
     else:
-        if ax_log['col_log']:
+        if ax_log["col_log"]:
             cb_qnt = np.log10(np.array(color_list))
         else:
             cb_qnt = np.array(color_list)
 
         cmap_fn = mt.cm.get_cmap(cmap)
-        line_col = cmap_fn((cb_qnt-cb_qnt.min())/(cb_qnt.max()-cb_qnt.min()))
+        line_col = cmap_fn((cb_qnt - cb_qnt.min()) / (cb_qnt.max() - cb_qnt.min()))
 
-
-
-    if isinstance(normalise_list['x_norm'], float):
+    if isinstance(normalise_list["x_norm"], float):
         print("plot_2d: float found in normalise_list['x_norm'] ...")
         print(f"plot_2d: x-axis normalisation set to {normalise_list['x_norm']} ...")
 
-        normalise_list['x_norm'] = [normalise_list['x_norm'] for i in range(len(y_data_list))]
+        normalise_list["x_norm"] = [
+            normalise_list["x_norm"] for i in range(len(y_data_list))
+        ]
 
-    elif  normalise_list['x_norm'] is None:
+    elif normalise_list["x_norm"] is None:
         print("plot_2d: None found in normalise_list['x_norm'] ...")
         print("plot_2d: x-axis normalisation set to 1.0 ...")
 
-        normalise_list['x_norm'] = [1.0 for i in range(len(y_data_list))]
+        normalise_list["x_norm"] = [1.0 for i in range(len(y_data_list))]
 
-        
-    if isinstance(normalise_list['y_norm'], float):
+    if isinstance(normalise_list["y_norm"], float):
         print("plot_2d: float found in normalise_list['y_norm'] ...")
         print(f"plot_2d: y-axis normalisation set to {normalise_list['y_norm']} ...")
 
-        normalise_list['y_norm'] = [normalise_list['y_norm'] for i in range(len(y_data_list))]
+        normalise_list["y_norm"] = [
+            normalise_list["y_norm"] for i in range(len(y_data_list))
+        ]
 
-    elif normalise_list['y_norm'] is None:
+    elif normalise_list["y_norm"] is None:
         print("plot_2d: None found in normalise_list['y_norm'] ...")
         print("plot_2d: y-axis normalisation set to 1.0 ...")
 
-        normalise_list['y_norm'] = [1.0 for i in range(len(y_data_list))]
-
+        normalise_list["y_norm"] = [1.0 for i in range(len(y_data_list))]
 
     if label_list == None:
         label_list = [None for i in range(len(y_data_list))]
@@ -127,12 +130,11 @@ def plot_multiline(x_data_list: list,         \
     else:
         style_arr_flag = True
 
-
     for i in range(L):
 
         if smooth_flag:
             plot_y = ao.smoothen(y_data_list[i], window=smooth_window)
-            plot_x = x_data_list[i][int(smooth_window/2):-int(smooth_window/2)]
+            plot_x = x_data_list[i][int(smooth_window / 2) : -int(smooth_window / 2)]
         else:
             plot_y = np.copy(y_data_list[i])
             plot_x = np.copy(x_data_list[i])
@@ -140,32 +142,45 @@ def plot_multiline(x_data_list: list,         \
         if style_arr_flag:
             linestyle_i = linestyle[i]
 
-        if mark_flag: 
-            ax.plot(np.array(plot_x)/np.array(normalise_list['x_norm'][i]), \
-                    np.array(plot_y)/np.array(normalise_list['y_norm'][i]), '-o',\
-                    color=line_col[i],  linestyle=linestyle_i, \
-                    label = label_list[i], markevery=markevery,  \
-                    path_effects=[pe.Stroke(linewidth=line_border_width, \
-                                            foreground=line_border_color), pe.Normal()], \
-                    **kwargs)
+        if mark_flag:
+            ax.plot(
+                np.array(plot_x) / np.array(normalise_list["x_norm"][i]),
+                np.array(plot_y) / np.array(normalise_list["y_norm"][i]),
+                "-o",
+                color=line_col[i],
+                linestyle=linestyle_i,
+                label=label_list[i],
+                markevery=markevery,
+                path_effects=[
+                    pe.Stroke(
+                        linewidth=line_border_width, foreground=line_border_color
+                    ),
+                    pe.Normal(),
+                ],
+                **kwargs,
+            )
         else:
-            ax.plot(np.array(plot_x)/np.array(normalise_list['x_norm'][i]), \
-                    np.array(plot_y)/np.array(normalise_list['y_norm'][i]), \
-                    color=line_col[i],  linestyle=linestyle_i, \
-                    label = label_list[i], 
-                    path_effects=[pe.Stroke(linewidth=line_border_width, \
-                                            foreground=line_border_color), pe.Normal()], \
-                    **kwargs)
-    if ax_log['x_log']:
-        ax.set_xscale('log')
-    if ax_log['y_log']:
-        ax.set_yscale('log')
+            ax.plot(
+                np.array(plot_x) / np.array(normalise_list["x_norm"][i]),
+                np.array(plot_y) / np.array(normalise_list["y_norm"][i]),
+                color=line_col[i],
+                linestyle=linestyle_i,
+                label=label_list[i],
+                path_effects=[
+                    pe.Stroke(
+                        linewidth=line_border_width, foreground=line_border_color
+                    ),
+                    pe.Normal(),
+                ],
+                **kwargs,
+            )
+    if ax_log["x_log"]:
+        ax.set_xscale("log")
+    if ax_log["y_log"]:
+        ax.set_yscale("log")
 
     plt_dict = {}
-    plt_dict['fig'] = fig
-    plt_dict['ax']  = ax
+    plt_dict["fig"] = fig
+    plt_dict["ax"] = ax
 
     return plt_dict
-
-
-
