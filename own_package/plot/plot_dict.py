@@ -3,7 +3,6 @@ Created Date: 2022-11-08 14:17:07
 Author: Hitesh Das
 '''
 
-
 def plot_dict_create(field_list, )
 
     if 'rho' or 'all' in field_list:

@@ -17,12 +17,15 @@ package_abs_path = cwd[:-len(cwd.split('/')[-1])]
 sys.path.insert(0, f'{package_abs_path}utils/')
 import units as un
 
+sys.path.insert(0, f'{package_abs_path}cooling/')
+import power_law_fit_max as pm
+
 cwd = os.getcwd()
 repo_abs_path = cwd[:-len(cwd.split('/')[-1])]
 
 cooling_dir = f'{package_abs_path}cooling/'
 
-def Lam_fn (T,Z=1.0, Lambda_fac = 1.0):
+def Lam_fn (T, Zsol=1.0, Lambda_fac = 1.0):
 
     Lam_file = np.loadtxt(cooling_dir+"CT_WSS09.dat")
     
@@ -62,9 +65,9 @@ def Lam_fn (T,Z=1.0, Lambda_fac = 1.0):
         LamH = LamH_a*(T_b-T)/dT + LamH_b*(T-T_a)/dT
         LamZ = LamZ_a*(T_b-T)/dT + LamZ_b*(T-T_a)/dT
 
-    return (LamH + LamZ*Z) * Lambda_fac
+    return (LamH + LamZ*Zsol) * Lambda_fac
 
-def Lam_fn_powerlaw(T, Lambda_fac=1.0):
+def Lam_fn_powerlaw_pwlf_fit(T, Zsol=1.0, Lambda_fac=1.0):
 
     Lam_file = np.loadtxt(cooling_dir+"power_law_fit_Z_1.0.txt")
     
@@ -97,6 +100,37 @@ def Lam_fn_powerlaw(T, Lambda_fac=1.0):
 
         return Lam*Lambda_fac
 
+def Lam_fn_powerlaw(T, Zsol=1.0, Lambda_fac=1.0):
+    
+    T_min = np.min(pm.cool_t)
+    T_max = np.max(pm.cool_t)
+
+    N = len(pm.cool_t)
+
+    if T<T_min or T>T_max:
+        return 0.0
+
+    else:
+
+        i_a = 0
+        i_b = N-1
+
+        while i_a!=i_b-1:
+
+            mid = int((i_a+i_b)/2)
+
+            if T>pm.cool_t[mid]:
+                i_a = mid
+            else:
+                i_b = mid
+
+        T_a = pm.cool_t[i_a]
+        T_b = pm.cool_t[i_b]
+
+        Lam = (pm.cool_coef[i_a]*1e-23)* (T/pm.cool_t[i_a])**pm.cool_index[i_a]
+
+        return Lam*Lambda_fac
+
 def Lam_range():
 
     Lam_file = np.loadtxt("CT_WSS09.dat")
@@ -107,26 +141,32 @@ def Lam_range():
     return T_min, T_max
 
 
-def tcool_calc(rho,T,Z=1.0, Lambda_fac = 1.0,actual_flag=False):
+def tcool_calc(rho, T, Zsol=1.0, Lambda_fac = 1.0, fit_type='max'):
 
     n_H = rho*un.unit_density/(un.muH*un.CONST_amu)
 
-    if actual_flag:
-        lam_arr = Lam_fn(T,Z,Lambda_fac)
-    else:
-        lam_arr = Lam_fn_powerlaw(T,Lambda_fac)
+    fit_dict = {}
+    fit_dict['max'] = Lam_fn_powerlaw
+    # fit_dict['5pnt_pwlf'] = Lam_fn_powerlaw_pwlf_fit
+    # fit_dict['continuous'] = Lam_fn
+
+    lam_arr = fit_dict[fit_type](T=T, Zsol=Zsol, Lambda_fac=Lambda_fac)
+    print(f"{lam_arr=}")
 
     p = rho*T/(un.KELVIN*un.mu)  # in code units
+    print(f"{p= }")
 
     q = n_H*n_H*lam_arr/un.unit_q  # in code units 
+    print(f"{un.muH= }")
 
     tc = p/(q*(un.g - 1))       # in code units
+    print(f"{tc= }")
 
     return tc;  # in code units
 
 
 if __name__=="__main__":
 
-    T = 1e5
+    T = 4e4
     print(Lam_fn(T))
     print(tcool_calc(1,T))
