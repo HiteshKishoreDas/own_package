@@ -74,11 +74,11 @@ def plot_slice(
     y_dir = (view_dir + 2) % dim
     z_dir = view_dir
 
-    if x_data == None:
+    if np.any(np.equal(x_data, None)):
         x_data = np.linspace(0, L[x_dir], num=L[x_dir] + 1)
-    if y_data == None:
+    if np.any(np.equal(y_data, None)):
         y_data = np.linspace(0, L[y_dir], num=L[y_dir] + 1)
-    if z_data == None:
+    if np.any(np.equal(z_data, None)):
         z_data = np.linspace(0, L[z_dir], num=L[z_dir] + 1)
 
     if z_slice == None:
@@ -189,17 +189,17 @@ def plot_projection(
     y_dir = (view_dir + 2) % dim
     z_dir = view_dir
 
-    if x_data == None:
+    if np.any(np.equal(x_data, None)):
         x_data = np.linspace(0, L[x_dir], num=L[x_dir] + 1)
-    if y_data == None:
+    if np.any(np.equal(y_data, None)):
         y_data = np.linspace(0, L[y_dir], num=L[y_dir] + 1)
-    if z_data == None:
+    if np.any(np.equal(z_data, None)):
         z_data = np.linspace(0, L[z_dir], num=L[z_dir] + 1)
 
     if weight_data == None:
         weight_data = np.ones_like(img_data)
 
-    proj_plot = np.average(img_data, weights=weight_data, axis=view_dir)
+    proj_plot = np.sum(img_data * weight_data, axis=view_dir)
 
     if view_dir == 1:
         slc = ax.pcolormesh(
@@ -346,7 +346,7 @@ def plot_streamline(
         stream_data_y,
         color=color,
         cmap=cmap,
-        broken_streamline=False,
+        broken_streamlines=False,
         arrowsize=0,
         **kwargs,
     )
@@ -721,12 +721,16 @@ def parallel_plot_fn(
 
 
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
 
     rho = np.load("../data_analysis/data/rho.npy")
     v1 = np.load("../data_analysis/data/v1.npy")
     v2 = np.load("../data_analysis/data/v2.npy")
 
-    style_lib = "../plot/style_lib/"
+    file_path = os.path.dirname(__file__)
+    print(f"{file_path = }")
+
+    style_lib = f"{file_path}/../plot/style_lib/"
     # pallette   = style_lib + 'cup_pallette.mplstyle'
     # pallette   = style_lib + 'dark_pallette.mplstyle'
     pallette = style_lib + "bright_pallette.mplstyle"
@@ -778,7 +782,24 @@ if __name__ == "__main__":
         fig=plot_dict["fig"],
     )
     # plot_dict['cbar'].set_label('Colorbar label')
-    plot_dict["ax"].set_title("line integral convolution test")
+    plot_dict["ax"].set_title("lic test, average mode")
+    plot_dict["ax"].set_xlabel("x label")
+    plot_dict["ax"].set_ylabel("y label")
+
+    plt.show()
+
+    plot_dict = plot_streamline(v1, v2, mode="slice", view_dir=1)
+    plot_dict = plot_line_integral_convolution(
+        v1,
+        v2,
+        mode="slice",
+        view_dir=1,
+        new_fig=False,
+        ax=plot_dict["ax"],
+        fig=plot_dict["fig"],
+    )
+    # plot_dict['cbar'].set_label('Colorbar label')
+    plot_dict["ax"].set_title("lic test, slice mode")
     plot_dict["ax"].set_xlabel("x label")
     plot_dict["ax"].set_ylabel("y label")
 

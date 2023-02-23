@@ -735,7 +735,7 @@ if __name__ == "__main__":
 
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 8))
 
-    sim_type = 2 * 2
+    sim_type = 0 * 2
     file_path = "/afs/mpa/home/hitesh/remote/freya/MHD_multiphase_turbulence/analysis"
 
     ax, clump_list1 = clump_length_hist(
@@ -761,8 +761,8 @@ if __name__ == "__main__":
     print(kstest)
 
     ax.text(
-        11,
-        0.6,
+        150,
+        0.18,
         f"KS statistic = {kstest[0]:.3f}\np-value = {kstest[1]:.5f}",
         fontsize=16,
     )
