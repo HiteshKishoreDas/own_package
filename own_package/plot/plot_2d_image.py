@@ -552,13 +552,12 @@ def parallel_plot_fn(
         quant_dict["rho"]["title"] = "Density"
         quant_dict["rho"][
             "save_loc"
-        ] = f"{sim_loc}Plots/{save_dir}/rho/rho_{str(n_snap).zfill(5)}.png"
+        ] = f"{sim_loc}Plots/{save_dir}_{plot_fn.__name__}/rho/rho_{str(n_snap).zfill(5)}.png"
 
         quant_dict["rho"]["arg_dict"] = {}
         quant_dict["rho"]["arg_dict"]["color_range"] = [1.0, 5.0]
         quant_dict["rho"]["arg_dict"]["img_data"] = out_dict["rho"]
         quant_dict["rho"]["arg_dict"]["cmap"] = cmap
-        quant_dict["rho"]["arg_dict"]["view_dir"] = 1
 
         print("rho added to dictionary....")
 
@@ -567,12 +566,11 @@ def parallel_plot_fn(
         quant_dict["log_rho"]["title"] = "Log_10 Density"
         quant_dict["log_rho"][
             "save_loc"
-        ] = f"{sim_loc}Plots/{save_dir}/log_rho/log_rho_{str(n_snap).zfill(5)}.png"
+        ] = f"{sim_loc}Plots/{save_dir}_{plot_fn.__name__}/log_rho/log_rho_{str(n_snap).zfill(5)}.png"
         quant_dict["log_rho"]["arg_dict"] = {}
         quant_dict["log_rho"]["arg_dict"]["img_data"] = np.log10(out_dict["rho"])
         quant_dict["log_rho"]["arg_dict"]["color_range"] = [-5, -1]
         quant_dict["log_rho"]["arg_dict"]["cmap"] = cmap
-        quant_dict["log_rho"]["arg_dict"]["view_dir"] = 1
 
         print("log_rho added to dictionary....")
 
@@ -581,12 +579,11 @@ def parallel_plot_fn(
         quant_dict["prs"]["title"] = "Pressure"
         quant_dict["prs"][
             "save_loc"
-        ] = f"{sim_loc}Plots/{save_dir}/prs/prs_{str(n_snap).zfill(5)}.png"
+        ] = f"{sim_loc}Plots/{save_dir}_{plot_fn.__name__}/prs/prs_{str(n_snap).zfill(5)}.png"
 
         quant_dict["prs"]["arg_dict"] = {}
         quant_dict["prs"]["arg_dict"]["img_data"] = np.log10(out_dict["rho"])
         quant_dict["prs"]["arg_dict"]["cmap"] = cmap
-        quant_dict["prs"]["arg_dict"]["view_dir"] = 1
 
         print("prs added to dictionary....")
 
@@ -595,12 +592,11 @@ def parallel_plot_fn(
         quant_dict["logT"]["title"] = "log_10 T"
         quant_dict["logT"][
             "save_loc"
-        ] = f"{sim_loc}Plots/{save_dir}/logT/logT_{str(n_snap).zfill(5)}.png"
+        ] = f"{sim_loc}Plots/{save_dir}_{plot_fn.__name__}/logT/logT_{str(n_snap).zfill(5)}.png"
 
         quant_dict["logT"]["arg_dict"] = {}
         quant_dict["logT"]["arg_dict"]["img_data"] = out_dict["logT"]
         quant_dict["logT"]["arg_dict"]["cmap"] = cmap
-        quant_dict["logT"]["arg_dict"]["view_dir"] = 1
 
         print("logT added to dictionary....")
 
@@ -609,12 +605,11 @@ def parallel_plot_fn(
         quant_dict["vx"]["title"] = "v_x"
         quant_dict["vx"][
             "save_loc"
-        ] = f"{sim_loc}Plots/{save_dir}/vx/vx_{str(n_snap).zfill(5)}.png"
+        ] = f"{sim_loc}Plots/{save_dir}_{plot_fn.__name__}/vx/vx_{str(n_snap).zfill(5)}.png"
 
         quant_dict["vx"]["arg_dict"] = {}
         quant_dict["vx"]["arg_dict"]["img_data"] = out_dict["vel"][0]
         quant_dict["vx"]["arg_dict"]["cmap"] = cmap
-        quant_dict["vx"]["arg_dict"]["view_dir"] = 1
 
         print("vx added to dictionary....")
 
@@ -623,12 +618,11 @@ def parallel_plot_fn(
         quant_dict["vy"]["title"] = "v_y"
         quant_dict["vy"][
             "save_loc"
-        ] = f"{sim_loc}Plots/{save_dir}/vy/vy_{str(n_snap).zfill(5)}.png"
+        ] = f"{sim_loc}Plots/{save_dir}_{plot_fn.__name__}/vy/vy_{str(n_snap).zfill(5)}.png"
 
         quant_dict["vy"]["arg_dict"] = {}
         quant_dict["vy"]["arg_dict"]["img_data"] = out_dict["vel"][1]
         quant_dict["vy"]["arg_dict"]["cmap"] = cmap
-        quant_dict["vy"]["arg_dict"]["view_dir"] = 1
 
         print("vy added to dictionary....")
 
@@ -637,12 +631,11 @@ def parallel_plot_fn(
         quant_dict["vz"]["title"] = "v_z"
         quant_dict["vz"][
             "save_loc"
-        ] = f"{sim_loc}Plots/{save_dir}/vz/vz_{str(n_snap).zfill(5)}.png"
+        ] = f"{sim_loc}Plots/{save_dir}_{plot_fn.__name__}/vz/vz_{str(n_snap).zfill(5)}.png"
 
         quant_dict["vz"]["arg_dict"] = {}
         quant_dict["vz"]["arg_dict"]["img_data"] = out_dict["vel"][2]
         quant_dict["vz"]["arg_dict"]["cmap"] = cmap
-        quant_dict["vz"]["arg_dict"]["view_dir"] = 1
 
         print("vz added to dictionary....")
 
@@ -651,12 +644,11 @@ def parallel_plot_fn(
         quant_dict["Bx"]["title"] = "B_x"
         quant_dict["Bx"][
             "save_loc"
-        ] = f"{sim_loc}Plots/slices/{save_dir}/Bx_{str(n_snap).zfill(5)}.png"
+        ] = f"{sim_loc}Plots/slices/{save_dir}_{plot_fn.__name__}/Bx_{str(n_snap).zfill(5)}.png"
 
         quant_dict["Bx"]["arg_dict"] = {}
         quant_dict["Bx"]["arg_dict"]["img_data"] = out_dict["B"][0]
         quant_dict["Bx"]["arg_dict"]["cmap"] = cmap
-        quant_dict["Bx"]["arg_dict"]["view_dir"] = 1
 
         print("Bx added to dictionary....")
 
@@ -665,12 +657,11 @@ def parallel_plot_fn(
         quant_dict["By"]["title"] = "B_y"
         quant_dict["By"][
             "save_loc"
-        ] = f"{sim_loc}Plots/slices/{save_dir}/By_{str(n_snap).zfill(5)}.png"
+        ] = f"{sim_loc}Plots/slices/{save_dir}_{plot_fn.__name__}/By_{str(n_snap).zfill(5)}.png"
 
         quant_dict["By"]["arg_dict"] = {}
         quant_dict["By"]["arg_dict"]["img_data"] = out_dict["B"][1]
         quant_dict["By"]["arg_dict"]["cmap"] = cmap
-        quant_dict["By"]["arg_dict"]["view_dir"] = 1
 
         print("By added to dictionary....")
 
@@ -679,26 +670,25 @@ def parallel_plot_fn(
         quant_dict["Bz"]["title"] = "B_z"
         quant_dict["Bz"][
             "save_loc"
-        ] = f"{sim_loc}Plots/slices/{save_dir}/Bz_{str(n_snap).zfill(5)}.png"
+        ] = f"{sim_loc}Plots/slices/{save_dir}_{plot_fn.__name__}/Bz_{str(n_snap).zfill(5)}.png"
 
         quant_dict["Bz"]["arg_dict"] = {}
         quant_dict["Bz"]["arg_dict"]["img_data"] = out_dict["B"][2]
         quant_dict["Bz"]["arg_dict"]["cmap"] = cmap
-        quant_dict["Bz"]["arg_dict"]["view_dir"] = 1
 
         print("Bz added to dictionary....")
 
     if not (os.path.exists(f"{sim_loc}Plots")):
         os.system(f"mkdir {sim_loc}Plots")
-    if not (os.path.exists(f"{sim_loc}Plots/{save_dir}")):
-        os.system(f"mkdir {sim_loc}Plots/{save_dir}")
+    if not (os.path.exists(f"{sim_loc}Plots/{save_dir}_{plot_fn.__name__}")):
+        os.system(f"mkdir {sim_loc}Plots/{save_dir}_{plot_fn.__name__}")
 
     # * To loop over the different quantities and plot them
     for key in quant_dict:
 
-        if not (os.path.exists(f"{sim_loc}Plots/{save_dir}/{key}")):
+        if not (os.path.exists(f"{sim_loc}Plots/{save_dir}_{plot_fn.__name__}/{key}")):
             try:
-                os.system(f"mkdir {sim_loc}Plots/{save_dir}/{key}")
+                os.system(f"mkdir {sim_loc}Plots/{save_dir}_{plot_fn.__name__}/{key}")
             except:
                 print("Couldn't create the directory for {out_loc} ...")
                 # return

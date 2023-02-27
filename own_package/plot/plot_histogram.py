@@ -113,6 +113,9 @@ def plot_histogram_2d(
     else:
         hist_temp_y = hist_data_y
 
+    hist_temp_x = np.ravel(hist_temp_x)
+    hist_temp_y = np.ravel(hist_temp_y)
+
     hst, xedges, yedges = np.histogram2d(hist_temp_x, hist_temp_y, bins, **kwargs)
 
     if log_bin[0]:

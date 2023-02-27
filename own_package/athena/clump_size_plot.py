@@ -631,8 +631,8 @@ def clump_elongation_volume_2D_hist(
 
 if __name__ == "__main__":
 
-    # theme='dark'
-    theme = "bright"
+    theme = "dark"
+    # theme = "bright"
     #
     style_lib = f"{package_path}/plot/style_lib/"
 
@@ -736,7 +736,10 @@ if __name__ == "__main__":
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 8))
 
     sim_type = 0 * 2
-    file_path = "/afs/mpa/home/hitesh/remote/freya/MHD_multiphase_turbulence/analysis"
+    # file_path = "/afs/mpa/home/hitesh/remote/freya/MHD_multiphase_turbulence/analysis"
+    file_path = (
+        "/home/mpaadmin/remote/mpa/remote/freya/MHD_multiphase_turbulence/analysis"
+    )
 
     ax, clump_list1 = clump_length_hist(
         fig,
@@ -745,7 +748,8 @@ if __name__ == "__main__":
         file_path=file_path,
         return_list=True,
         percentile=90,
-        bar_args={"color": "C2", "alpha": 0.5, "label": "MHD"},
+        theme=theme,
+        bar_args={"color": "C0", "alpha": 0.6, "label": "MHD"},
     )
     ax, clump_list2 = clump_length_hist(
         fig,
@@ -754,7 +758,8 @@ if __name__ == "__main__":
         file_path=file_path,
         return_list=True,
         percentile=90,
-        bar_args={"color": "C3", "alpha": 0.5, "label": "HD "},
+        theme=theme,
+        bar_args={"color": "C2", "alpha": 0.6, "label": "HD "},
     )
 
     kstest = sp.stats.kstest(clump_list1, clump_list2)
