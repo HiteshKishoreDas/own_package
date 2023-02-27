@@ -198,7 +198,6 @@ def render_scatter_3d(
     new_fig=True,
     fig=None,
     ax=None,
-    **kwargs,
 ):
 
     if new_fig:
@@ -241,7 +240,6 @@ def render_scatter_3d(
         edgecolors="None",
         cmap=cmap,
         depthshade=True,
-        **kwargs,
     )
 
     ax.view_init(elev=view[0], azim=view[1])
