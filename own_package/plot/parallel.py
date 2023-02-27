@@ -243,7 +243,11 @@ def parallel_plot_fn(
             except:
                 print("Couldn't create the directory for {out_loc} ...")
 
-        plt_dict = plot_fn(**quant_dict[key]["arg_dict"], **arg_dict)
+        plt_dict = plot_fn(
+            **quant_dict[key]["arg_dict"],
+            view_dir=n_snap - 501,
+            **arg_dict,
+        )
         plt_dict["ax"].set_title(quant_dict[key]["title"])
         plt.savefig(quant_dict[key]["save_loc"])
 
