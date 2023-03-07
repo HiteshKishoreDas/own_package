@@ -94,10 +94,10 @@ def velocity_structure_function(
         # output file name
         ofn = outdir + str(ds) + "_" + cname + ".npz"
 
-        # Check if file already exists
-        if os.path.isfile(ofn):
-            logging.info("%s exists already. Skipping VSF computation." % (ofn))
-            continue
+        # # Check if file already exists
+        # if os.path.isfile(ofn):
+        #     logging.info("%s exists already. Skipping VSF computation." % (ofn))
+        #     continue
         logging.info(
             "Computing velocity structure function for %s [%s] --> %s",
             str(ds),
