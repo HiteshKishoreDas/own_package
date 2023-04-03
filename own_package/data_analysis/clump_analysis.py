@@ -677,7 +677,7 @@ if __name__ == "__main__":
 
     # *_______________________________________________________________________________*#
 
-    skip_data = 1
+    skip_data = 6
     return_dict = clump_length_test(clump_num, label_arr_sp, skip_data=skip_data)
 
     data = return_dict["data"]

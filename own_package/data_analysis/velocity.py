@@ -119,6 +119,11 @@ def velocity_structure_function(
         logging.info("Computing VSF for %s", str(pos.shape))
         npoints = pos.shape[0]
 
+        print("_________________________________________")
+        print(f"{npoints = }")
+        print(f"{maxpoints = }")
+        print("_________________________________________")
+
         # Go to the next cut condition if no points found
         if npoints == 0:
             logging.warning("No points!")
@@ -127,16 +132,30 @@ def velocity_structure_function(
         # if too many points
         if npoints > maxpoints:
             logging.info("Too many points (>%e), discarding some.", maxpoints)
+            print("_________________________________________")
+            print("Too many points (>%e), discarding some.", maxpoints)
             ipoints = np.random.permutation(npoints)[: int(maxpoints)]
+            print("Points selected successfully!!")
+            print("_________________________________________")
         else:
             ipoints = None
 
         # Trying to be memory efficient
         ds.index.clear_all_data()
 
+        print("_________________________________________")
+        print("Cleared memory!...")
+        print("_________________________________________")
+
         # Computing distance in real space
         logging.info("Computing distance in real space.")
+        print("_________________________________________")
+        print("logging!...")
+        print("_________________________________________")
         dists = _get_pdist_pbc(pos, Lbox, ipoints)
+        print("_________________________________________")
+        print("Distance!...")
+        print("_________________________________________")
         del pos
 
         # ipoints = None, means everything's good
@@ -148,6 +167,10 @@ def velocity_structure_function(
                 [cad["velocity_" + ii].value[ipoints] for ii in ["x", "y", "z"]]
             ).T
         del ipoints
+
+        print("_________________________________________")
+        print("Getting velocity in velocity space!...")
+        print("_________________________________________")
 
         # Trying to be memory efficient
         ds.index.clear_all_data()
