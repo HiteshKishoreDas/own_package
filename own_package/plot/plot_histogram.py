@@ -20,6 +20,28 @@ package_abs_path = cwd[: -len(cwd.split("/")[-1])]
 # import units as un
 
 
+def calc_histogram_1d(
+    hist_data,
+    bins=None,
+    log_bin=False,
+    norm=1.0,
+    kwargs={},
+):
+    line_border_color = mt.rcParams["lines.color"]
+
+    if bins is None:
+        bins = 10
+
+    if log_bin:
+        hist_data_temp = np.log10(hist_data)
+    else:
+        hist_data_temp = hist_data
+
+    hst = np.histogram(hist_data_temp, bins, **kwargs)
+
+    return hst
+
+
 def plot_histogram_1d(
     hist_data,
     bins=None,
@@ -33,7 +55,6 @@ def plot_histogram_1d(
     return_hist=False,
     with_fig=True,
 ):
-
     line_border_color = mt.rcParams["lines.color"]
 
     if new_fig and with_fig:
@@ -94,7 +115,6 @@ def plot_histogram_2d(
     kwargs={},
     cbar_args={},
 ):
-
     line_border_color = mt.rcParams["lines.color"]
 
     if new_fig:
@@ -216,7 +236,6 @@ def plot_histogram_2d(
 
 
 if __name__ == "__main__":
-
     cwd = os.path.dirname(__file__)
     package_abs_path = cwd[: -len(cwd.split("/")[-1])]
 

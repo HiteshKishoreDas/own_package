@@ -21,7 +21,6 @@ class hst_data:
         chi=None,
         verbose=False,
     ):
-
         """_summary_
 
         Raises:
@@ -116,8 +115,10 @@ class hst_data:
             dy = self.box_size_y / self.ncell_y
             dx = self.box_size_x / self.ncell_x
 
-            self.luminosity = (dcool / dt)[1:-1] * dx * dy * dz
-            self.luminosity /= self.box_size_x * self.box_size_y
+            self.luminosity_actual = (dcool / dt)[1:-1]
+            self.Q = self.luminosity_actual * dx * dy * dz
+            self.Q /= self.box_size_x * self.box_size_y
+            self.lum_time = smooth_time[1:-1]
 
         self.rho_avg = self.dict["rho_sum"] / cells
         self.rho_sq_avg = self.dict["rho_sq_sum"] / cells
@@ -125,7 +126,6 @@ class hst_data:
         self.cs_avg = self.dict["c_s_sum"] / cells
 
         if MHD_flag:
-
             self.Pth_avg = self.dict["Pth_sum"] / cells
             self.PB_avg = self.dict["PB_sum"] / cells
             self.Bx_avg = self.dict["Bx_sum"] / cells
@@ -153,7 +153,6 @@ class hst_data:
         smooth_flag: bool = False,
         smooth_window: int = 5,
     ):
-
         # N_last = 2000
         aft_cut = np.copy(hst_var)
         time = np.copy(self.time)

@@ -28,7 +28,6 @@ g = 5 / 3
 
 
 def B_mag_fn(Ma, M, T_hot, amb_rho):
-
     import numpy as np
 
     beta_arr = (2 / g) * (Ma / M) ** 2
@@ -41,7 +40,6 @@ def B_mag_fn(Ma, M, T_hot, amb_rho):
 
 
 def temperature(rho, prs):
-
     return (prs / rho) * (KELVIN * mu)
 
 

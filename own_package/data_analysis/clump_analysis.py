@@ -80,7 +80,6 @@ def clump_finder(arr, arr_cut, method="scipy", above_cut=False):
 
 # * Returns label array after selecting the specific clump
 def clump_select(clump_num, label_arr):
-
     label_arr_cp = np.copy(label_arr)
     label_arr_cp[label_arr_cp != clump_num] = 0
     label_arr_cp[label_arr_cp == clump_num] = 1
@@ -89,7 +88,6 @@ def clump_select(clump_num, label_arr):
 
 
 def clump_center(label_arr):
-
     label_arr_cp = np.copy(label_arr)
     label_arr_cp[label_arr > 0] = 1
     L = np.shape(label_arr)
@@ -114,7 +112,6 @@ def clump_center(label_arr):
 
 
 def clump_flatten(label_arr):
-
     label_arr_cp = np.copy(label_arr)
     label_arr_cp[label_arr > 0] = 1
     L = np.shape(label_arr)
@@ -166,7 +163,6 @@ def clump_covariance(label_arr, only_cov=False):
 
 # ! DOES NOT WORK PROPERLY! DO NOT USE THIS METHOD!
 def clump_size(clump_num, label_arr, clump_centering=False):
-
     label_arr_shifted = clump_select(clump_num, label_arr)
 
     clump_vol = np.sum(label_arr_shifted)
@@ -190,7 +186,6 @@ def clump_size(clump_num, label_arr, clump_centering=False):
     # * Using the extent of the projection of points on the principal axes
     clump_size = [0] * 3
     for i in range(3):
-
         norm_ev = np.sqrt(np.sum(evec[i] ** 2))
         proj_arr = np.dot(cov_dict["r_list"].T, evec[i])
         print(f"{np.shape(proj_arr)=}")
@@ -215,6 +210,7 @@ def clump_size(clump_num, label_arr, clump_centering=False):
 
 # TODO: Add a weight to the graph edges, with weight being the difference in
 # TODO: the density between the points. Maybe the difference is higher across the gap
+
 
 # TODO: Come up with a smarter way of decreasing the points
 def clump_length(clump_num, label_arr, k_n=1, n_jobs=1, skip_data=1):
@@ -316,7 +312,6 @@ def adjacency_matrix(
     k_n=1,
     n_jobs=1,
 ):
-
     adj_mat = (
         (
             np.abs(
@@ -426,9 +421,9 @@ def clump_length_test(clump_num, label_arr, k_n=1, n_jobs=1, skip_data=1):
 
 # TODO: Function to calculate shear
 
+
 # * Labels the boundaries around the clumps
 def boundary_detect(label_arr):
-
     # To mask out the clouds
     mask_arr = np.copy(label_arr).astype(bool)
     mask_arr = np.logical_not(mask_arr)
@@ -456,7 +451,6 @@ def boundary_detect(label_arr):
 
 # * Calculates shear on the clumps
 def shear_calc(label_arr, v_arr):
-
     nbr_arr = boundary_detect(label_arr)
 
     L = np.shape(label_arr)
@@ -476,7 +470,6 @@ def shear_calc(label_arr, v_arr):
     shear_dict["clump_vol"] = []
 
     for i in range(1, n_blob + 1):
-
         clump_vol = np.sum(label_arr[label_arr == i]) / float(i)
 
         v1_clump = np.average(v1[label_arr == i])
@@ -513,7 +506,6 @@ def shear_calc(label_arr, v_arr):
 
 # * Calculates surface area of the clumps
 def surface_area(label_arr):
-
     nbr_arr = boundary_detect(label_arr)
 
     L = np.shape(label_arr)
@@ -524,7 +516,6 @@ def surface_area(label_arr):
     surface_dict["clump_surface_area"] = []
 
     for i in range(1, n_blob + 1):
-
         clump_vol = np.sum(label_arr[label_arr == i]) / float(i)
         clump_sa = np.sum(nbr_arr[nbr_arr == i]) / float(i)
 
@@ -537,53 +528,65 @@ def surface_area(label_arr):
 
 # * Returns the size and mass histogram for a given label array
 # * and property arrays
-def clump_hist(label_arr, dx, rho, T, n_bins, dim=3):
+def clump_hist(label_arr, hist_quantity=["volume"], rho=None, dx=1.0, bins=100, dim=3):
     # label_arr : Label array
     # dx        : Cell size
     # rho       : Density array for mass calculation
-    # T         : Temperature array for clump definition
     # nbins     : Number o f bins for the histograms
     # dim       : # of dimension for the box (Default: 3)
 
     n_blob = np.max(label_arr) + 1
-    N, M = np.shape(label_arr)
+    N, M, P = np.shape(label_arr)
 
-    cloud_size = np.zeros(n_blob, dtype=float)
-    cloud_mass = np.zeros(n_blob, dtype=float)
+    cloud_quant_dict = {}
+
+    for k in hist_quantity:
+        cloud_quant_dict[k] = np.zeros(n_blob, dtype=float)
+
+    def cloud_volume(i, j, p):
+        return 1
+
+    def cloud_mass(i, j, p):
+        return rho[i, j, p] * (dx**3)
+
+    quant_func = {}
+    quant_func["volume"] = cloud_volume
+    quant_func["size"] = cloud_volume
+    quant_func["mass"] = cloud_mass
 
     for i in range(N):
         for j in range(M):
+            for p in range(P):
+                for k in hist_quantity:
+                    cloud_quant_dict[k][label_arr[i, j, p]] += quant_func[k](i, j, p)
 
-            cloud_size[label_arr[i, j]] += 1
-            cloud_mass[label_arr[i, j]] += rho[i, j] * (dx**3)
+    if "volume" in hist_quantity:
+        cloud_quant_dict["volume"] *= dx**dim
 
-    cloud_size = (cloud_size ** (1 / dim)) * dx
+    elif "size" in hist_quantity:
+        cloud_quant_dict["size"] = (cloud_quant_dict["size"] ** (1 / dim)) * dx
 
-    size_bin = np.logspace(
-        np.log10(np.min(cloud_size) / 2), np.log10(np.max(cloud_size) * 2), num=n_bins
-    )
-    mass_bin = np.logspace(
-        np.log10(np.min(cloud_mass) / 2), np.log10(np.max(cloud_mass) * 2), num=n_bins
-    )
+    bin_arr = {}
+    for k in hist_quantity:
+        bin_arr[k] = np.logspace(
+            np.log10(np.min(cloud_quant_dict[k]) / 2),
+            np.log10(np.max(cloud_quant_dict[k]) * 2),
+            num=bins,
+        )
+    hist_dict = {}
 
-    size_hist = np.histogram(cloud_size, bins=size_bin)
-    mass_hist = np.histogram(cloud_mass, bins=mass_bin)
+    for k in hist_quantity:
+        hist_dict[k] = np.histogram(cloud_quant_dict[k], bins=bin_arr[k])
 
-    size_list = []
-    size_list.append(list(size_hist[0].astype(float)))
-    size_list.append(list(size_hist[1].astype(float)))
+    del bin_arr, cloud_quant_dict, quant_func
+    gc.collect()
 
-    mass_list = []
-    mass_list.append(list(mass_hist[0].astype(float)))
-    mass_list.append(list(mass_hist[1].astype(float)))
-
-    return size_list, mass_list
+    return hist_dict
 
 
 # *_________________________________________________
 
 if __name__ == "__main__":
-
     plt.style.use("dark_background")
 
     CONST_pc = 3.086e18

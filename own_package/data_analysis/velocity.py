@@ -9,6 +9,7 @@ from . import helpers as h
 import numpy as np
 import os
 import logging
+import gc
 from scipy.spatial.distance import pdist
 
 import matplotlib
@@ -58,10 +59,11 @@ def velocity_structure_function(
     maxpoints=2e4,
     nbins=100,
     percentiles=[16, 50, 84],
-    plot=True,
-    new_fig=True,
-    fig=None,
-    ax=None,
+    # plot=True,
+    # new_fig=False,
+    # fig=None,
+    # ax=None,
+    sim_name="",
 ):
     """
     Keyword Arguments:
@@ -80,19 +82,25 @@ def velocity_structure_function(
     Lbox = np.array(ad.get_bbox()[1] - ad.get_bbox()[0])
 
     # Create directory for plots
-    h.mkdir(outdir)
-    if plot:
-        plotoutdir = outdir + "plots/"
-        h.mkdir(plotoutdir)
-        plt.clf()
+    # h.mkdir(outdir)
+    # if plot:
+    #     plotoutdir = outdir + "plots/"
+    #     h.mkdir(plotoutdir)
+    #     # plt.clf()
 
-    plotted = False
     # cname -> Just name for the cut
     # cut_string -> cut condition
+
+    return_dict = {}
+    return_dict['means'] = []
+    return_dict['dist_bins'] = []
+    return_dict['qs'] = []
+    return_dict['cname'] = []
+
     for cname, cut_string in cut_regions:
 
         # output file name
-        ofn = outdir + str(ds) + "_" + cname + ".npz"
+        ofn = outdir + str(ds) + "_" + cname + f"_{sim_name}.npz"
 
         # # Check if file already exists
         # if os.path.isfile(ofn):
@@ -149,14 +157,13 @@ def velocity_structure_function(
 
         # Computing distance in real space
         logging.info("Computing distance in real space.")
-        print("_________________________________________")
-        print("logging!...")
-        print("_________________________________________")
         dists = _get_pdist_pbc(pos, Lbox, ipoints)
-        print("_________________________________________")
-        print("Distance!...")
-        print("_________________________________________")
         del pos
+        gc.collect()
+
+        print("_________________________________________")
+        print("Distance calculated!...")
+        print("_________________________________________")
 
         # ipoints = None, means everything's good
         # else, it had crossed maxpoints, so select randomly
@@ -167,6 +174,7 @@ def velocity_structure_function(
                 [cad["velocity_" + ii].value[ipoints] for ii in ["x", "y", "z"]]
             ).T
         del ipoints
+        gc.collect()
 
         print("_________________________________________")
         print("Getting velocity in velocity space!...")
@@ -179,11 +187,15 @@ def velocity_structure_function(
         logging.info("Computing distance in velocity space.")
         veldiffs = _get_pdist_pbc(vels)
         del vels
+        gc.collect()
 
         # Computing binned quantities
         logging.info("Computing binned quantities.")
         dist_bins = np.logspace(np.log10(dists.min()), np.log10(dists.max()), nbins)
         ibins = np.digitize(dists, dist_bins)
+
+        del dists
+        gc.collect()
 
         # Main velocity structure function calculation?
         nums = []
@@ -212,25 +224,42 @@ def velocity_structure_function(
             velocity_percentiles=qs,
             number=nums,
         )
-
-        if plot:
-            if new_fig:
-                fig, ax = plt.subplots()
-
-            ax.plot(dist_bins, means, label=cname)
-            ax.fill_between(dist_bins, qs[:, 0], qs[:, -1], alpha=0.2, label=cname)
-
-            plotted = True
-
         logging.info("Done outputting to %s", ofn)
 
+        return_dict['means'].append(means)
+        return_dict['dist_bins'].append(dist_bins)
+        return_dict['qs'].append(qs)
+        return_dict['cname'].append(cname)
+
+        # if plot:
+        #     if new_fig:
+        #         fig, ax = plt.subplots()
+
+        #     # print(means)
+
+        #     ax.plot(dist_bins, means, label=cname)
+        #     ax.fill_between(dist_bins, qs[:, 0], qs[:, -1], alpha=0.2, label=cname)
+
+        #     ax.legend(loc="best")
+        #     ax.loglog()
+        #     ax.set_xlabel(r"$d$ (kpc$^{-1}$)", fontsize=20)
+        #     # ax.set_ylabel(r"$\langle | v | \rangle$", fontsize=20)
+
+        del means, qs, nums
+        del dist_bins, ibins
+        del veldiffs
+        gc.collect()
+
+
+    return return_dict
+
     # Saving the plot
-    if plot and plotted:
-        ax.legend(loc="best")
-        ax.loglog()
-        ax.set_xlabel(r"$d$", fontsize=20)
-        ax.set_ylabel(r"$\langle | v | \langle$", fontsize=20)
-        ofn_plot = plotoutdir + str(ds) + ".png"
-        # logging.info("Saving plot to %s", ofn_plot)
-        # plt.savefig(ofn_plot, bbox_inches="tight")
-        return fig, ax
+    # if plot and plotted:
+    #     ax.legend(loc="best")
+    #     ax.loglog()
+    #     ax.set_xlabel(r"$d$", fontsize=20)
+    #     ax.set_ylabel(r"$\langle | v | \langle$", fontsize=20)
+    #     ofn_plot = plotoutdir + str(ds) + ".png"
+    #     # logging.info("Saving plot to %s", ofn_plot)
+    #     # plt.savefig(ofn_plot, bbox_inches="tight")
+    #     return fig, ax
