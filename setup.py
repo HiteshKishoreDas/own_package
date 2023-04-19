@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 from own_package import __version__
 
 extra_athena = [
-    'numpy == 1.21.2',
+    'numpy >= 1.21.2',
     'matplotlib >= 3.6',
-    'scipy == 1.7.1',
-    'yt == 3.6.1',
-    'cmasher == 1.6.3',
+    'scipy >= 1.7.1',
+    'yt >= 3.6.1',
+    'cmasher >= 1.6.3',
     'lic',
 ]
 
