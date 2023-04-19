@@ -13,7 +13,7 @@ def streamline_length(
     fields=[("Bcc1"), ("Bcc2"), ("Bcc3")],
     N_streams=100,
     streamline_ratio=0.25,
-    parallel_flag = False,
+    parallel_flag=False,
 ):
     """_summary_
 
@@ -28,6 +28,7 @@ def streamline_length(
 
     if parallel_flag:
         yt.enable_parallelism()
+        print("yt parallelism enabled...")
 
     # Load the dataset
     ds = yt.load(file_name)
@@ -44,7 +45,7 @@ def streamline_length(
     # Create streamlines of the 3D vector velocity and integrate them through
     # the box defined above
 
-    stream_length = (
+    stream_length = float(
         np.max(ds.domain_right_edge - ds.domain_left_edge) * streamline_ratio
     )
     print(f"{stream_length = }")
@@ -74,7 +75,7 @@ def streamline_length(
 
         # Choose for streamlines that do not cross the boundaries
         if np.shape(stream)[0] in [streamlength_i, streamlength_i + 1]:
-            stream_return.append(stream)
+            stream_return.append(np.array(stream))
 
             ax.plot3D(stream[:, 0], stream[:, 1], stream[:, 2], alpha=0.5)
 
