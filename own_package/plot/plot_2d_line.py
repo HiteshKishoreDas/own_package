@@ -23,6 +23,7 @@ sys.path.insert(0, f"{package_abs_path}data_analysis/")
 import array_operations as ao
 
 
+# TODO: Convert all the usual plt.plot args, that are list, into **kwargs, and then parse it to get the lists...
 def plot_multiline(
     x_data_list: list,
     y_data_list: list,
@@ -39,7 +40,7 @@ def plot_multiline(
     new_fig: bool = True,
     fig=None,
     ax=None,
-    kwargs={},
+    **kwargs,
 ):
     """_summary_
 
@@ -82,7 +83,11 @@ def plot_multiline(
     L = len(y_data_list)
 
     if color_list == None:
+        print("plot_2d_line.py::plot_multiline(): Creating color_list...")
         line_col = [f"C{i}" for i in range(L)]
+
+    elif np.product(np.array([isinstance(col, str) for col in color_list])) != 0:
+        line_col = color_list.copy()
 
     else:
         if ax_log["col_log"]:
@@ -131,7 +136,6 @@ def plot_multiline(
         style_arr_flag = True
 
     for i in range(L):
-
         if smooth_flag:
             plot_y = ao.smoothen(y_data_list[i], window=smooth_window)
             plot_x = x_data_list[i][int(smooth_window / 2) : -int(smooth_window / 2)]
