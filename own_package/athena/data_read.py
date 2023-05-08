@@ -14,7 +14,6 @@ import units as un
 
 
 def get_array_yt(fn, fields=["rho"], MHD_flag=False):
-
     ds = yt.load(fn)
 
     all_data_level_0_hyd = ds.covering_grid(
@@ -72,7 +71,6 @@ def get_array_yt(fn, fields=["rho"], MHD_flag=False):
 
 
 def get_array_uservar_yt(fn, MHD_flag=False):
-
     ds = yt.load(fn)
 
     all_data_level_0_hyd = ds.covering_grid(
@@ -87,7 +85,6 @@ def get_array_uservar_yt(fn, MHD_flag=False):
 
 
 def get_array_athena(fn, fields=["rho"], MHD_flag=False, trc_flag=False, trc_N=1):
-
     ds = ar.athdf(fn)
     # print(ds.keys())
 
@@ -149,7 +146,6 @@ def get_array_athena(fn, fields=["rho"], MHD_flag=False, trc_flag=False, trc_N=1
 
 
 def get_array_uservar_athena(fn, MHD_flag=False):
-
     ds = ar.athdf(fn)
 
     out_dict = {}

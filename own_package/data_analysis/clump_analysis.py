@@ -423,30 +423,52 @@ def clump_length_test(clump_num, label_arr, k_n=1, n_jobs=1, skip_data=1):
 
 
 # * Labels the boundaries around the clumps
-def boundary_detect(label_arr):
+def boundary_detect(label_arr, both_sides=False, thickness=1):
     # To mask out the clouds
-    mask_arr = np.copy(label_arr).astype(bool)
-    mask_arr = np.logical_not(mask_arr)
 
-    temp_arr = np.zeros_like(label_arr)
+    if both_sides:
+        loop_list = ["exterior", "interior"]
+    else:
+        loop_list = ["exterior"]
 
-    temp_arr += np.roll(label_arr, -1, axis=0) * mask_arr
-    temp_arr += np.roll(label_arr, 1, axis=0) * mask_arr
+    mask_dict = {}
+    mask_dict["interior"] = np.copy(label_arr).astype(bool)
+    mask_dict["exterior"] = np.logical_not(mask_dict["interior"])
 
-    # To mask out the previously labeled cells
-    temp_mask = np.copy(temp_arr).astype(bool)
-    temp_mask = np.logical_not(temp_mask)
+    temp_dict = {}
 
-    temp_arr += np.roll(label_arr, -1, axis=1) * mask_arr * temp_mask
-    temp_arr += np.roll(label_arr, 1, axis=1) * mask_arr * temp_mask
+    for i in loop_list:
+        temp_dict[i] = np.zeros_like(label_arr)
 
-    temp_mask = np.copy(temp_arr).astype(bool)
-    temp_mask = np.logical_not(temp_mask)
+        temp_dict[i] += np.roll(label_arr, -thickness, axis=0) * mask_dict[i]
+        temp_dict[i] += np.roll(label_arr, thickness, axis=0) * mask_dict[i]
 
-    temp_arr += np.roll(label_arr, -1, axis=2) * mask_arr * temp_mask
-    temp_arr += np.roll(label_arr, 1, axis=2) * mask_arr * temp_mask
+        # To mask out the previously labeled cells
+        if i == "exterior":
+            temp_mask = np.copy(temp_dict[i]).astype(bool)
+            temp_mask = np.logical_not(temp_mask)
+        else:
+            temp_mask = np.ones_like(label_arr)
 
-    return temp_arr
+        temp_dict[i] += (
+            np.roll(label_arr, -thickness, axis=1) * mask_dict[i] * temp_mask
+        )
+        temp_dict[i] += np.roll(label_arr, thickness, axis=1) * mask_dict[i] * temp_mask
+
+        if i == "exterior":
+            temp_mask = np.copy(temp_dict[i]).astype(bool)
+            temp_mask = np.logical_not(temp_mask)
+
+        temp_dict[i] += (
+            np.roll(label_arr, -thickness, axis=2) * mask_dict[i] * temp_mask
+        )
+        temp_dict[i] += np.roll(label_arr, thickness, axis=2) * mask_dict[i] * temp_mask
+
+        if i == "interior":
+            temp_dict[i][temp_dict[i] == 6] = 0
+            temp_dict[i] = temp_dict[i].astype(bool) * label_arr
+
+    return (*(temp_dict[i] for i in loop_list),)
 
 
 # * Calculates shear on the clumps
@@ -522,7 +544,6 @@ def surface_area(label_arr):
         surface_dict["clump_vol"].append(clump_vol)
         surface_dict["clump_surface_area"].append(clump_sa)
 
-    # List of shear around each clump
     return surface_dict
 
 

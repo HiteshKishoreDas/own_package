@@ -11,6 +11,7 @@ import os
 import matplotlib as mt
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+import matplotlib.transforms as transforms
 
 cwd = os.path.dirname(__file__)
 package_abs_path = cwd[: -len(cwd.split("/")[-1])]
@@ -50,10 +51,11 @@ def plot_histogram_1d(
     new_fig=True,
     fig=None,
     ax=None,
-    kwargs={},
-    bar_args={},
     return_hist=False,
     with_fig=True,
+    type="step",
+    hist_kwargs={},
+    **kwargs,
 ):
     line_border_color = mt.rcParams["lines.color"]
 
@@ -68,7 +70,7 @@ def plot_histogram_1d(
     else:
         hist_data_temp = hist_data
 
-    hst = np.histogram(hist_data_temp, bins, **kwargs)
+    hst = np.histogram(hist_data_temp, bins, **hist_kwargs)
 
     if return_hist and not (with_fig):
         return hst
@@ -82,14 +84,37 @@ def plot_histogram_1d(
     bar_posn = bar_edges[:-1]
     bar_width = np.diff(bar_edges)  # bar_edges[1:] - bar_edges[:-1]
 
-    ax.bar(
-        x=bar_posn,
-        height=bar_height,
-        width=bar_width,
-        edgecolor=line_border_color,
-        align="edge",
-        **bar_args,
-    )
+    if type == "bar":
+        ax.bar(
+            x=bar_posn,
+            height=bar_height,
+            width=bar_width,
+            edgecolor=line_border_color,
+            align="edge",
+            **kwargs,
+        )
+    elif type == "step":
+        ax.step(
+            x=bar_posn,
+            y=bar_height,
+            color=line_border_color,
+            where="post",
+            **kwargs,
+        )
+        ax.plot(
+            [bar_edges[0], bar_edges[0]],
+            [bar_height[0], ax.get_ylim()[0]],
+            color=line_border_color,
+            # transform=ax.transAxes,
+            **kwargs,
+        )
+        ax.plot(
+            [bar_edges[-2], bar_edges[-1], bar_edges[-1]],
+            [bar_height[-1], bar_height[-1], ax.get_ylim()[0]],
+            color=line_border_color,
+            # transform=ax.transAxes,
+            **kwargs,
+        )
 
     if log_bin:
         ax.set_xscale("log")
@@ -251,11 +276,16 @@ if __name__ == "__main__":
     B = np.random.random(100000) * 5
 
     bin_arr = np.logspace(0, 5, num=25)
-    fig, ax = plot_histogram_1d(10**A, bins=bin_arr, bar_args={"alpha": 0.3})
+    fig, ax = plot_histogram_1d(
+        10**A,
+        bins=bin_arr,
+        alpha=0.3,
+        fill=True,
+    )
     ax.set_xscale("log")
     fig.show()
 
-    fig, ax = plot_histogram_1d(A, bins=25, log_bin=False, bar_args={"alpha": 0.3})
+    fig, ax = plot_histogram_1d(A, bins=25, log_bin=False, alpha=0.3)
     fig.show()
 
     fig, ax = plot_histogram_2d(
