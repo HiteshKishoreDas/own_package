@@ -68,7 +68,6 @@ Tcut = 8e4
 def clump_elongation_hist(
     fig, ax, file_ind=0, theme="bright", norm=False, kwargs={}, bar_args={}
 ):
-
     style_lib = f"{package_path}/plot/style_lib/"
 
     if theme == "dark":
@@ -134,7 +133,6 @@ def clump_elongation_hist(
     ax.set_ylim(1e-3, 1)
 
     if __name__ == "__main__":
-
         ax.legend(loc="upper right")
         # leg.add_legend([{'linestyle' : 'solid', 'label' : r'$N_{clump} = $'+f'{clump_dict["n_blob"]}' }], ax=ax,
         #                 legend_loc  = 'upper right' , \
@@ -145,11 +143,9 @@ def clump_elongation_hist(
 
 
 def clump_elongation_calculation(file_ind=0, volume_cut=0.0, pair_flag=True):
-
     elongation = [[], []]
 
     for rep in range(pair_flag + 1):
-
         # * Read the saved plot_dict for vturb values
         with open(
             f"{file_path}/save_arr/clump_size/{sim_list[file_ind+rep]}clump_Tcut_{int(Tcut)}_Nsnap_{N_snap}.pkl",
@@ -159,9 +155,7 @@ def clump_elongation_calculation(file_ind=0, volume_cut=0.0, pair_flag=True):
 
         # Loop over the clumps
         for i in range(clump_dict["n_blob"]):
-
             if clump_dict["clump_dict"][i]["clump_volume"] > volume_cut:
-
                 clump_size = clump_dict["clump_dict"][i]["clump_size"]
                 clump_size = np.sort(np.array(clump_size))
 
@@ -174,7 +168,6 @@ def clump_elongation_calculation(file_ind=0, volume_cut=0.0, pair_flag=True):
 
 
 def clump_volume_deficit(file_ind=0, volume_cut=0.0):
-
     volume_deficit = []
 
     # * Read the saved plot_dict for vturb values
@@ -186,9 +179,7 @@ def clump_volume_deficit(file_ind=0, volume_cut=0.0):
 
     # Loop over the clumps
     for i in range(clump_dict["n_blob"]):
-
         if clump_dict["clump_dict"][i]["clump_volume"] > volume_cut:
-
             # Volume of the ellipsoid around the clump
             ellipsoid_vol = clump_dict["clump_dict"][i]["clump_size"]
             ellipsoid_vol = np.product(np.array(ellipsoid_vol)) * (4 / 3) * np.pi
@@ -205,7 +196,6 @@ def clump_volume_deficit(file_ind=0, volume_cut=0.0):
 
 
 def clump_network_length(file_ind=0):
-
     # * Read the saved plot_dict for vturb values
     with open(
         f"{file_path}/save_arr/clump_size/{sim_list[file_ind]}clump_network_Nsnap_{N_snap}.pkl",
@@ -217,7 +207,6 @@ def clump_network_length(file_ind=0):
 
 
 def clump_elongation_percentile(fig, ax, file_ind=0, volume_cut=0.0, **kwargs):
-
     bin_elongation_arr = np.linspace(1, 7, num=50)
 
     elongation = clump_elongation_calculation(file_ind, volume_cut=volume_cut)
@@ -262,22 +251,21 @@ def clump_length_hist(
     percentile=75,
     return_list=False,
     length_cut=10,
-    bar_args={},
+    **kwargs,
 ):
+    # style_lib = f"{package_path}/plot/style_lib/"
 
-    style_lib = f"{package_path}/plot/style_lib/"
+    # if theme == "dark":
+    #     pallette = style_lib + "dark_pallette.mplstyle"
+    # else:
+    #     pallette = style_lib + "bright_pallette.mplstyle"
+    # plot_style = style_lib + "plot_style.mplstyle"
+    # text_style = style_lib + "text.mplstyle"
 
-    if theme == "dark":
-        pallette = style_lib + "dark_pallette.mplstyle"
-    else:
-        pallette = style_lib + "bright_pallette.mplstyle"
-    plot_style = style_lib + "plot_style.mplstyle"
-    text_style = style_lib + "text.mplstyle"
+    # plt.style.use([pallette, plot_style, text_style])
 
-    plt.style.use([pallette, plot_style, text_style])
-
-    line_border_color = mt.rcParams["lines.color"]
-    fig_face_color = mt.rcParams["figure.facecolor"]
+    # line_border_color = mt.rcParams["lines.color"]
+    # fig_face_color = mt.rcParams["figure.facecolor"]
 
     bin_arr = np.logspace(1, np.log10(400), num=25)  # *dx_lsh_list[file_ind]
     # bin_arr = np.linspace(0, 400, num=50) #*dx_lsh_list[file_ind]
@@ -299,8 +287,9 @@ def clump_length_hist(
         norm=norm,
         fig=fig,
         ax=ax,
+        type="bar",
         new_fig=False,
-        bar_args=bar_args,
+        **kwargs,
     )
 
     # cs = np.cumsum(hst[0])
@@ -310,13 +299,13 @@ def clump_length_hist(
 
     percentile_x = np.percentile(clump_length[clump_length > length_cut], percentile)
 
-    if "color" in bar_args.keys():
-        bar_color = bar_args["color"]
+    if "color" in kwargs.keys():
+        bar_color = kwargs["color"]
     else:
         bar_color = "k"
 
-    if "label" in bar_args.keys():
-        bar_label = bar_args["label"]
+    if "label" in kwargs.keys():
+        bar_label = kwargs["label"]
     else:
         bar_label = ""
 
@@ -349,7 +338,6 @@ def clump_length_hist(
 def clump_size_hist(
     fig, ax, file_ind=0, theme="bright", norm=False, kwargs={}, bar_args={}
 ):
-
     style_lib = f"{package_path}/plot/style_lib/"
 
     if theme == "dark":
@@ -468,7 +456,6 @@ def clump_size_hist(
 def clump_size_2D_hist(
     fig, ax, file_ind=0, theme="bright", norm=False, kwargs={}, bar_args={}
 ):
-
     style_lib = f"{package_path}/plot/style_lib/"
 
     if theme == "dark":
@@ -560,7 +547,6 @@ def clump_size_2D_hist(
 def clump_elongation_volume_2D_hist(
     fig, ax, file_ind=0, num=20, volume_cut=0.0, theme="bright", **kwargs
 ):
-
     style_lib = f"{package_path}/plot/style_lib/"
 
     if theme == "dark":
@@ -630,7 +616,6 @@ def clump_elongation_volume_2D_hist(
 
 
 if __name__ == "__main__":
-
     theme = "dark"
     # theme = "bright"
     #
@@ -736,10 +721,10 @@ if __name__ == "__main__":
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 8))
 
     sim_type = 0 * 2
-    # file_path = "/afs/mpa/home/hitesh/remote/freya/MHD_multiphase_turbulence/analysis"
-    file_path = (
-        "/home/mpaadmin/remote/mpa/remote/freya/MHD_multiphase_turbulence/analysis"
-    )
+    file_path = "/afs/mpa/home/hitesh/remote/freya/MHD_multiphase_turbulence/analysis"
+    # file_path = (
+    #     "/home/mpaadmin/remote/mpa/remote/freya/MHD_multiphase_turbulence/analysis"
+    # )
 
     ax, clump_list1 = clump_length_hist(
         fig,
@@ -749,7 +734,9 @@ if __name__ == "__main__":
         return_list=True,
         percentile=90,
         theme=theme,
-        bar_args={"color": "C0", "alpha": 0.6, "label": "MHD"},
+        color="C1",
+        alpha=0.8,
+        label="MHD",
     )
     ax, clump_list2 = clump_length_hist(
         fig,
@@ -759,7 +746,9 @@ if __name__ == "__main__":
         return_list=True,
         percentile=90,
         theme=theme,
-        bar_args={"color": "C2", "alpha": 0.6, "label": "HD "},
+        color="C0",
+        alpha=0.8,
+        label="HD ",
     )
 
     kstest = sp.stats.kstest(clump_list1, clump_list2)
