@@ -40,6 +40,7 @@ def plot_multiline(
     new_fig: bool = True,
     fig=None,
     ax=None,
+    border_width=1,
     **kwargs,
 ):
     """_summary_
@@ -75,12 +76,14 @@ def plot_multiline(
     """
 
     line_border_color = mt.rcParams["lines.color"]
-    line_border_width = mt.rcParams["lines.linewidth"] + 1
+    line_border_width = mt.rcParams["lines.linewidth"] + border_width
 
     if new_fig:
         fig, ax = plt.subplots(nrows=1, ncols=1)
 
     L = len(y_data_list)
+
+    print(f"{color_list = }")
 
     if color_list == None:
         print("plot_2d_line.py::plot_multiline(): Creating color_list...")
@@ -88,6 +91,7 @@ def plot_multiline(
 
     elif np.product(np.array([isinstance(col, str) for col in color_list])) != 0:
         line_col = color_list.copy()
+        print(f"{line_col = }")
 
     else:
         if ax_log["col_log"]:
@@ -188,3 +192,41 @@ def plot_multiline(
     plt_dict["ax"] = ax
 
     return plt_dict
+
+
+if __name__ == "__main__":
+    from PIL import Image, ImageOps
+
+    style_lib = "../plot/style_lib/"
+    # pallette = style_lib + "new_dark_pallette.mplstyle"
+    pallette = style_lib + "new_bright_pallette.mplstyle"
+    plot_style = style_lib + "plot_style.mplstyle"
+    text_style = style_lib + "text.mplstyle"
+
+    plt.style.use([pallette, plot_style, text_style])
+
+    x_data_list = []
+    x_data_list.append(np.linspace(0, 1, num=100))
+    x_data_list.append(np.linspace(0, 1, num=100))
+    x_data_list.append(np.linspace(0, 1, num=100))
+    x_data_list.append(np.linspace(0, 1, num=100))
+    x_data_list.append(np.linspace(0, 1, num=100))
+
+    y_data_list = []
+    y_data_list.append(np.sin(6 * np.linspace(0, 1, num=100)))
+    y_data_list.append(np.sin(-2 * np.linspace(0, 1, num=100)))
+    y_data_list.append(np.sin(3 * np.linspace(0, 1, num=100)))
+    y_data_list.append(np.sin(-4 * np.linspace(0, 1, num=100)))
+    y_data_list.append(np.sin(5 * np.linspace(0, 1, num=100)))
+
+    plt_dict = plot_multiline(x_data_list, y_data_list)
+    fig = plt_dict["fig"]
+    fig.canvas.draw()
+
+    im = Image.frombytes(
+        "RGB", fig.canvas.get_width_height(), fig.canvas.tostring_rgb()
+    )
+
+    gray_im = ImageOps.grayscale(im)
+
+    gray_im.show()

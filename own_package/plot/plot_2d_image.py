@@ -39,7 +39,6 @@ def plot_slice(
     kwargs={},
     cbar_args={},
 ):
-
     """
     Plot 2d slice plots for 3D data
 
@@ -126,7 +125,6 @@ def plot_slice(
     plt_dict["slc"] = slc
 
     if cbar_flag:
-
         # create an axes on the right side of ax. The width of cax will be 5%
         # of ax and the padding between cax and ax will be fixed at 0.05 inch.
         divider = make_axes_locatable(ax)
@@ -154,7 +152,6 @@ def plot_projection(
     kwargs={},
     cbar_args={},
 ):
-
     """
     Plot 2d projection plots for 3D data
 
@@ -230,7 +227,6 @@ def plot_projection(
     plt_dict["slc"] = slc
 
     if cbar_flag:
-
         # create an axes on the right side of ax. The width of cax will be 5%
         # of ax and the padding between cax and ax will be fixed at 0.05 inch.
         divider = make_axes_locatable(ax)
@@ -257,9 +253,8 @@ def plot_streamline(
     new_fig=True,
     ax=None,
     fig=None,
-    kwargs={},
+    **kwargs,
 ):
-
     """
     Plot steamlines for 3D data
 
@@ -328,7 +323,6 @@ def plot_streamline(
         stream_data_y = img_data_y[slice_syntax]
 
     elif mode == "average":
-
         if weight_data == None:
             weight_data = np.ones_like(img_data_x)
 
@@ -339,6 +333,11 @@ def plot_streamline(
         print("get_array(): Invalid mode, choose betwee 'slice' and 'average' ... ")
         exit()
 
+    if "arrowsize" not in kwargs.keys():
+        kwargs.update({"arrowsize": 0})
+    if "broken_streamlines" not in kwargs.keys():
+        kwargs.update({"broken_streamlines": False})
+
     slc = ax.streamplot(
         x_data,
         y_data,
@@ -346,8 +345,6 @@ def plot_streamline(
         stream_data_y,
         color=color,
         cmap=cmap,
-        broken_streamlines=False,
-        arrowsize=0,
         **kwargs,
     )
 
@@ -359,7 +356,7 @@ def plot_streamline(
     plt_dict["slc"] = slc
 
     if len(np.shape(color)) == 2:
-        cbar = fig.colorbar(slc, ax=ax)
+        cbar = fig.colorbar(slc.lines, ax=ax)
         plt_dict["cbar"] = cbar
 
     return plt_dict
@@ -383,7 +380,6 @@ def plot_line_integral_convolution(
     fig=None,
     kwargs={},
 ):
-
     """
     Plot line integral convolution for 3D data
 
@@ -450,7 +446,6 @@ def plot_line_integral_convolution(
             alpha_arr = alpha_arr[slice_syntax]
 
     elif mode == "average":
-
         if weight_data == None:
             weight_data = np.ones_like(img_data_x)
 
@@ -685,7 +680,6 @@ def parallel_plot_fn(
 
     # * To loop over the different quantities and plot them
     for key in quant_dict:
-
         if not (os.path.exists(f"{sim_loc}Plots/{save_dir}_{plot_fn.__name__}/{key}")):
             try:
                 os.system(f"mkdir {sim_loc}Plots/{save_dir}_{plot_fn.__name__}/{key}")

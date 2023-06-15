@@ -9,7 +9,6 @@ import cmasher as cr
 
 
 def new_plot():
-
     fig = plt.figure(figsize=(10, 10))
     ax = plt.axes(projection="3d")
 
@@ -17,13 +16,11 @@ def new_plot():
 
 
 def const_alpha(x, cut=0.0, cut_above=False, log_flag=False):
-
     alpha_0 = 0.5
     return np.ones_like(x) * alpha_0
 
 
 def poly_alpha(c_arr, order=2, alpha0=1.0, log_flag=False, cut=None, cut_above=False):
-
     # alpha0 = 1.0
 
     if log_flag:
@@ -62,7 +59,6 @@ def poly_alpha(c_arr, order=2, alpha0=1.0, log_flag=False, cut=None, cut_above=F
 
 
 def lin_alpha(c_arr, log_flag=False, cut=0.0, cut_above=False):
-
     alpha0 = 1.0
 
     if log_flag:
@@ -84,7 +80,6 @@ def lin_alpha(c_arr, log_flag=False, cut=0.0, cut_above=False):
 
 
 def make_color(c_arr, alpha_arr, cmap_name, log_flag=False):
-
     cmap = mt.cm.get_cmap(cmap_name)
 
     if log_flag:
@@ -100,7 +95,6 @@ def make_color(c_arr, alpha_arr, cmap_name, log_flag=False):
 
 
 def make_color_voxel(c_arr, alpha_arr, cmap_name, log_flag=False):
-
     cmap = mt.cm.get_cmap(cmap_name)
 
     if log_flag:
@@ -116,7 +110,6 @@ def make_color_voxel(c_arr, alpha_arr, cmap_name, log_flag=False):
 
 
 def make_plot_list(inp_arr, col_data, cond_arr):
-
     L = np.shape(inp_arr)
 
     plot_list = []
@@ -124,7 +117,6 @@ def make_plot_list(inp_arr, col_data, cond_arr):
     for i in range(L[0]):
         for j in range(L[1]):
             for k in range(L[2]):
-
                 if cond_arr[i, j, k]:
                     plot_list.append([i, j, k, col_data[i, j, k]])
 
@@ -150,7 +142,6 @@ def scatter_3d(
     fig=None,
     ax=None,
 ):
-
     if new_fig:
         fig, ax = new_plot()
 
@@ -199,7 +190,6 @@ def render_scatter_3d(
     fig=None,
     ax=None,
 ):
-
     if new_fig:
         fig, ax = new_plot()
 
@@ -215,7 +205,6 @@ def render_scatter_3d(
         j_arr = np.ravel(j_arr, order="C")
         k_arr = np.ravel(k_arr, order="C")
     else:
-
         i_arr = coord[0]
         j_arr = coord[1]
         k_arr = coord[2]
@@ -262,7 +251,6 @@ def render_voxel_3d(
     fig=None,
     ax=None,
 ):
-
     if new_fig:
         fig, ax = new_plot()
 
@@ -278,7 +266,6 @@ def render_voxel_3d(
         # j_arr = np.ravel(j_arr, order='C')
         # k_arr = np.ravel(k_arr, order='C')
     else:
-
         i_arr = vertices[0]
         j_arr = vertices[1]
         k_arr = vertices[2]
@@ -301,7 +288,6 @@ def render_voxel_3d(
         print(f"i: {i}")
         for j in range(L[1]):
             for k in range(L[2]):
-
                 ax.voxels(
                     i_arr[i : i + 1, j : j + 1, k : k + 1],
                     j_arr[i : i + 1, j : j + 1, k : k + 1],
@@ -395,7 +381,6 @@ def full_render(
 # *_________________________________________________
 
 if __name__ == "__main__":
-
     # import matplotlib
     # %matplotlib qt
 

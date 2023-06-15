@@ -54,6 +54,7 @@ def plot_histogram_1d(
     return_hist=False,
     with_fig=True,
     type="step",
+    fill=False,
     hist_kwargs={},
     **kwargs,
 ):
@@ -97,21 +98,31 @@ def plot_histogram_1d(
         ax.step(
             x=bar_posn,
             y=bar_height,
-            color=line_border_color,
+            # color=line_border_color,
             where="post",
             **kwargs,
         )
+
+        if fill:
+            ax.fill_between(
+                bar_posn,
+                bar_height,
+                0.0,
+                # color=line_border_color,
+                step="post",
+            )
+
         ax.plot(
             [bar_edges[0], bar_edges[0]],
             [bar_height[0], ax.get_ylim()[0]],
-            color=line_border_color,
+            # color=line_border_color,
             # transform=ax.transAxes,
             **kwargs,
         )
         ax.plot(
             [bar_edges[-2], bar_edges[-1], bar_edges[-1]],
             [bar_height[-1], bar_height[-1], ax.get_ylim()[0]],
-            color=line_border_color,
+            # color=line_border_color,
             # transform=ax.transAxes,
             **kwargs,
         )
