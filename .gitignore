@@ -133,3 +133,12 @@ dmypy.json
 
 #Large_files
 *.pkl
+*.npy
+*/backup_figs/*
+
+#OUtput png files
+own_package/plot/projection_rust/*.png
+
+# .out and .err files
+*.err
+*.out
