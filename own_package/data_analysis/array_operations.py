@@ -125,6 +125,31 @@ def gaussian_filter(A, sigma=1.0):
     return A_gauss
 
 
+def make_array_periodic(arr):
+    shape = np.array(arr.shape)
+
+    # N_dim = len(shape)
+
+    # shape = (shape / 1.1).astype(int)
+    padded_shape = shape * 3
+    padded_arr = np.zeros(padded_shape, dtype=arr.dtype)
+    if len(shape) == 3:
+        for i in range(3):
+            for j in range(3):
+                for k in range(3):
+                    padded_arr[
+                        shape[0] * i : shape[0] * (i + 1),
+                        shape[1] * j : shape[1] * (j + 1),
+                        shape[2] * k : shape[2] * (k + 1),
+                    ] = arr[: shape[0], : shape[1], : shape[2]]
+    else:
+        raise ValueError(
+            "array_operations::surround_array(): Only 3D arrays are supported..."
+        )
+
+    return padded_arr
+
+
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
