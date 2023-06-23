@@ -1,5 +1,5 @@
 # own_package
-Python package with all the code that is frequently use
+Python package with all the code that I frequently use.
 
 To start using the package, run `pip install -e .` in the cloned repository.
 
