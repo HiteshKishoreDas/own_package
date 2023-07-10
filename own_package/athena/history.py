@@ -90,6 +90,8 @@ class hst_data:
         self.KE3 = self.dict["3-KE"]
         self.E_tot = self.dict["tot-E"]
 
+        self.T_avg = self.dict["T_sum"] / cells
+
         if cool_flag:
             self.cold_gas = self.dict["cold_gas"]
             # self.tcool_avg         = self.dict['tcool_sum']/cells

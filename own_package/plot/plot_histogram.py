@@ -112,19 +112,22 @@ def plot_histogram_1d(
                 step="post",
             )
 
+        kw_reduced = kwargs.copy()
+        kw_reduced.pop("label", kwargs)
+
         ax.plot(
             [bar_edges[0], bar_edges[0]],
             [bar_height[0], ax.get_ylim()[0]],
             # color=line_border_color,
             # transform=ax.transAxes,
-            **kwargs,
+            **kw_reduced,
         )
         ax.plot(
             [bar_edges[-2], bar_edges[-1], bar_edges[-1]],
             [bar_height[-1], bar_height[-1], ax.get_ylim()[0]],
             # color=line_border_color,
             # transform=ax.transAxes,
-            **kwargs,
+            **kw_reduced,
         )
 
     if log_bin:
