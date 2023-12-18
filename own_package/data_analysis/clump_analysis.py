@@ -608,7 +608,7 @@ def clump_hist(label_arr, hist_quantity=["volume"], rho=None, dx=1.0, bins=100, 
 # *_________________________________________________
 
 if __name__ == "__main__":
-    plt.style.use("dark_background")
+    # plt.style.use("dark_background")
 
     CONST_pc = 3.086e18
     CONST_yr = 3.154e7
@@ -701,7 +701,7 @@ if __name__ == "__main__":
 
     # *_______________________________________________________________________________*#
 
-    skip_data = 6
+    skip_data = 4
     return_dict = clump_length_test(clump_num, label_arr_sp, skip_data=skip_data)
 
     data = return_dict["data"]
@@ -739,13 +739,13 @@ if __name__ == "__main__":
         zorder=5,
         linewidth=4,
     )
-    ax.plot(
-        max_coord_skip[:, 0],
-        max_coord_skip[:, 1],
-        max_coord_skip[:, 2],
-        zorder=5,
-        linewidth=4,
-    )
+    # ax.plot(
+    #     max_coord_skip[:, 0],
+    #     max_coord_skip[:, 1],
+    #     max_coord_skip[:, 2],
+    #     zorder=5,
+    #     linewidth=4,
+    # )
 
     ax.set_title(
         f"skip_data={skip_data}, length_skip={max_path_length_skip}, length_full={max_path_length_full}"

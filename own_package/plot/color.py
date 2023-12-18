@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mc
 
 
-def create_color(col_list, cmap="plasma", log_flag=False):
-    if log_flag:
+def create_color(col_list, cmap="plasma", log=False):
+    if log:
         cb_qnt = np.log10(np.array(col_list))
     else:
         cb_qnt = np.array(col_list)

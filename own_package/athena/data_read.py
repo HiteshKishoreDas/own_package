@@ -22,7 +22,7 @@ def get_array_yt(fn, fields=["rho"], MHD_flag=False):
 
     out_dict = {}
 
-    if "coord" or "all" in fields:
+    if ("coord" in fields) or ("all" in fields):
         x_arr = np.array(all_data_level_0_hyd[("gas", "x")])
         y_arr = np.array(all_data_level_0_hyd[("gas", "y")])
         z_arr = np.array(all_data_level_0_hyd[("gas", "z")])
@@ -31,11 +31,11 @@ def get_array_yt(fn, fields=["rho"], MHD_flag=False):
 
         out_dict["coord"] = r_arr
 
-    if "rho" or "all" in fields:
+    if ("rho" in fields) or ("all" in fields):
         rho_arr = np.array(all_data_level_0_hyd["density"])
         out_dict["rho"] = rho_arr
 
-    if "prs" or "all" in fields:
+    if ("prs" in fields) or ("all" in fields):
         P_arr = np.array(all_data_level_0_hyd["press"])
         out_dict["prs"] = P_arr
 

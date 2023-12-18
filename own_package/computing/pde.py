@@ -28,13 +28,21 @@ def diffusion_solve(
     tcool=None,
     N_t=None,
     r=0.1,
-    D=1.0,
+    diff_coeff=1.0,
     cooling_flag=False,
     boundary="periodic",
     return_series=None,
 ):
     peak_value = np.max(u0)
     amb_value = np.min(u0)
+
+    if callable(diff_coeff):
+        D = diff_coeff(u0, dx)
+    else:
+        D = diff_coeff
+        if len(D) != 1:
+            if len(np.shape(D)) == 1:
+                D = D[:, np.newaxis]
 
     dt = r * dx * dx / np.max(D)
     u = np.copy(u0)
@@ -94,16 +102,26 @@ def diffusion_solve(
     time_list = []
     cold_gas_list = []
 
-    r_arr = dt * D / dx**2
-    if len(r_arr) != 1:
-        r_arr = r_arr[:, np.newaxis]
+    # print(r_arr)
+
+    # if len(r_arr) != 1:
+    #     r_arr = r_arr[:, np.newaxis]
+
+    # print(r_arr)
+    # print(np.shape(r_arr))
 
     for t in range(N_t_calc):
-        u += (np.roll(u, -1) - 2 * u + np.roll(u, 1)) * r_arr + dt * cool_rate(u)
+        if callable(diff_coeff):
+            u += (np.roll(D, -1) * (np.roll(u, -2) - np.roll(u, -1))) * dt / dx**2
+            u -= D * (np.roll(u, -1) - u) * dt / dx**2
+            u += dt * cool_rate(u)
+        else:
+            u += (np.roll(u, -1) - 2 * u + np.roll(u, 1)) * dt / dx**2 * D
+            u += dt * cool_rate(u)
 
         u = boundary_dict[boundary](u)
 
-        u[u > peak_value] = peak_value
+        # u[u > peak_value] = peak_value
 
         if return_series is not None:
             if t % int(N_t_calc / return_series) == 0:
@@ -115,6 +133,12 @@ def diffusion_solve(
 
         peak_list.append(u.max())
         time_list.append(t)
+
+        if callable(diff_coeff):
+            D = diff_coeff(u, dx)
+
+            # if len(r_arr) != 1:
+            #     r_arr = r_arr[:, np.newaxis]
 
     peak_list = np.array(peak_list)
     time_list = np.array(time_list)

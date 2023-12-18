@@ -142,3 +142,6 @@ own_package/plot/projection_rust/*.png
 # .out and .err files
 *.err
 *.out
+
+# video files
+*.mp4

@@ -150,6 +150,55 @@ def make_array_periodic(arr):
     return padded_arr
 
 
+def radial_profile(arr, center=None, bins=10):
+    L = np.array(np.shape(arr))
+
+    if len(L) not in [2, 3]:
+        raise ValueError(
+            "radial_profile()::array_operations: Array dimensions should 2 or 3..."
+        )
+
+    if center is None:
+        center = (L / 2).astype(int)
+
+    # Find the ends, so that center is at 0,0
+    box_start = -2 * center / L
+    box_end = box_start + 2
+
+    if len(L) == 2:
+        X, Y = np.meshgrid(
+            np.linspace(box_start[0], box_end[0], num=L[0]),
+            np.linspace(box_start[1], box_end[1], num=L[1]),
+        )
+
+        R = np.sqrt(X * X + Y * Y)
+
+    else:  # len(L) == 3
+        X, Y, Z = np.meshgrid(
+            np.linspace(box_start[0], box_end[0], num=L[0]),
+            np.linspace(box_start[1], box_end[1], num=L[1]),
+            np.linspace(box_start[2], box_end[2], num=L[2]),
+        )
+
+        R = np.sqrt(X * X + Y * Y + Z * Z)
+
+    R_bin_edges = np.linspace(R.min(), R.max(), num=bins + 1)
+
+    R_arr = R_bin_edges[:-1] + np.diff(R_bin_edges) / 2
+    arr_rad = np.zeros_like(R_arr)
+
+    for i_r, _ in enumerate(R_arr):
+        cond_i = (R >= R_bin_edges[i_r]) * (R < R_bin_edges[i_r + 1])
+
+        arr_rad[i_r] = np.average(arr[cond_i])
+
+    return_dict = {}
+    return_dict["r"] = R_arr
+    return_dict["radial_profile"] = arr_rad
+
+    return return_dict
+
+
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 

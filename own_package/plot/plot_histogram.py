@@ -133,10 +133,14 @@ def plot_histogram_1d(
     if log_bin:
         ax.set_xscale("log")
 
+    plt_dict = {}
+    plt_dict["ax"] = ax
+    plt_dict["fig"] = fig
+
     if return_hist:
-        return fig, ax, hst
-    else:
-        return fig, ax
+        plt_dict["hst"] = hst
+
+    return plt_dict
 
 
 def plot_histogram_2d(
@@ -151,8 +155,10 @@ def plot_histogram_2d(
     fig=None,
     ax=None,
     norm=1.0,
+    weights=None,
     kwargs={},
     cbar_args={},
+    plot_args={},
 ):
     line_border_color = mt.rcParams["lines.color"]
 
@@ -175,7 +181,12 @@ def plot_histogram_2d(
     hist_temp_x = np.ravel(hist_temp_x)
     hist_temp_y = np.ravel(hist_temp_y)
 
-    hst, xedges, yedges = np.histogram2d(hist_temp_x, hist_temp_y, bins, **kwargs)
+    if weights is None:
+        weights = np.ones_like(hist_temp_x)
+
+    hst, xedges, yedges = np.histogram2d(
+        hist_temp_x, hist_temp_y, bins, weights=weights, **kwargs
+    )
 
     if log_bin[0]:
         bar_edges_x = 10**xedges
@@ -209,6 +220,7 @@ def plot_histogram_2d(
         vmax=color_range[1],
         cmap=cmap,
         **kwargs,
+        **plot_args,
     )
 
     divider = make_axes_locatable(ax)
@@ -271,7 +283,11 @@ def plot_histogram_2d(
     if log_bin[1]:
         ax.set_yscale("log")
 
-    return fig, ax
+    plt_dict = {}
+    plt_dict["ax"] = ax
+    plt_dict["fig"] = fig
+
+    return plt_dict
 
 
 if __name__ == "__main__":

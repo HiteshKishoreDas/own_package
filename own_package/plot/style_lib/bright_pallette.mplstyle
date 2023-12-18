@@ -14,3 +14,11 @@ lines.color: black
 ## * FIGURE                                                                  *
 ## ***************************************************************************
 figure.facecolor:   white     # figure face color
+
+## ***************************************************************************
+## * SAVING FIGURES                                                          *
+## ***************************************************************************
+## The default savefig parameters can be different from the display parameters
+## e.g., you may want a higher resolution, or to make the figure
+## background white
+savefig.facecolor: white # figure face color when saving
