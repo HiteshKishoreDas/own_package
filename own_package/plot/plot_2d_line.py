@@ -32,6 +32,7 @@ def plot_multiline(
     normalise_list={"x_norm": None, "y_norm": None},
     label_list: list = None,
     linestyle="solid",
+    linewidth=mt.rcParams["lines.linewidth"],
     mark_flag: bool = False,
     markevery: int = 10,
     smooth_flag: bool = False,
@@ -76,7 +77,6 @@ def plot_multiline(
     """
 
     line_border_color = mt.rcParams["lines.color"]
-    line_border_width = mt.rcParams["lines.linewidth"] + border_width
 
     if new_fig:
         fig, ax = plt.subplots(nrows=1, ncols=1)
@@ -133,11 +133,15 @@ def plot_multiline(
     if label_list == None:
         label_list = [None for i in range(len(y_data_list))]
 
+    linestyle_arr_flag = True
+    linewidth_arr_flag = True
+
     if isinstance(linestyle, str):
-        style_arr_flag = False
+        linestyle_arr_flag = False
         linestyle_i = linestyle
-    else:
-        style_arr_flag = True
+    if isinstance(linewidth, float):
+        linewidth_arr_flag = False
+        linewidth_i = linewidth
 
     for i in range(L):
         if smooth_flag:
@@ -147,8 +151,12 @@ def plot_multiline(
             plot_y = np.copy(y_data_list[i])
             plot_x = np.copy(x_data_list[i])
 
-        if style_arr_flag:
+        if linestyle_arr_flag:
             linestyle_i = linestyle[i]
+        if linewidth_arr_flag:
+            linewidth_i = linewidth[i]
+
+        line_border_width = linewidth_i + border_width
 
         if mark_flag:
             ax.plot(
@@ -157,6 +165,7 @@ def plot_multiline(
                 "-o",
                 color=line_col[i],
                 linestyle=linestyle_i,
+                linewidth=linewidth_i,
                 label=label_list[i],
                 markevery=markevery,
                 path_effects=[
@@ -173,6 +182,7 @@ def plot_multiline(
                 np.array(plot_y) / np.array(normalise_list["y_norm"][i]),
                 color=line_col[i],
                 linestyle=linestyle_i,
+                linewidth=linewidth_i,
                 label=label_list[i],
                 path_effects=[
                     pe.Stroke(
