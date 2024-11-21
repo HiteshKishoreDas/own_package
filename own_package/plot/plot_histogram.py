@@ -156,6 +156,7 @@ def plot_histogram_2d(
     ax=None,
     norm=1.0,
     weights=None,
+    rasterized=True,
     kwargs={},
     cbar_args={},
     plot_args={},
@@ -222,6 +223,9 @@ def plot_histogram_2d(
         **kwargs,
         **plot_args,
     )
+
+    if rasterized:
+        himg.set_rasterized(True)
 
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size=0.2, pad=0.05)

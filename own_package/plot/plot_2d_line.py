@@ -81,6 +81,13 @@ def plot_multiline(
     if new_fig:
         fig, ax = plt.subplots(nrows=1, ncols=1)
 
+    if len(x_data_list) != len(y_data_list):
+        print(
+            "plot_2d_line.py::plot_multiline(): x_data_list and y_data_list are of different lengths..."
+        )
+        print("plot_2d_line.py::plot_multiline(): Exiting...")
+        sys.exit()
+
     L = len(y_data_list)
 
     print(f"{color_list = }")
@@ -107,14 +114,17 @@ def plot_multiline(
         print(f"plot_2d: x-axis normalisation set to {normalise_list['x_norm']} ...")
 
         normalise_list["x_norm"] = [
-            normalise_list["x_norm"] for i in range(len(y_data_list))
+            normalise_list["x_norm"] for i in range(len(x_data_list))
         ]
 
-    elif normalise_list["x_norm"] is None:
+    else:
+        # if normalise_list["x_norm"] == None:
         print("plot_2d: None found in normalise_list['x_norm'] ...")
         print("plot_2d: x-axis normalisation set to 1.0 ...")
 
-        normalise_list["x_norm"] = [1.0 for i in range(len(y_data_list))]
+        normalise_list["x_norm"] = [1.0] * L
+
+        print(f"Yo! {normalise_list['x_norm'] = }")
 
     if isinstance(normalise_list["y_norm"], float):
         print("plot_2d: float found in normalise_list['y_norm'] ...")
@@ -123,12 +133,12 @@ def plot_multiline(
         normalise_list["y_norm"] = [
             normalise_list["y_norm"] for i in range(len(y_data_list))
         ]
-
-    elif normalise_list["y_norm"] is None:
+    else:
+        # else normalise_list["y_norm"] == None:
         print("plot_2d: None found in normalise_list['y_norm'] ...")
         print("plot_2d: y-axis normalisation set to 1.0 ...")
 
-        normalise_list["y_norm"] = [1.0 for i in range(len(y_data_list))]
+        normalise_list["y_norm"] = [1.0] * L
 
     if label_list == None:
         label_list = [None for i in range(len(y_data_list))]
@@ -144,6 +154,15 @@ def plot_multiline(
         linewidth_i = linewidth
 
     for i in range(L):
+
+        print("----------------------")
+        print(f"{i = }")
+        print(f"L = {L}")
+        print(f"len(x_data_list) = {len(x_data_list)}")
+        print(f"len(y_data_list) = {len(y_data_list)}")
+        print(f"{len(normalise_list['x_norm']) = }")
+        print(f"{len(normalise_list['y_norm']) = }")
+
         if smooth_flag:
             plot_y = ao.smoothen(y_data_list[i], window=smooth_window)
             plot_x = x_data_list[i][int(smooth_window / 2) : -int(smooth_window / 2)]
