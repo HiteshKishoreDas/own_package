@@ -1,0 +1,10 @@
+[project]
+name = "own-package"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+dependencies = []
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

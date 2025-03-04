@@ -5,7 +5,6 @@
  */
 """
 
-
 # *_________________________________________________
 
 # TODO: Add own clump finding script here!!
@@ -31,7 +30,6 @@ import gc
 import cmasher as cr
 import sys
 import os
-from own_package.plot.plot_3d import new_plot
 
 cwd = os.path.dirname(__file__)
 package_abs_path = cwd[: -len(cwd.split("/")[-1])]

@@ -15,11 +15,16 @@ import pickle as pk
 import matplotlib as mt
 import matplotlib.pyplot as plt
 
-import own_package.plot.plot_2d_line as p2l
-import own_package.plot.plot_histogram as ph
-import own_package.plot.legend as leg
+cwd = os.path.dirname(__file__)
+package_abs_path = cwd[: -len(cwd.split("/")[-1])]
 
-import own_package.utils.units as un
+sys.path.insert(0, f"{package_abs_path}plots/")
+import plot_2d_line as p2l
+import plot_histogram as ph
+import legend as leg
+
+sys.path.insert(0, f"{package_abs_path}utils/")
+import units as un
 
 
 import own_package
