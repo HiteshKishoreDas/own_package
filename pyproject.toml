@@ -1,7 +1,7 @@
 [project]
 name = "own-package"
 version = "0.1.0"
-description = "Add your description here"
+description = "Python package with all the code that I frequently use"
 readme = "README.md"
 dependencies = []
 
