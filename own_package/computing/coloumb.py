@@ -1,12 +1,19 @@
 import numpy as np
+from timebudget import timebudget
+from scipy.fft import fft, ifft
+
+timebudget.set_quiet()  # don't show measurements as they happen
+# timebudget.report_at_exit()  # Generate report when the program exits
 
 
-def coloumb(sigma, x):
+@timebudget
+def coloumb(sigma, x, k_coloumb=1.0):
     E = []
+    dx = x[1] - x[0]
     for i in range(len(x)):
         r = x - x[i]
         cond = r != 0
-        E_i = np.trapz(-np.sign(r[cond]) * sigma[cond] / r[cond] ** 2, x=x[cond])
+        E_i = np.sum(-k_coloumb * np.sign(r[cond]) * sigma[cond] * dx / r[cond] ** 2)
         E.append(E_i)
 
     E = np.array(E)
@@ -14,54 +21,75 @@ def coloumb(sigma, x):
     return E
 
 
-def electrostatic_energy(
-    x,
-    sigma,
-    debug=False,
-):
-    pair_dist = np.subtract.outer(x, x) ** 2
-    pair_charge = np.multiply.outer(sigma, sigma)
+@timebudget
+def potential_slow(sigma, x):
+    E = []
+    for i in range(len(x)):
+        r = np.abs(x - x[i])
+        cond = r != 0
+        E_i = np.trapz(sigma[cond], x=x[cond])
+        E.append(E_i)
 
-    cond = pair_dist != 0
-    energy = pair_charge / pair_dist
+    E = np.array(E)
 
-    energy *= cond
-    energy[np.isnan(energy)] = 0.0
-    energy = np.sum(energy, axis=0)
+    return E
 
-    if debug:
-        plt.figure()
-        plt.plot(x, sigma)
-        plt.xlabel("x")
-        plt.xlabel(r"$\sigma$")
 
-        plt.figure()
-        plt.imshow(pair_dist)
-        plt.title("Distance^2")
+@timebudget
+def solve_poisson_eqn(charge_density, dx):
+    # Compute the shape of the charge density array
+    shape = charge_density.shape
 
-        plt.figure()
-        plt.imshow(pair_charge)
-        plt.title("sigma^2")
+    # Compute the wave numbers in each dimension
+    kx = 2 * np.pi * np.fft.fftfreq(shape[0], dx)
+    # ky = 2 * np.pi * np.fft.fftfreq(shape[1], dx)
+    # kz = 2 * np.pi * np.fft.fftfreq(shape[2], dx)
 
-        plt.figure()
-        plt.imshow(np.log10(pair_charge / pair_dist), vmin=-2)
-        # plt.imshow(pair_charge / pair_dist, vmin=-2)
-        plt.colorbar()
-        plt.title("sigma^2/r^2")
+    # Compute the squared wave numbers
+    # kx2, ky2, kz2 = np.meshgrid(kx**2, ky**2, kz**2, indexing="ij")
 
-        plt.figure()
-        plt.plot(x, energy)
-        plt.xlabel("x")
-        plt.xlabel(r"E")
+    # Compute the Fourier transform of the charge density
+    rho_hat = fft(charge_density)
 
-    return energy
+    plt.figure()
+    plt.plot(kx, rho_hat)
+    plt.xscale("symlog")
+
+    print(kx[np.argmax(rho_hat)])
+
+    # Solve the Poisson equation in Fourier space
+    # phi_hat = -rho_hat / (kx2 + ky2 + kz2)
+    phi_hat = np.zeros_like(kx, dtype=complex)
+    phi_hat[kx != 0] = -rho_hat[kx != 0] / (kx[kx != 0] ** 2)
+
+    # Compute the inverse Fourier transform to obtain the potential
+    potential = ifft(phi_hat).real
+
+    return potential, kx
 
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
-    x = np.linspace(-1, 1, num=101)
-    # sigma = np.sin(np.pi * x)
-    sigma = np.abs(np.sin(np.pi * x))
+    x = np.linspace(-0.5, 0.5, num=10000)
+    # sigma = np.zeros_like(x)
 
-    _ = electrostatic_energy(x, sigma, debug=True)
+    # sigma[np.abs(x) < 0.01] = 1.0
+
+    sigma = np.sin(2 * 2 * np.pi * x) + 1.0
+
+    V_slow = potential_slow(sigma, x)
+    V_fft, kx = solve_poisson_eqn(sigma, x[1] - x[0])
+
+    plt.figure()
+    plt.plot(x, sigma)
+
+    plt.figure()
+    plt.plot(x, V_slow, label="potential_slow")
+    plt.legend()
+
+    plt.figure()
+    plt.plot(x, V_fft, label="potential_fft")
+    plt.legend()
+
+    timebudget.report(reset=True)

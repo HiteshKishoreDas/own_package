@@ -138,6 +138,7 @@ dmypy.json
 
 #OUtput png files
 own_package/plot/projection_rust/*.png
+own_package/plot/projection_rust/**/*.png
 
 # .out and .err files
 *.err
@@ -145,3 +146,4 @@ own_package/plot/projection_rust/*.png
 
 # video files
 *.mp4
+
