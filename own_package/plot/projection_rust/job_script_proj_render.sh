@@ -30,7 +30,7 @@ cd /ptmp/mpa/hitesh/own_package/own_package/plot/projection_rust/
 # set number of OMP threads *per process*
 export OMP_NUM_THREADS=1
 
-srun python plot_npy.py $SLURM_CPUS_PER_TASK
+srun python render_example.py $SLURM_CPUS_PER_TASK
 
 echo "Elapsed: $(($SECONDS / 3600))hrs $((($SECONDS / 60) % 60))min $(($SECONDS % 60))sec"
 
