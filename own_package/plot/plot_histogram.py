@@ -53,8 +53,9 @@ def plot_histogram_1d(
     ax=None,
     return_hist=False,
     with_fig=True,
-    type="step",
+    plot_type="step",
     fill=False,
+    orientation="horizontal",
     hist_kwargs={},
     **kwargs,
 ):
@@ -85,46 +86,80 @@ def plot_histogram_1d(
     bar_posn = bar_edges[:-1]
     bar_width = np.diff(bar_edges)  # bar_edges[1:] - bar_edges[:-1]
 
-    if type == "bar":
-        ax.bar(
-            x=bar_posn,
-            height=bar_height,
+    barfn = ax.bar
+    plot_posn = (bar_posn, bar_height)
+    fillfn = ax.fill_between
+    where = "post"
+    ax_limfn = ax.get_ylim
+    if orientation == "vertical":
+        barfn = ax.barh
+        plot_posn = (bar_height, bar_posn)
+        fillfn = ax.fill_betweenx
+        where = "pre"
+        ax_limfn = ax.get_xlim
+
+    if plot_type == "bar":
+        barfn(
+            *plot_posn,
+            # x=plot_posn[0],
+            # height=plot_posn[1],
             width=bar_width,
             edgecolor=line_border_color,
             align="edge",
             **kwargs,
         )
-    elif type == "step":
+    elif plot_type == "step":
         ax.step(
-            x=bar_posn,
-            y=bar_height,
+            *plot_posn,
+            # x=plot_posn[0],
+            # y=plot_posn[1],
             # color=line_border_color,
-            where="post",
+            where=where,
             **kwargs,
         )
 
         if fill:
-            ax.fill_between(
-                bar_posn,
-                bar_height,
-                0.0,
+            fillfn(
+                bar_edges,
+                np.append(bar_height, bar_height[-1]),
+                ax_limfn()[0],
                 # color=line_border_color,
+                # step=where,
                 step="post",
             )
+
+        print(type(bar_posn))
 
         kw_reduced = kwargs.copy()
         kw_reduced.pop("label", kwargs)
 
-        ax.plot(
+        tuple_plot1 = (
             [bar_edges[0], bar_edges[0]],
             [bar_height[0], ax.get_ylim()[0]],
+        )
+        tuple_plot2 = (
+            [bar_edges[-2], bar_edges[-1], bar_edges[-1]],
+            [bar_height[-1], bar_height[-1], ax.get_ylim()[0]],
+        )
+
+        if orientation == "vertical":
+            tuple_plot1[1][1] = ax.get_xlim()[0]
+            tuple_plot1 = (tuple_plot1[1], tuple_plot1[0])
+
+            tuple_plot2[1][2] = ax.get_xlim()[0]
+            tuple_plot2 = (tuple_plot2[1], tuple_plot2[0])
+
+        ax.plot(
+            # *tuple_plot1,
+            tuple_plot1[0],
+            tuple_plot1[1],
             # color=line_border_color,
             # transform=ax.transAxes,
             **kw_reduced,
         )
         ax.plot(
-            [bar_edges[-2], bar_edges[-1], bar_edges[-1]],
-            [bar_height[-1], bar_height[-1], ax.get_ylim()[0]],
+            tuple_plot2[0],
+            tuple_plot2[1],
             # color=line_border_color,
             # transform=ax.transAxes,
             **kw_reduced,
@@ -315,19 +350,55 @@ if __name__ == "__main__":
     B = np.random.random(100000) * 5
 
     bin_arr = np.logspace(0, 5, num=25)
-    fig, ax = plot_histogram_1d(
-        10**A,
-        bins=bin_arr,
+    plt_dict = plot_histogram_1d(
+        A,
+        bins=25,
         alpha=0.3,
         fill=True,
     )
-    ax.set_xscale("log")
+
+    ax = plt_dict["ax"]
+    fig = plt_dict["fig"]
+
+    ax.set_yscale("log")
     fig.show()
 
-    fig, ax = plot_histogram_1d(A, bins=25, log_bin=False, alpha=0.3)
+    plt_dict = plot_histogram_1d(
+        A,
+        bins=25,
+        alpha=0.3,
+        fill=True,
+        plot_type="bar",
+    )
+
+    ax = plt_dict["ax"]
+    fig = plt_dict["fig"]
+
+    ax.set_yscale("log")
     fig.show()
 
-    fig, ax = plot_histogram_2d(
+    plt_dict = plot_histogram_1d(A, bins=25, log_bin=False, alpha=0.3)
+    ax = plt_dict["ax"]
+    fig = plt_dict["fig"]
+    fig.show()
+
+    plt_dict = plot_histogram_1d(
+        A, bins=25, log_bin=False, alpha=0.3, orientation="vertical"
+    )
+    ax = plt_dict["ax"]
+    fig = plt_dict["fig"]
+    fig.show()
+
+    plt_dict = plot_histogram_1d(
+        A, bins=25, log_bin=False, alpha=0.3, orientation="vertical", fill=True
+    )
+    ax = plt_dict["ax"]
+    fig = plt_dict["fig"]
+    fig.show()
+
+    plt_dict = plot_histogram_2d(
         10**A, 10**B, bins=100, log_bin=[True, True], hist_log=True, norm=2
     )
+    ax = plt_dict["ax"]
+    fig = plt_dict["fig"]
     fig.show()
