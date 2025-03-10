@@ -1,6 +1,6 @@
 """
-@Author: Hitesh Kishore Das 
-@Date: 2022-11-24 14:07:23 
+@Author: Hitesh Kishore Das
+@Date: 2022-11-24 14:07:23
 """
 
 import numpy as np
@@ -158,6 +158,7 @@ def plot_histogram_2d(
     weights=None,
     rasterized=True,
     kwargs={},
+    show_colorbar=True,
     cbar_args={},
     plot_args={},
 ):
@@ -227,60 +228,64 @@ def plot_histogram_2d(
     if rasterized:
         himg.set_rasterized(True)
 
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size=0.2, pad=0.05)
+    if show_colorbar:
 
-    if hist_log:
-        if None in color_range:
-            print(
-                "plot_histogram.py::plot_histogram_2d(): None in color_range, using extents of histogram for colorbar..."
-            )
-            cbar = plt.colorbar(
-                mt.cm.ScalarMappable(
-                    norm=mt.colors.LogNorm(
-                        vmin=1 / float(norm), vmax=hst.max() / float(norm)
-                    ),
-                    cmap=cmap,
-                ),
-                cax=cax,
-                **cbar_args,
-            )
-        else:
-            cbar = plt.colorbar(
-                mt.cm.ScalarMappable(
-                    norm=mt.colors.LogNorm(
-                        vmin=10 ** color_range[0], vmax=10 ** color_range[1]
-                    ),
-                    cmap=cmap,
-                ),
-                cax=cax,
-                **cbar_args,
-            )
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size=0.2, pad=0.05)
 
-    else:
-        if None in color_range:
-            print(
-                "plot_histogram.py::plot_histogram_2d(): None in color_range, using extents of histogram for colorbar..."
-            )
-            cbar = plt.colorbar(
-                mt.cm.ScalarMappable(
-                    norm=mt.colors.Normalize(
-                        vmin=hst.min() / float(norm), vmax=hst.max() / float(norm)
+        if hist_log:
+            if None in color_range:
+                print(
+                    "plot_histogram.py::plot_histogram_2d(): None in color_range, using extents of histogram for colorbar..."
+                )
+                cbar = plt.colorbar(
+                    mt.cm.ScalarMappable(
+                        norm=mt.colors.LogNorm(
+                            vmin=1 / float(norm), vmax=hst.max() / float(norm)
+                        ),
+                        cmap=cmap,
                     ),
-                    cmap=cmap,
-                ),
-                cax=cax,
-                **cbar_args,
-            )
+                    cax=cax,
+                    **cbar_args,
+                )
+            else:
+                cbar = plt.colorbar(
+                    mt.cm.ScalarMappable(
+                        norm=mt.colors.LogNorm(
+                            vmin=10 ** color_range[0], vmax=10 ** color_range[1]
+                        ),
+                        cmap=cmap,
+                    ),
+                    cax=cax,
+                    **cbar_args,
+                )
+
         else:
-            cbar = plt.colorbar(
-                mt.cm.ScalarMappable(
-                    norm=mt.colors.Normalize(vmin=color_range[0], vmax=color_range[1]),
-                    cmap=cmap,
-                ),
-                cax=cax,
-                **cbar_args,
-            )
+            if None in color_range:
+                print(
+                    "plot_histogram.py::plot_histogram_2d(): None in color_range, using extents of histogram for colorbar..."
+                )
+                cbar = plt.colorbar(
+                    mt.cm.ScalarMappable(
+                        norm=mt.colors.Normalize(
+                            vmin=hst.min() / float(norm), vmax=hst.max() / float(norm)
+                        ),
+                        cmap=cmap,
+                    ),
+                    cax=cax,
+                    **cbar_args,
+                )
+            else:
+                cbar = plt.colorbar(
+                    mt.cm.ScalarMappable(
+                        norm=mt.colors.Normalize(
+                            vmin=color_range[0], vmax=color_range[1]
+                        ),
+                        cmap=cmap,
+                    ),
+                    cax=cax,
+                    **cbar_args,
+                )
 
     if log_bin[0]:
         ax.set_xscale("log")
