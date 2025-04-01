@@ -1,10 +1,9 @@
 """
-Author: Hitesh Kishore Das 
-Date: 2021-10-18 14:23:49 
-Last Modified by:   Hitesh Kishore Das 
-Last Modified time: 2021-10-18 14:23:49 
+Author: Hitesh Kishore Das
+Date: 2021-10-18 14:23:49
+Last Modified by:   Hitesh Kishore Das
+Last Modified time: 2021-10-18 14:23:49
 """
-
 
 import numpy as np
 import math
@@ -136,13 +135,21 @@ def Lam_range():
     return T_min, T_max
 
 
-def tcool_calc(rho, T, Zsol=1.0, Lambda_fac=1.0, fit_type="max"):
+def tcool_calc(rho, T, Zsol=1.0, Lambda_fac=1.0, fit_type="max", custom_fn=None):
     n_H = rho * un.unit_density / (un.muH * un.CONST_amu)
 
     fit_dict = {}
     fit_dict["max"] = Lam_fn_powerlaw
     # fit_dict['5pnt_pwlf'] = Lam_fn_powerlaw_pwlf_fit
     fit_dict["continuous"] = Lam_fn
+    fit_dict["custom"] = custom_fn
+
+    if fit_type not in fit_dict.keys():
+        print(f"Invalid fit_type: {fit_type}")
+        return math.nan
+    elif fit_type == "custom" and custom_fn is None:
+        print("fit_type is custom, but custom_fn is None")
+        return math.nan
 
     lam_arr = fit_dict[fit_type](T=T, Zsol=Zsol, Lambda_fac=Lambda_fac)
     # print(f"{lam_arr=}")

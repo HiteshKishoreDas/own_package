@@ -118,6 +118,9 @@ def plot_histogram_1d(
             **kwargs,
         )
 
+        kw_reduced = kwargs.copy()
+        kw_reduced.pop("label", kwargs)
+
         if fill:
             fillfn(
                 bar_edges,
@@ -126,12 +129,8 @@ def plot_histogram_1d(
                 # color=line_border_color,
                 # step=where,
                 step="post",
+                **kw_reduced,
             )
-
-        print(type(bar_posn))
-
-        kw_reduced = kwargs.copy()
-        kw_reduced.pop("label", kwargs)
 
         tuple_plot1 = (
             [bar_edges[0], bar_edges[0]],
@@ -194,10 +193,11 @@ def plot_histogram_2d(
     rasterized=True,
     kwargs={},
     show_colorbar=True,
+    hist_return=False,
     cbar_args={},
     plot_args={},
 ):
-    line_border_color = mt.rcParams["lines.color"]
+    # line_border_color = mt.rcParams["lines.color"]
 
     if new_fig:
         fig, ax = plt.subplots(nrows=1, ncols=1)
@@ -330,6 +330,10 @@ def plot_histogram_2d(
     plt_dict = {}
     plt_dict["ax"] = ax
     plt_dict["fig"] = fig
+
+    if hist_return:
+        plt_dict["hist"] = hst
+        
 
     return plt_dict
 
