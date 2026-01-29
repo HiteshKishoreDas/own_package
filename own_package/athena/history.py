@@ -54,7 +54,7 @@ class hst_data:
         if None in ncells:
             raise ValueError("hst_data() :: Invalid argument for ncells ...")
         else:
-            cells = np.product(np.array(ncells))
+            cells = np.prod(np.array(ncells))
             self.ncell_x = ncells[0]
             self.ncell_y = ncells[1]
             self.ncell_z = ncells[2]
