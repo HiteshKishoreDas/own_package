@@ -30,18 +30,27 @@ class hst_data:
         """
 
         hdr = []
-        with open(fn, "r") as fp:
-            while True:
-                l = fp.readline()
-                if l[0] != "#":
-                    raise Exception("No header in %s found!" % (fn))
-                if "[1]" in l:
-                    hdr = [
-                        i.split("=")[1].strip() for i in l[1:].split("[") if "]" in i
-                    ]
-                    break
+        r_list = []
+        if isinstance(fn, str):
+            fn = [fn]
 
-        r = np.loadtxt(fn, dtype={"names": hdr, "formats": len(hdr) * (float,)})
+        for fni in fn:
+            with open(fni, "r") as fp:
+                while True:
+                    l = fp.readline()
+                    if l[0] != "#":
+                        raise Exception("No header in %s found!" % (fni))
+                    if "[1]" in l:
+                        hdr += [
+                            i.split("=")[1].strip() for i in l[1:].split("[") if "]" in i
+                        ]
+                        break
+
+            r_list += [np.loadtxt(fni, dtype={"names": hdr, "formats": len(hdr) * (float,)})]
+
+        r = {}
+        for d in r_list:
+            r.update(d)
 
         # try:
         #     r = np.loadtxt(fn, dtype={'names' : hdr, 'formats' : len(hdr) * (float,)})
