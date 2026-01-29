@@ -30,27 +30,39 @@ class hst_data:
         """
 
         hdr = []
-        r_list = []
+        r = {}
         if isinstance(fn, str):
             fn = [fn]
 
         for fni in fn:
+            file_hdr = []
             with open(fni, "r") as fp:
                 while True:
                     l = fp.readline()
                     if l[0] != "#":
                         raise Exception("No header in %s found!" % (fni))
                     if "[1]" in l:
-                        hdr += [
+                        file_hdr = [
                             i.split("=")[1].strip() for i in l[1:].split("[") if "]" in i
                         ]
                         break
 
-            r_list += [np.loadtxt(fni, dtype={"names": hdr, "formats": len(hdr) * (float,)})]
+            # Create a dtype per file to avoid duplicate-column conflicts when
+            # reading multiple history files (e.g., hydro + user both contain
+            # `time` and `dt`). Duplicate names are merged only if the data
+            # columns match; otherwise we raise to avoid silent corruption.
+            data = np.loadtxt(fni, dtype={"names": file_hdr, "formats": len(file_hdr) * (float,)})
 
-        r = {}
-        for d in r_list:
-            r.update(d)
+            for name in data.dtype.names:
+                if name in r:
+                    if not np.allclose(r[name], data[name]):
+                        raise ValueError(
+                            f"Column '{name}' appears in multiple history files with different values."
+                        )
+                    # Identical column already present; skip to keep the first instance.
+                    continue
+                r[name] = data[name]
+                hdr.append(name)
 
         # try:
         #     r = np.loadtxt(fn, dtype={'names' : hdr, 'formats' : len(hdr) * (float,)})
@@ -131,10 +143,14 @@ class hst_data:
             self.Q /= self.box_size_x * self.box_size_y
             self.lum_time = smooth_time[1:-1]
 
-        self.rho_avg = self.dict["rho_sum"] / cells
-        self.rho_sq_avg = self.dict["rho_sq_sum"] / cells
+        try:
+            self.rho_avg = self.dict["rho_sum"] / cells
+            self.rho_sq_avg = self.dict["rho_sq_sum"] / cells
+            self.clumping_factor = self.rho_sq_avg / self.rho_avg**2
 
-        self.cs_avg = self.dict["c_s_sum"] / cells
+            self.cs_avg = self.dict["c_s_sum"] / cells
+        except:
+            pass
 
         if MHD_flag:
             self.Pth_avg = self.dict["Pth_sum"] / cells
@@ -154,7 +170,6 @@ class hst_data:
         self.KE_tot = self.KE1 + self.KE2 + self.KE3
         self.turb_vel = np.sqrt(self.KE_tot * 2 / self.mass_tot)
 
-        self.clumping_factor = self.rho_sq_avg / self.rho_avg**2
 
     def overflow_cut(
         self,
